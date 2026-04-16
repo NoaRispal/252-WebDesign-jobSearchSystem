@@ -101,7 +101,6 @@
     </div>
   </main>
 
-  <script src="<?= $baseUrl ?>/script.js"></script>
   <script>
     // Sync role selector with hidden input
     document.querySelectorAll('.role-option').forEach(function(option) {
@@ -113,5 +112,3 @@
       });
     });
   </script>
-</body>
-</html>

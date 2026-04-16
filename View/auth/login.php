@@ -82,7 +82,6 @@
     </div>
   </main>
 
-  <script src="<?= $baseUrl ?>/script.js"></script>
   <!-- BACKEND: Remove this entire demo script block when real auth is implemented.
        The form will POST to AuthController::login() instead.
   -->
@@ -107,5 +106,3 @@
       }
     });
   </script>
-</body>
-</html>

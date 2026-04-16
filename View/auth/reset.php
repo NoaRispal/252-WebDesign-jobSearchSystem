@@ -36,7 +36,6 @@
   </div>
 </main>
 
-<script src="<?= $baseUrl ?>/script.js"></script>
 <script>
   // Demo reset flow loop
   document.getElementById('reset-form').addEventListener('submit', function(e) {
