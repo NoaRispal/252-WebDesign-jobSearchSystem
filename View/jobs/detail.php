@@ -1,0 +1,236 @@
+<!-- ====== PAGE HERO ====== -->
+  <section class="page-hero" id="page-hero">
+    <h1>Job Details</h1>
+  </section>
+
+  <!-- ====== JOB DETAILS CONTENT ====== -->
+  <section class="section" id="job-details-section">
+    <div class="container">
+      <div class="job-details-layout">
+        <!-- ====== LEFT MAIN ====== -->
+        <div class="job-details-main" id="job-details-main">
+          <!-- Job Header -->
+          <div class="job-card" style="border:none;padding:0;">
+            <div class="job-card-header">
+              <span class="job-card-time">10 min ago</span>
+              <button class="job-card-bookmark" aria-label="Bookmark"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+            </div>
+            <div class="job-card-info" style="margin-bottom:var(--space-lg);">
+              <div class="job-card-icon" style="background:#E8F5E9;color:#4CAF50;width:56px;height:56px;font-size:22px;">CS</div>
+              <div>
+                <h2 class="job-card-title" style="font-size:24px;">Corporate Solutions Executive</h2>
+                <p class="job-card-company">Leffler and Sons</p>
+              </div>
+            </div>
+            <div class="job-card-footer">
+              <div class="job-card-tags">
+                <span class="job-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg> Commerce</span>
+                <span class="job-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Full time</span>
+                <span class="job-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg> $40000-$42000</span>
+                <span class="job-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> New-York, USA</span>
+              </div>
+              <a href="#" class="btn btn-primary" id="apply-job-btn">Apply Job</a>
+            </div>
+          </div>
+
+          <!-- Job Description -->
+          <div class="job-description" id="job-description">
+            <h3>Job Description</h3>
+            <p>We are looking for a talented and experienced Forward Security Director to join our growing team. The ideal candidate will have a strong background in cybersecurity and risk management, with the ability to lead cross-functional security initiatives across the organization.</p>
+            <p>In this role, you will be responsible for developing and implementing security strategies, managing incident response procedures, and ensuring compliance with industry standards. You will work closely with engineering, operations, and executive leadership to protect company assets and maintain the trust of our customers.</p>
+
+            <h3>Key Responsibilities</h3>
+            <ul class="checklist" id="responsibilities-list">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Develop and maintain the organization's security architecture and long-term security roadmap</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Lead incident response and disaster recovery planning across all departments</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Conduct regular security audits and vulnerability assessments to identify and mitigate risks</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Manage and mentor a team of security analysts and engineers to ensure timely threat detection</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Ensure compliance with industry regulations such as SOC 2, ISO 27001, and GDPR</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Collaborate with product and engineering teams to integrate security best practices into the development lifecycle</li>
+            </ul>
+
+            <h3>Professional Skills</h3>
+            <ul class="checklist" id="skills-list">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Bachelor's degree in Computer Science, Information Security, or a related field</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> 5+ years of experience in cybersecurity or information security roles</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Professional certifications such as CISSP, CISM, or CEH are highly preferred</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Strong understanding of network security, encryption protocols, and threat modeling</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Excellent communication and leadership skills with the ability to present to executive audiences</li>
+            </ul>
+          </div>
+
+          <!-- Tags -->
+          <div class="detail-tags" id="detail-tags">
+            <span class="detail-tag">Full time</span>
+            <span class="detail-tag">Commerce</span>
+            <span class="detail-tag">New - York</span>
+            <span class="detail-tag">Corporate</span>
+            <span class="detail-tag">Location</span>
+          </div>
+
+          <!-- Share Job -->
+          <div class="share-job" id="share-job">
+            <span>Share Job:</span>
+            <a href="#" aria-label="Share on Facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></a>
+            <a href="#" aria-label="Share on X"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+            <a href="#" aria-label="Share on LinkedIn"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2zM4 6a2 2 0 100-4 2 2 0 000 4z"/></svg></a>
+          </div>
+
+          <!-- Related Jobs -->
+          <div style="margin-top:var(--space-3xl);" id="related-jobs">
+            <h2 style="font-size:28px;font-weight:700;margin-bottom:var(--space-sm);">Related Jobs</h2>
+            <p style="color:var(--clr-text-gray);font-size:14px;margin-bottom:var(--space-xl);">Interested in this position? Send us a message and we'll be in touch</p>
+
+            <div class="job-card" id="related-job-1">
+              <div class="job-card-header">
+                <span class="job-card-time">24 min ago</span>
+                <button class="job-card-bookmark" aria-label="Bookmark"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+              </div>
+              <div class="job-card-info">
+                <div class="job-card-icon" style="background:#E8F5E9;color:#4CAF50;">IC</div>
+                <div>
+                  <h3 class="job-card-title">Internal Creative Coordinator</h3>
+                  <p class="job-card-company">Green Group</p>
+                </div>
+              </div>
+              <div class="job-card-footer">
+                <div class="job-card-tags">
+                  <span class="job-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg> Commerce</span>
+                  <span class="job-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Full time</span>
+                  <span class="job-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg> $44000-$46000</span>
+                  <span class="job-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> New-York, USA</span>
+                </div>
+                <a href="<?= $baseUrl ?>/jobs/detail" class="btn-job-details">Job Details</a>
+              </div>
+            </div>
+
+            <div class="job-card" id="related-job-2">
+              <div class="job-card-header">
+                <span class="job-card-time">24 min ago</span>
+                <button class="job-card-bookmark" aria-label="Bookmark"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+              </div>
+              <div class="job-card-info">
+                <div class="job-card-icon" style="background:#FCE4EC;color:#E91E63;">DD</div>
+                <div>
+                  <h3 class="job-card-title">District Intranet Director</h3>
+                  <p class="job-card-company">VonRueden - Weber Co</p>
+                </div>
+              </div>
+              <div class="job-card-footer">
+                <div class="job-card-tags">
+                  <span class="job-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg> Commerce</span>
+                  <span class="job-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Full time</span>
+                  <span class="job-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg> $42000-$48000</span>
+                  <span class="job-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> New-York, USA</span>
+                </div>
+                <a href="<?= $baseUrl ?>/jobs/detail" class="btn-job-details">Job Details</a>
+              </div>
+            </div>
+
+            <div class="job-card" id="related-job-3">
+              <div class="job-card-header">
+                <span class="job-card-time">26 min ago</span>
+                <button class="job-card-bookmark" aria-label="Bookmark"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+              </div>
+              <div class="job-card-info">
+                <div class="job-card-icon" style="background:#F3E5F5;color:#9C27B0;">CT</div>
+                <div>
+                  <h3 class="job-card-title">Corporate Tactics Facilitator</h3>
+                  <p class="job-card-company">Cormier, Turner and Flatley Inc</p>
+                </div>
+              </div>
+              <div class="job-card-footer">
+                <div class="job-card-tags">
+                  <span class="job-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg> Commerce</span>
+                  <span class="job-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Full time</span>
+                  <span class="job-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg> $38000-$40000</span>
+                  <span class="job-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> New-York, USA</span>
+                </div>
+                <a href="<?= $baseUrl ?>/jobs/detail" class="btn-job-details">Job Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ====== RIGHT SIDEBAR ====== -->
+        <aside id="job-detail-sidebar">
+          <!-- Apply Button (mobile) -->
+          <a href="#" class="btn btn-primary btn-lg" style="width:100%;margin-bottom:var(--space-lg);display:none;" id="apply-job-mobile">Apply Job</a>
+
+          <!-- Job Overview Card -->
+          <div class="job-overview-card" id="job-overview-card">
+            <h3>Job Overview</h3>
+            <div class="overview-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+              <div><span class="label">Job Title</span><br><span class="value">Corporate Solutions Executive</span></div>
+            </div>
+            <div class="overview-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              <div><span class="label">Job Type</span><br><span class="value">Full Time</span></div>
+            </div>
+            <div class="overview-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+              <div><span class="label">Category</span><br><span class="value">Commerce</span></div>
+            </div>
+            <div class="overview-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+              <div><span class="label">Experience</span><br><span class="value">5 Years</span></div>
+            </div>
+            <div class="overview-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 3.3 4 6 4s6-2 6-4v-5"/></svg>
+              <div><span class="label">Degree</span><br><span class="value">Master</span></div>
+            </div>
+            <div class="overview-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+              <div><span class="label">Offered Salary</span><br><span class="value">$40000-$42000</span></div>
+            </div>
+            <div class="overview-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <div><span class="label">Location</span><br><span class="value">New-York, USA</span></div>
+            </div>
+
+            <div class="overview-map">
+              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.15830869428!2d-74.11976397304903!3d40.69766374874431!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2s!4v1" allowfullscreen="" loading="lazy" title="Job Location Map"></iframe>
+            </div>
+          </div>
+
+          <!-- Send Us Message -->
+          <div class="message-card" id="message-card">
+            <h3>Send Us Message</h3>
+            <form action="<?= $baseUrl ?>/submit" method="POST" data-validate id="message-form">
+              <div class="form-group">
+                <div class="form-icon-input">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  <input type="text" class="form-control" name="full_name" placeholder="Full name" required id="msg-name">
+                </div>
+                <span class="form-error">Please enter your name</span>
+              </div>
+              <div class="form-group">
+                <div class="form-icon-input">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  <input type="email" class="form-control" name="email" placeholder="Email Address" required id="msg-email">
+                </div>
+                <span class="form-error">Please enter a valid email</span>
+              </div>
+              <div class="form-group">
+                <div class="form-icon-input">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+                  <input type="tel" class="form-control" name="phone" placeholder="Phone Number" id="msg-phone">
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="form-icon-input" style="align-items:flex-start;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-top:14px;"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                  <textarea class="form-control" name="message" placeholder="Your Message" rows="4" required id="msg-message"></textarea>
+                </div>
+                <span class="form-error">Please enter a message</span>
+              </div>
+              <button type="submit" class="btn btn-primary" style="width:100%;" id="msg-submit">Send Message</button>
+            </form>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  
