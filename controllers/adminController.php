@@ -14,6 +14,7 @@ class AdminController {
     private $lookup_model;
     private $db;
     private $base_url;
+    private $userModel;
 
     public function __construct($db,$base_url) {
         $this->db = $db;

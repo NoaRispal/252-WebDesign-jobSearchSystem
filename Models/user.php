@@ -19,10 +19,6 @@ class User {
         $this->db = $db;
     }
 
-    /**
-     * Get user by Email for authentication
-     * Used in AuthController::login
-     */
     public function findByEmail($email) {
         $query = "SELECT id, full_name, email, password_hash, role 
                   FROM " . $this->table_name . " 
@@ -33,6 +29,17 @@ class User {
         $stmt->bindParam(':email', $email);
         $stmt->execute();
 
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getUserDataById($id) {
+        $query = "SELECT * 
+                  FROM " . $this->table_name . " 
+                  WHERE id = :id 
+                  LIMIT 1";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([':id'=>$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 

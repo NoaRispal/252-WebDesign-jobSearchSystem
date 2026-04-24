@@ -1,26 +1,15 @@
-<!-- BACKEND: Controller passes these variables to this view:
-     - $user       (array)  — current logged-in user data
-     - $myJobs     (array)  — all jobs WHERE employer_id = $_SESSION['user_id']
-     - $totalJobs  (int)    — COUNT(*) of employer's jobs
-     - $activeJobs (int)    — COUNT(*) WHERE is_active = 1
-     - $pendingJobs(int)    — COUNT(*) WHERE status = 'pending'
-     - $inactiveJobs(int)   — COUNT(*) WHERE is_active = 0
--->
 <!-- ====== DASHBOARD LAYOUT ====== -->
   <div class="dashboard-layout" id="dashboard-layout">
     <!-- Sidebar -->
     <aside class="dashboard-sidebar" id="dashboard-sidebar">
       <div style="margin-bottom:var(--space-xl);">
-        <!-- BACKEND: Replace with logged-in user data:
-             <div style="...">EC</div>  →  &lt;?= strtoupper(substr($user['first_name'],0,1) . substr($user['last_name'],0,1)) ?&gt;
-             "Employer Corp."          →  &lt;?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?&gt;
-             "employer@company.com"     →  &lt;?= htmlspecialchars($user['email']) ?&gt;
-        -->
         <div style="display:flex;align-items:center;gap:var(--space-md);">
-          <div style="width:44px;height:44px;border-radius:var(--radius-full);background:var(--clr-primary);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:16px;">EC</div>
+          <div style="width:44px;height:44px;border-radius:var(--radius-full);background:var(--clr-primary);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:16px;">
+            <?= strtoupper(substr($user['first_name'],0,1) . substr($user['last_name'],0,1)) ?>
+          </div>
           <div>
-            <div style="font-weight:600;color:white;font-size:15px;">Employer Corp.</div>
-            <div style="font-size:12px;color:rgba(255,255,255,0.5);">employer@company.com</div>
+            <div style="font-weight:600;color:white;font-size:15px;"><?= strtoupper(substr($user['first_name'],0,1) . substr($user['last_name'],0,1)) ?>.</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.5);"><?= htmlspecialchars($user['email']) ?></div>
           </div>
         </div>
       </div>
@@ -64,10 +53,10 @@
 
       <!-- Stats -->
       <!-- BACKEND: Replace hardcoded stats with DB counts:
-           <h3>&lt;?= $totalJobs ?&gt;</h3>     (Total Jobs Posted)
-           <h3>&lt;?= $activeJobs ?&gt;</h3>     (Active Jobs)
-           <h3>&lt;?= $pendingJobs ?&gt;</h3>    (Pending Review)
-           <h3>&lt;?= $inactiveJobs ?&gt;</h3>   (Inactive Jobs)
+           <h3><?= $totalJobs ?></h3>     (Total Jobs Posted)
+           <h3><?= $count(all_jobs[]) ?></h3>     (Active Jobs)
+           <h3><?= $pendingJobs ?></h3>    (Pending Review)
+           <h3><?= $inactiveJobs ?></h3>   (Inactive Jobs)
 
            SQL: SELECT
                   COUNT(*) as total,
@@ -81,28 +70,34 @@
           <div class="stat-icon green">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
           </div>
-          <h3>24</h3>
+          <h3><?= count($all_jobs)?></h3>
           <p>Total Jobs Posted</p>
         </div>
         <div class="dashboard-stat-card">
           <div class="stat-icon blue">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
           </div>
-          <h3>18</h3>
+          <h3>
+            <?= count(array_filter($jobs, function($job) {return $job['is_active'] == 1;})); ?>
+          </h3>
           <p>Active Jobs</p>
         </div>
         <div class="dashboard-stat-card">
           <div class="stat-icon orange">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
           </div>
-          <h3>4</h3>
+          <h3>
+            <?= count(array_filter($jobs, function($job) {return $job['status'] == 'pending';})); ?>
+          </h3>
           <p>Pending Review</p>
         </div>
         <div class="dashboard-stat-card">
           <div class="stat-icon red">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
           </div>
-          <h3>2</h3>
+          <h3>
+            <?= count(array_filter($jobs, function($job) {return $job['is_active'] == 0;})); ?>
+          </h3>
           <p>Inactive Jobs</p>
         </div>
       </div>
@@ -130,33 +125,7 @@
               </tr>
             </thead>
             <tbody>
-            <!-- BACKEND: Replace static rows with a PHP loop:
-                 &lt;?php foreach($myJobs as $job): ?&gt;
-                   <tr>
-                     <td><strong>&lt;?= htmlspecialchars($job['title']) ?&gt;</strong></td>
-                     <td>&lt;?= htmlspecialchars($job['category_name']) ?&gt;</td>
-                     <td>&lt;?= htmlspecialchars($job['employment_type_name']) ?&gt;</td>
-                     <td>&lt;?= htmlspecialchars($job['city'] . ', ' . $job['country']) ?&gt;</td>
-                     <td>&lt;?= htmlspecialchars($job['salary_label']) ?&gt;</td>
-                     <td><span class="status-badge &lt;?= $job['is_active'] ? 'active' : 'inactive' ?&gt;">
-                       &lt;?= $job['is_active'] ? 'Active' : 'Inactive' ?&gt;</span></td>
-                     <td>&lt;?= date('M d, Y', strtotime($job['created_at'])) ?&gt;</td>
-                     <td>
-                       <div class="table-actions">
-                         <a href="employer-job-form.php?id=&lt;?= $job['id'] ?&gt;" title="Edit">edit icon</a>
-                         <form method="POST" action="index.php?c=job&a=toggleStatus" style="display:inline;">
-                           <input type="hidden" name="job_id" value="&lt;?= $job['id'] ?&gt;">
-                           <button type="submit" title="Toggle Status">toggle icon</button>
-                         </form>
-                         <form method="POST" action="index.php?c=job&a=delete" style="display:inline;">
-                           <input type="hidden" name="job_id" value="&lt;?= $job['id'] ?&gt;">
-                           <button type="submit" class="delete" title="Delete">delete icon</button>
-                         </form>
-                       </div>
-                     </td>
-                   </tr>
-                 &lt;?php endforeach; ?&gt;
-
+            <!-- 
                  Edit button href: Links to employer-job-form.php?id=JOB_ID
                    → JobController::edit() pre-populates the form with existing data
                  Toggle button: POSTs to JobController::toggleStatus()
@@ -165,86 +134,31 @@
                    → DELETE FROM job_vacancies WHERE id = ? AND employer_id = ?
                    → Also DELETE FROM job_vacancy_skills WHERE job_vacancy_id = ?
             -->
-              <tr>
-                <td><strong>Forward Security Director</strong></td>
-                <td>Hotels & Tourism</td>
-                <td>Full Time</td>
-                <td>New York, USA</td>
-                <td>$40k-$42k</td>
-                <td><span class="status-badge active">Active</span></td>
-                <td>Nov 15, 2024</td>
-                <td>
-                  <div class="table-actions">
-                    <button title="Edit" aria-label="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-                    <button title="Toggle Status" aria-label="Toggle Status"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64A9 9 0 015.64 18.36 9 9 0 0118.36 6.64z"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button>
-                    <button class="delete" title="Delete" aria-label="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><strong>Regional Creative Facilitator</strong></td>
-                <td>Media</td>
-                <td>Part Time</td>
-                <td>Los Angeles, USA</td>
-                <td>$28k-$32k</td>
-                <td><span class="status-badge active">Active</span></td>
-                <td>Nov 14, 2024</td>
-                <td>
-                  <div class="table-actions">
-                    <button title="Edit" aria-label="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-                    <button title="Toggle Status" aria-label="Toggle Status"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64A9 9 0 015.64 18.36 9 9 0 0118.36 6.64z"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button>
-                    <button class="delete" title="Delete" aria-label="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><strong>Internal Integration Planner</strong></td>
-                <td>Construction</td>
-                <td>Full Time</td>
-                <td>Texas, USA</td>
-                <td>$48k-$50k</td>
-                <td><span class="status-badge active">Active</span></td>
-                <td>Nov 13, 2024</td>
-                <td>
-                  <div class="table-actions">
-                    <button title="Edit" aria-label="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-                    <button title="Toggle Status" aria-label="Toggle Status"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64A9 9 0 015.64 18.36 9 9 0 0118.36 6.64z"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button>
-                    <button class="delete" title="Delete" aria-label="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><strong>District Intranet Director</strong></td>
-                <td>Commerce</td>
-                <td>Full Time</td>
-                <td>Florida, USA</td>
-                <td>$42k-$48k</td>
-                <td><span class="status-badge inactive">Inactive</span></td>
-                <td>Nov 10, 2024</td>
-                <td>
-                  <div class="table-actions">
-                    <button title="Edit" aria-label="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-                    <button title="Toggle Status" aria-label="Toggle Status"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></button>
-                    <button class="delete" title="Delete" aria-label="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><strong>Corporate Tactics Facilitator</strong></td>
-                <td>Commerce</td>
-                <td>Full Time</td>
-                <td>Boston, USA</td>
-                <td>$38k-$40k</td>
-                <td><span class="status-badge pending">Pending</span></td>
-                <td>Nov 8, 2024</td>
-                <td>
-                  <div class="table-actions">
-                    <button title="Edit" aria-label="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-                    <button title="Toggle Status" aria-label="Toggle Status"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64A9 9 0 015.64 18.36 9 9 0 0118.36 6.64z"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button>
-                    <button class="delete" title="Delete" aria-label="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
-                  </div>
-                </td>
-              </tr>
+            <?php foreach($all_jobs as $job): ?>
+                <tr>
+                  <td><strong><?= htmlspecialchars($job['title']) ?></strong></td>
+                  <td><?= htmlspecialchars($job['category_name']) ?></td>
+                  <td><?= htmlspecialchars($job['employment_type_name']) ?></td>
+                  <td><?= htmlspecialchars($job['city'] . ', ' . $job['country']) ?></td>
+                  <td><?= htmlspecialchars($job['salary_label']) ?></td>
+                  <td><span class="status-badge <?= $job['is_active'] ? 'active' : 'inactive' ?>">
+                    <?= $job['is_active'] ? 'Active' : 'Inactive' ?></span></td>
+                  <td><?= date('M d, Y', strtotime($job['created_at'])) ?></td>
+                  <td>
+                    <div class="table-actions">
+                      <a href="employer-job-form.php?id=<?= $job['id'] ?>" title="Edit">edit icon</a>
+                      <form method="POST" action="index.php?c=job&a=toggleStatus" style="display:inline;">
+                        <input type="hidden" name="job_id" value="<?= $job['id'] ?>">
+                        <button type="submit" title="Toggle Status">toggle icon</button>
+                      </form>
+                      <form method="POST" action="index.php?c=job&a=delete" style="display:inline;">
+                        <input type="hidden" name="job_id" value="<?= $job['id'] ?>">
+                        <button type="submit" class="delete" title="Delete">delete icon</button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
             </tbody>
           </table>
         </div>
