@@ -1,51 +1,3 @@
-<!-- BACKEND: Rename to admin-references.php -->
-<!-- BACKEND: &lt;?php session_start(); ?&gt; -->
-<!-- BACKEND: ACCESS GUARD — Admin only:
-     if(!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-       header('Location: login.php'); exit;
-     }
--->
-<!-- BACKEND: Controller passes these variables:
-     - $categories      (array) — SELECT * FROM categories ORDER BY name
-     - $jobTitles       (array) — SELECT * FROM job_titles ORDER BY name
-     - $skills          (array) — SELECT * FROM skills ORDER BY name
-     - $industries      (array) — SELECT * FROM industries ORDER BY name
-     - $locations       (array) — SELECT * FROM locations ORDER BY country, city
-     - $employmentTypes (array) — SELECT * FROM employment_types ORDER BY name
-     - $jobLevels       (array) — SELECT * FROM job_levels ORDER BY name
-     - $salaryRanges    (array) — SELECT * FROM salary_ranges ORDER BY min_salary
-     
-     Each tab's table body should loop its array, e.g.:
-     &lt;?php foreach($categories as $cat): ?&gt;
-       <tr>
-         <td>&lt;?= $cat['id'] ?&gt;</td>
-         <td>&lt;?= htmlspecialchars($cat['name']) ?&gt;</td>
-         <td><span class="status-badge &lt;?= $cat['is_active'] ? 'active' : 'inactive' ?&gt;">
-           &lt;?= $cat['is_active'] ? 'Active' : 'Inactive' ?&gt;</span></td>
-         <td><div class="table-actions">
-           <button data-modal="add-entry-modal" data-edit-id="&lt;?= $cat['id'] ?&gt;" 
-                   data-edit-name="&lt;?= htmlspecialchars($cat['name']) ?&gt;">Edit</button>
-           <form method="POST" action="index.php?c=admin&a=deleteRef">
-             <input type="hidden" name="table" value="categories">
-             <input type="hidden" name="id" value="&lt;?= $cat['id'] ?&gt;">
-             <button class="delete">Delete</button>
-           </form>
-         </div></td>
-       </tr>
-     &lt;?php endforeach; ?&gt;
-     
-     CRUD Actions for AdminController::refCRUD():
-     - CREATE: POST index.php?c=admin&a=addRef    → INSERT INTO $table (name, is_active) VALUES (?, ?)
-     - UPDATE: POST index.php?c=admin&a=updateRef → UPDATE $table SET name=?, is_active=? WHERE id=?
-     - DELETE: POST index.php?c=admin&a=deleteRef → Check FK refs first, then DELETE FROM $table WHERE id=?
-     
-     Modal form should include: <input type="hidden" name="table" value="categories">
-     to identify which reference table the CRUD operation targets.
-     
-     IMPORTANT: Before DELETE, check if the entry is referenced by job_vacancies:
-     SELECT COUNT(*) FROM job_vacancies WHERE category_id = ?
-     If count > 0, deny delete and show error flash.
--->
 <!-- ====== DASHBOARD LAYOUT ====== -->
   <div class="dashboard-layout" id="dashboard-layout">
     <aside class="dashboard-sidebar" id="dashboard-sidebar">
@@ -94,22 +46,29 @@
         <div class="dashboard-table-card">
           <div class="dashboard-table-header">
             <h2>Job Categories</h2>
-            <span style="font-size:13px;color:var(--clr-text-gray);">10 entries</span>
+            <span style="font-size:13px;color:var(--clr-text-gray);"> <?= count($data['categories']) ?> </span>
           </div>
           <div style="overflow-x:auto;">
             <table class="dashboard-table">
               <thead><tr><th>#</th><th>Category Name</th><th>Job Count</th><th>Status</th><th>Actions</th></tr></thead>
               <tbody>
-                <tr><td>1</td><td>Commerce</td><td>150</td><td><span class="status-badge active">Active</span></td><td><div class="table-actions"><button title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div></td></tr>
-                <tr><td>2</td><td>Telecomunications</td><td>120</td><td><span class="status-badge active">Active</span></td><td><div class="table-actions"><button title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div></td></tr>
-                <tr><td>3</td><td>Hotels & Tourism</td><td>112</td><td><span class="status-badge active">Active</span></td><td><div class="table-actions"><button title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div></td></tr>
-                <tr><td>4</td><td>Education</td><td>200</td><td><span class="status-badge active">Active</span></td><td><div class="table-actions"><button title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div></td></tr>
-                <tr><td>5</td><td>Financial Services</td><td>85</td><td><span class="status-badge active">Active</span></td><td><div class="table-actions"><button title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div></td></tr>
-                <tr><td>6</td><td>Construction</td><td>95</td><td><span class="status-badge active">Active</span></td><td><div class="table-actions"><button title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div></td></tr>
-                <tr><td>7</td><td>Media</td><td>78</td><td><span class="status-badge active">Active</span></td><td><div class="table-actions"><button title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div></td></tr>
-                <tr><td>8</td><td>Agriculture</td><td>120</td><td><span class="status-badge active">Active</span></td><td><div class="table-actions"><button title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div></td></tr>
-                <tr><td>9</td><td>Transport</td><td>67</td><td><span class="status-badge active">Active</span></td><td><div class="table-actions"><button title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div></td></tr>
-                <tr><td>10</td><td>Metal Production</td><td>45</td><td><span class="status-badge active">Active</span></td><td><div class="table-actions"><button title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div></td></tr>
+                <?php foreach($data['categories'] as $cat): ?>
+                  <tr>
+                    <td><?= $cat['id'] ?></td>
+                    <td><?= htmlspecialchars($cat['name']) ?></td>
+                    <td><span class="status-badge <?= $cat['is_active'] ? 'active' : 'inactive' ?>">
+                      <?= $cat['is_active'] ? 'Active' : 'Inactive' ?></span></td>
+                    <td><div class="table-actions">
+                      <button data-modal="add-entry-modal" data-edit-id="<?= $cat['id'] ?>" 
+                              data-edit-name="<?= htmlspecialchars($cat['name']) ?>">Edit</button>
+                      <form method="POST" action="index.php?c=admin&a=deleteRef">
+                        <input type="hidden" name="table" value="categories">
+                        <input type="hidden" name="id" value="<?= $cat['id'] ?>">
+                        <button class="delete">Delete</button>
+                      </form>
+                    </div></td>
+                  </tr>
+                <?php endforeach; ?>
               </tbody>
             </table>
           </div>
@@ -117,18 +76,30 @@
       </div>
 
       <!-- Panel: Skills (sample) -->
-      <div class="admin-panel" id="panel-skills" style="display:none;">
+      <div class="admin-panel" id="panel-titles" style="display:none;">
         <div class="dashboard-table-card">
-          <div class="dashboard-table-header"><h2>Skills</h2><span style="font-size:13px;color:var(--clr-text-gray);">15 entries</span></div>
+          <div class="dashboard-table-header"><h2>Job Titles</h2><span style="font-size:13px;color:var(--clr-text-gray);"><?=count($data['titles'])?></span></div>
           <div style="overflow-x:auto;">
             <table class="dashboard-table">
-              <thead><tr><th>#</th><th>Skill Name</th><th>Used By Jobs</th><th>Actions</th></tr></thead>
+              <thead><tr><th>#</th><th>Title</th><th>Used By Jobs</th><th>Actions</th></tr></thead>
               <tbody>
-                <tr><td>1</td><td>JavaScript</td><td>42</td><td><div class="table-actions"><button title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div></td></tr>
-                <tr><td>2</td><td>Python</td><td>38</td><td><div class="table-actions"><button title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div></td></tr>
-                <tr><td>3</td><td>React</td><td>35</td><td><div class="table-actions"><button title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div></td></tr>
-                <tr><td>4</td><td>Project Management</td><td>28</td><td><div class="table-actions"><button title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div></td></tr>
-                <tr><td>5</td><td>Communication</td><td>25</td><td><div class="table-actions"><button title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div></td></tr>
+              <?php foreach($data['titles'] as $t): ?>
+                  <tr>
+                    <td><?= $t['id'] ?></td>
+                    <td><?= htmlspecialchars($t['name']) ?></td>
+                    <td><span class="status-badge <?= $t['is_active'] ? 'active' : 'inactive' ?>">
+                      <?= $t['is_active'] ? 'Active' : 'Inactive' ?></span></td>
+                    <td><div class="table-actions">
+                      <button data-modal="add-entry-modal" data-edit-id="<?= $t['id'] ?>" 
+                              data-edit-name="<?= htmlspecialchars($t['name']) ?>">Edit</button>
+                      <form method="POST" action="index.php?c=admin&a=deleteRef">
+                        <input type="hidden" name="table" value="titles">
+                        <input type="hidden" name="id" value="<?= $t['id'] ?>">
+                        <button class="delete">Delete</button>
+                      </form>
+                    </div></td>
+                  </tr>
+                <?php endforeach; ?>              
               </tbody>
             </table>
           </div>
@@ -136,24 +107,186 @@
       </div>
 
       <!-- Hidden panels for other tabs (same structure) -->
-      <div class="admin-panel" id="panel-titles" style="display:none;">
-        <div class="dashboard-table-card"><div class="dashboard-table-header"><h2>Job Titles</h2></div><div style="padding:var(--space-xl);text-align:center;color:var(--clr-text-gray);">Job Titles table — Content loaded dynamically from database</div></div>
+      <div class="admin-panel" id="panel-skills" style="display:none;">
+        <div class="dashboard-table-card">
+          <div class="dashboard-table-header"><h2>Skills</h2><span style="font-size:13px;color:var(--clr-text-gray);"><?=count($data['skills'])?></span></div>
+          <div style="overflow-x:auto;">
+            <table class="dashboard-table">
+              <thead><tr><th>#</th><th>Skill Name</th><th>Used By Jobs</th><th>Actions</th></tr></thead>
+              <tbody>
+              <?php foreach($data['skills'] as $s): ?>
+                  <tr>
+                    <td><?= $s['id'] ?></td>
+                    <td><?= htmlspecialchars($s['name']) ?></td>
+                    <td><span class="status-badge <?= $s['is_active'] ? 'active' : 'inactive' ?>">
+                      <?= $s['is_active'] ? 'Active' : 'Inactive' ?></span></td>
+                    <td><div class="table-actions">
+                      <button data-modal="add-entry-modal" data-edit-id="<?= $s['id'] ?>" 
+                              data-edit-name="<?= htmlspecialchars($s['name']) ?>">Edit</button>
+                      <form method="POST" action="index.php?c=admin&a=deleteRef">
+                        <input type="hidden" name="table" value="skills">
+                        <input type="hidden" name="id" value="<?= $s['id'] ?>">
+                        <button class="delete">Delete</button>
+                      </form>
+                    </div></td>
+                  </tr>
+                <?php endforeach; ?>              
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
+
       <div class="admin-panel" id="panel-industries" style="display:none;">
-        <div class="dashboard-table-card"><div class="dashboard-table-header"><h2>Industries</h2></div><div style="padding:var(--space-xl);text-align:center;color:var(--clr-text-gray);">Industries table — Content loaded dynamically from database</div></div>
+        <div class="dashboard-table-card">
+          <div class="dashboard-table-header"><h2>Industries</h2><span style="font-size:13px;color:var(--clr-text-gray);"><?=count($data['industries'])?></span></div>
+          <div style="overflow-x:auto;">
+            <table class="dashboard-table">
+              <thead><tr><th>#</th><th>Industry Name</th><th>Used By Jobs</th><th>Actions</th></tr></thead>
+              <tbody>
+              <?php foreach($data['industries'] as $s): ?>
+                  <tr>
+                    <td><?= $s['id'] ?></td>
+                    <td><?= htmlspecialchars($s['name']) ?></td>
+                    <td><span class="status-badge <?= $s['is_active'] ? 'active' : 'inactive' ?>">
+                      <?= $s['is_active'] ? 'Active' : 'Inactive' ?></span></td>
+                    <td><div class="table-actions">
+                      <button data-modal="add-entry-modal" data-edit-id="<?= $s['id'] ?>" 
+                              data-edit-name="<?= htmlspecialchars($s['name']) ?>">Edit</button>
+                      <form method="POST" action="index.php?c=admin&a=deleteRef">
+                        <input type="hidden" name="table" value="industries">
+                        <input type="hidden" name="id" value="<?= $s['id'] ?>">
+                        <button class="delete">Delete</button>
+                      </form>
+                    </div></td>
+                  </tr>
+                <?php endforeach; ?>              
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
+
       <div class="admin-panel" id="panel-locations" style="display:none;">
-        <div class="dashboard-table-card"><div class="dashboard-table-header"><h2>Locations</h2></div><div style="padding:var(--space-xl);text-align:center;color:var(--clr-text-gray);">Locations table — Content loaded dynamically from database</div></div>
+        <div class="dashboard-table-card">
+          <div class="dashboard-table-header"><h2>Locations</h2><span style="font-size:13px;color:var(--clr-text-gray);"><?=count($data['locations'])?></span></div>
+          <div style="overflow-x:auto;">
+            <table class="dashboard-table">
+              <thead><tr><th>#</th><th>Location</th><th>Used By Jobs</th><th>Actions</th></tr></thead>
+              <tbody>
+              <?php foreach($data['locations'] as $s): ?>
+                  <tr>
+                    <td><?= $s['id'] ?></td>
+                    <td><?= htmlspecialchars($s['name']) ?></td>
+                    <td><span class="status-badge <?= $s['is_active'] ? 'active' : 'inactive' ?>">
+                      <?= $s['is_active'] ? 'Active' : 'Inactive' ?></span></td>
+                    <td><div class="table-actions">
+                      <button data-modal="add-entry-modal" data-edit-id="<?= $s['id'] ?>" 
+                              data-edit-name="<?= htmlspecialchars($s['name']) ?>">Edit</button>
+                      <form method="POST" action="index.php?c=admin&a=deleteRef">
+                        <input type="hidden" name="table" value="locations">
+                        <input type="hidden" name="id" value="<?= $s['id'] ?>">
+                        <button class="delete">Delete</button>
+                      </form>
+                    </div></td>
+                  </tr>
+                <?php endforeach; ?>              
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
+
       <div class="admin-panel" id="panel-employment" style="display:none;">
-        <div class="dashboard-table-card"><div class="dashboard-table-header"><h2>Employment Types</h2></div><div style="padding:var(--space-xl);text-align:center;color:var(--clr-text-gray);">Employment Types table — Content loaded dynamically from database</div></div>
+        <div class="dashboard-table-card">
+          <div class="dashboard-table-header"><h2>Employment Types</h2><span style="font-size:13px;color:var(--clr-text-gray);"><?=count($data['employment'])?></span></div>
+          <div style="overflow-x:auto;">
+            <table class="dashboard-table">
+              <thead><tr><th>#</th><th>Employment Type</th><th>Used By Jobs</th><th>Actions</th></tr></thead>
+              <tbody>
+              <?php foreach($data['employment'] as $s): ?>
+                  <tr>
+                    <td><?= $s['id'] ?></td>
+                    <td><?= htmlspecialchars($s['name']) ?></td>
+                    <td><span class="status-badge <?= $s['is_active'] ? 'active' : 'inactive' ?>">
+                      <?= $s['is_active'] ? 'Active' : 'Inactive' ?></span></td>
+                    <td><div class="table-actions">
+                      <button data-modal="add-entry-modal" data-edit-id="<?= $s['id'] ?>" 
+                              data-edit-name="<?= htmlspecialchars($s['name']) ?>">Edit</button>
+                      <form method="POST" action="index.php?c=admin&a=deleteRef">
+                        <input type="hidden" name="table" value="employment">
+                        <input type="hidden" name="id" value="<?= $s['id'] ?>">
+                        <button class="delete">Delete</button>
+                      </form>
+                    </div></td>
+                  </tr>
+                <?php endforeach; ?>              
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
+
       <div class="admin-panel" id="panel-levels" style="display:none;">
-        <div class="dashboard-table-card"><div class="dashboard-table-header"><h2>Job Levels</h2></div><div style="padding:var(--space-xl);text-align:center;color:var(--clr-text-gray);">Job Levels table — Content loaded dynamically from database</div></div>
+        <div class="dashboard-table-card">
+          <div class="dashboard-table-header"><h2>Job Levels</h2><span style="font-size:13px;color:var(--clr-text-gray);"><?=count($data['levels'])?></span></div>
+          <div style="overflow-x:auto;">
+            <table class="dashboard-table">
+              <thead><tr><th>#</th><th>Job Level</th><th>Used By Jobs</th><th>Actions</th></tr></thead>
+              <tbody>
+              <?php foreach($data['levels'] as $s): ?>
+                  <tr>
+                    <td><?= $s['id'] ?></td>
+                    <td><?= htmlspecialchars($s['name']) ?></td>
+                    <td><span class="status-badge <?= $s['is_active'] ? 'active' : 'inactive' ?>">
+                      <?= $s['is_active'] ? 'Active' : 'Inactive' ?></span></td>
+                    <td><div class="table-actions">
+                      <button data-modal="add-entry-modal" data-edit-id="<?= $s['id'] ?>" 
+                              data-edit-name="<?= htmlspecialchars($s['name']) ?>">Edit</button>
+                      <form method="POST" action="index.php?c=admin&a=deleteRef">
+                        <input type="hidden" name="table" value="levels">
+                        <input type="hidden" name="id" value="<?= $s['id'] ?>">
+                        <button class="delete">Delete</button>
+                      </form>
+                    </div></td>
+                  </tr>
+                <?php endforeach; ?>              
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
+
       <div class="admin-panel" id="panel-salary" style="display:none;">
-        <div class="dashboard-table-card"><div class="dashboard-table-header"><h2>Salary Ranges</h2></div><div style="padding:var(--space-xl);text-align:center;color:var(--clr-text-gray);">Salary Ranges table — Content loaded dynamically from database</div></div>
+        <div class="dashboard-table-card">
+          <div class="dashboard-table-header"><h2>Salary Range</h2><span style="font-size:13px;color:var(--clr-text-gray);"><?=count($data['salary'])?></span></div>
+          <div style="overflow-x:auto;">
+            <table class="dashboard-table">
+              <thead><tr><th>#</th><th>Salary Range/th><th>Used By Jobs</th><th>Actions</th></tr></thead>
+              <tbody>
+              <?php foreach($data['salary'] as $s): ?>
+                  <tr>
+                    <td><?= $s['id'] ?></td>
+                    <td><?= htmlspecialchars($s['name']) ?></td>
+                    <td><span class="status-badge <?= $s['is_active'] ? 'active' : 'inactive' ?>">
+                      <?= $s['is_active'] ? 'Active' : 'Inactive' ?></span></td>
+                    <td><div class="table-actions">
+                      <button data-modal="add-entry-modal" data-edit-id="<?= $s['id'] ?>" 
+                              data-edit-name="<?= htmlspecialchars($s['name']) ?>">Edit</button>
+                      <form method="POST" action="index.php?c=admin&a=deleteRef">
+                        <input type="hidden" name="table" value="salary">
+                        <input type="hidden" name="id" value="<?= $s['id'] ?>">
+                        <button class="delete">Delete</button>
+                      </form>
+                    </div></td>
+                  </tr>
+                <?php endforeach; ?>              
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
+
     </main>
   </div>
 

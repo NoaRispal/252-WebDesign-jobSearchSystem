@@ -1,12 +1,3 @@
-<!-- BACKEND: Rename to employer-dashboard.php -->
-<!-- BACKEND: &lt;?php session_start(); ?&gt; -->
-<!-- BACKEND: &lt;?php require_once '../Helpers/session.php'; ?&gt; -->
-<!-- BACKEND: ACCESS GUARD — Employer only:
-     if(!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'employer') {
-       header('Location: login.php');
-       exit;
-     }
--->
 <!-- BACKEND: Controller passes these variables to this view:
      - $user       (array)  — current logged-in user data
      - $myJobs     (array)  — all jobs WHERE employer_id = $_SESSION['user_id']

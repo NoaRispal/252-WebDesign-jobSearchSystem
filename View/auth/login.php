@@ -1,18 +1,3 @@
-<!-- BACKEND: Rename to login.php -->
-<!-- BACKEND: &lt;?php session_start(); ?&gt; -->
-<!-- BACKEND: &lt;?php require_once '../Helpers/session.php'; ?&gt; -->
-<!-- BACKEND: If user is already logged in, redirect:
-     if(isset($_SESSION['user_id'])) {
-       header('Location: index.php');
-       exit;
-     }
--->
-<!-- BACKEND: Display flash error message if login failed:
-     &lt;?php if(isset($_SESSION['login_error'])): ?&gt;
-       <div class="alert alert-error">&lt;?= $_SESSION['login_error'] ?&gt;</div>
-       &lt;?php unset($_SESSION['login_error']); ?&gt;
-     &lt;?php endif; ?&gt;
--->
 <!-- ====== LOGIN FORM ====== -->
   <main class="auth-page" id="login-page">
     <div class="auth-card" id="login-card">
@@ -26,24 +11,7 @@
       <h1>Welcome Back</h1>
       <p>Login to your account to continue</p>
 
-      <!-- BACKEND: Change action to: action="index.php?c=auth&a=login" method="POST"
-           Add CSRF: <input type="hidden" name="csrf_token" value="&lt;?= $_SESSION['csrf_token'] ?&gt;">
-           
-           AuthController::login() should:
-           1. Validate: filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)
-           2. Query:    SELECT * FROM users WHERE email = ?
-           3. Verify:   password_verify($_POST['password'], $user['password_hash'])
-           4. Session:  $_SESSION['user_id'] = $user['id'];
-                        $_SESSION['role'] = $user['role'];
-                        $_SESSION['first_name'] = $user['first_name'];
-           5. Redirect: Based on role:
-                        admin     → admin-dashboard.php
-                        employer  → employer-dashboard.php
-                        job_seeker → index.php
-           6. On fail:  $_SESSION['login_error'] = 'Invalid credentials';
-                        redirect back to login.php
-      -->
-      <form action="<?= $baseUrl ?>/submit" method="POST" data-validate id="login-form">
+      <form action="<?= $baseUrl ?>/login/auth" method="POST" data-validate id="login-form">
         <div class="form-group">
           <label for="login-email">Email Address</label>
           <input type="email" class="form-control" name="email" placeholder="Enter your email" required id="login-email">
@@ -81,28 +49,3 @@
       </div>
     </div>
   </main>
-
-  <!-- BACKEND: Remove this entire demo script block when real auth is implemented.
-       The form will POST to AuthController::login() instead.
-  -->
-  <script>
-    // Demo login — redirect based on email
-    document.getElementById('login-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      var email = document.getElementById('login-email').value.trim().toLowerCase();
-      var password = document.getElementById('login-password').value;
-
-      if (!email || !password) return;
-
-      // Demo routing by email
-      if (email === 'admin@jobportal.com' && password === 'admin123') {
-        window.location.href = '<?= $baseUrl ?>/admin/dashboard';
-      } else if (email === 'employer@company.com' && password === 'employer123') {
-        window.location.href = '<?= $baseUrl ?>/employer/dashboard';
-      } else if (email === 'seeker@email.com' && password === 'seeker123') {
-        window.location.href = '<?= $baseUrl ?>/home';
-      } else {
-        alert('Invalid credentials. Please use one of the demo accounts shown below.');
-      }
-    });
-  </script>

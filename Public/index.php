@@ -11,8 +11,13 @@ $urlParts = explode('/', $urlParam);
 
 $page = !empty($urlParts[0]) ? $urlParts[0] : 'home';
 
-$basePath = __DIR__ . '/../View/';
+$basePath = __DIR__ . '/../view/';
+$baseUrl = "/252-WebDesign-jobSearchSystem/Public";
 $viewFile = '';
+
+// $database = new Database();
+// $db = $database->getConnection();
+$db = 3;
 
 switch($page) {
     case 'home':
@@ -35,7 +40,14 @@ switch($page) {
         $viewFile = 'pages/contact.php';
         break;
     case 'login':
-        $viewFile = 'auth/login.php';
+        if (isset($urlParts[1]) && $urlParts[1] === 'auth') {
+            require_once '../controllers/AuthController.php';
+            $auth = new AuthController($db,$baseUrl);
+            $auth->login();
+        } else {
+            // Sinon, on affiche juste la page de login
+            $viewFile = 'auth/login.php';
+        }
         break;
     case 'register':
         $viewFile = 'auth/register.php';
@@ -53,13 +65,24 @@ switch($page) {
         }
         break;
     case 'admin':
-        if (isset($urlParts[1]) && $urlParts[1] === 'dashboard') {
-            $viewFile = 'admin/dashboard.php';
-        } elseif (isset($urlParts[1]) && $urlParts[1] === 'references') {
-            $viewFile = 'admin/references.php';
-        } else {
-            $viewFile = 'admin/dashboard.php';
+        // RBAC
+        if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+            header("Location: " . $baseUrl . "/login");
+            exit();
         }
+        //
+        require_once __DIR__ . '/../controllers/AdminController.php';
+        $adminCtrl = new AdminController($db,$baseUrl);
+        $action = isset($urlParts[1]) ? $urlParts[1] : 'dashboard';
+
+        $adminCtrl->handleRequest($action);
+        // if (isset($urlParts[1]) && $urlParts[1] === 'dashboard') {
+        //     $viewFile = 'admin/dashboard.php';
+        // } elseif (isset($urlParts[1]) && $urlParts[1] === 'references') {
+        //     $viewFile = 'admin/references.php';
+        // } else {
+        //     $viewFile = 'admin/dashboard.php';
+        // }
         break;
     default:
         // 404 Not Found

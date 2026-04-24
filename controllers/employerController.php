@@ -7,17 +7,19 @@ And toggling the status of their own job postings
 include_once '../config/database.php';
 include_once '../models/jobVacancy.php';
 
-class JobController {
+class EmployerController {
     private $jobModel;
+    private $db;
+    private $base_url;
 
-    public function __construct() {
-        $database = new Database();
-        $db = $database->getConnection();
+    public function __construct($db,$base_url) {
+        $this->db = $db;
         $this->jobModel = new JobVacancy($db);
+        $this->$base_url = $base_url;
         
         // Security : check if employer
-        if ($_SESSION['role'] !== 'employer') {
-            header("Location: /login.php");
+        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'employer') { 
+            header("Location:".$this->base_url."/login.php");
             exit;
         }
     }
@@ -28,9 +30,12 @@ class JobController {
     }
 
     public function handleRequest() {
-        $action = $_GET['action'] ?? 'list';
+        $action = $_GET['action'] ?? 'dashboard';
 
         switch($action) {
+            case 'dashboard':
+                $all_jobs = $this->listJobs();
+                include '../views/employer/dashboard.php';
             case 'create':
                 if ($_POST) $this->jobModel->create($_POST);
                 include '../views/employer/create.php';

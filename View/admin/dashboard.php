@@ -1,23 +1,3 @@
-<!-- BACKEND: Rename to admin-dashboard.php -->
-<!-- BACKEND: &lt;?php session_start(); ?&gt; -->
-<!-- BACKEND: ACCESS GUARD — Admin only:
-     if(!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-       header('Location: login.php'); exit;
-     }
--->
-<!-- BACKEND: Controller passes these variables:
-     - $allJobs       (array)  — all job_vacancies with JOINs (no employer_id filter)
-     - $totalPostings  (int)   — COUNT(*) FROM job_vacancies
-     - $employerCount  (int)   — COUNT(*) FROM users WHERE role='employer'
-     - $seekerCount    (int)   — COUNT(*) FROM users WHERE role='job_seeker'
-     - $flaggedCount   (int)   — COUNT(*) of flagged/reported postings
-     
-     Admin can DELETE any posting regardless of employer.
-     View button: links to job-details.php?id=X
-     Remove button: POSTs to AdminController::removeJob()
-       → DELETE FROM job_vacancy_skills WHERE job_vacancy_id = ?
-       → DELETE FROM job_vacancies WHERE id = ?
--->
 <!-- ====== DASHBOARD LAYOUT ====== -->
   <div class="dashboard-layout" id="dashboard-layout">
     <aside class="dashboard-sidebar" id="dashboard-sidebar">
@@ -71,24 +51,24 @@
       <div class="dashboard-stats" id="admin-stats">
         <div class="dashboard-stat-card">
           <div class="stat-icon green"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div>
-          <h3>156</h3>
+          <h3><?= count($allJobs) ?></h3>
           <p>Total Job Postings</p>
         </div>
         <div class="dashboard-stat-card">
           <div class="stat-icon blue"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
-          <h3>48</h3>
+          <h3><?= $employerCount ?></h3>
           <p>Employers</p>
         </div>
         <div class="dashboard-stat-card">
           <div class="stat-icon orange"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
-          <h3>312</h3>
+          <h3><?= $seekerCount ?></h3>
           <p>Job Seekers</p>
         </div>
-        <div class="dashboard-stat-card">
+        <!-- <div class="dashboard-stat-card">
           <div class="stat-icon red"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
           <h3>7</h3>
           <p>Flagged Postings</p>
-        </div>
+        </div> -->
       </div>
 
       <!-- All Jobs Table -->
@@ -111,74 +91,24 @@
               </tr>
             </thead>
             <tbody>
-              <!-- BACKEND: Replace static rows with PHP loop:
-                   &lt;?php foreach($allJobs as $job): ?&gt;
-                     <tr>
-                       <td><strong>&lt;?= htmlspecialchars($job['title']) ?&gt;</strong></td>
-                       <td>&lt;?= htmlspecialchars($job['employer_name']) ?&gt;</td>
-                       <td>&lt;?= htmlspecialchars($job['category_name']) ?&gt;</td>
-                       <td>&lt;?= htmlspecialchars($job['city'] . ', ' . $job['country']) ?&gt;</td>
-                       <td><span class="status-badge &lt;?= $job['is_active'] ? 'active' : 'inactive' ?&gt;">
-                         &lt;?= $job['is_active'] ? 'Active' : 'Inactive' ?&gt;</span></td>
-                       <td>&lt;?= date('M d, Y', strtotime($job['created_at'])) ?&gt;</td>
-                       <td><div class="table-actions">
-                         <a href="&lt;?= $baseUrl ?&gt;/jobs/detail?id=&lt;?= $job['id'] ?&gt;" title="View">view icon</a>
-                         <form method="POST" action="index.php?c=admin&a=removeJob">
-                           <input type="hidden" name="job_id" value="&lt;?= $job['id'] ?&gt;">
-                           <button class="delete" title="Remove">remove icon</button>
-                         </form>
-                       </div></td>
-                     </tr>
-                   &lt;?php endforeach; ?&gt;
-              -->
-              <tr>
-                <td><strong>Forward Security Director</strong></td>
-                <td>Bauch, Schuppe Co</td>
-                <td>Hotels & Tourism</td>
-                <td>New York, USA</td>
-                <td><span class="status-badge active">Active</span></td>
-                <td>Nov 15, 2024</td>
-                <td><div class="table-actions">
-                  <button title="View" aria-label="View"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-                  <button class="delete" title="Remove" aria-label="Remove"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
-                </div></td>
-              </tr>
-              <tr>
-                <td><strong>Regional Creative Facilitator</strong></td>
-                <td>Wisozk - Becker Co</td>
-                <td>Media</td>
-                <td>Los Angeles, USA</td>
-                <td><span class="status-badge active">Active</span></td>
-                <td>Nov 14, 2024</td>
-                <td><div class="table-actions">
-                  <button title="View" aria-label="View"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-                  <button class="delete" title="Remove" aria-label="Remove"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
-                </div></td>
-              </tr>
-              <tr style="background:rgba(231,76,60,0.03);">
-                <td><strong>⚠️ Suspicious Job Post</strong></td>
-                <td>Unknown Corp</td>
-                <td>Commerce</td>
-                <td>N/A</td>
-                <td><span class="status-badge pending">Flagged</span></td>
-                <td>Nov 12, 2024</td>
-                <td><div class="table-actions">
-                  <button title="View" aria-label="View"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-                  <button class="delete" title="Remove" aria-label="Remove"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
-                </div></td>
-              </tr>
-              <tr>
-                <td><strong>Corporate Tactics Facilitator</strong></td>
-                <td>Cormier, Turner Inc</td>
-                <td>Commerce</td>
-                <td>Boston, USA</td>
-                <td><span class="status-badge inactive">Inactive</span></td>
-                <td>Nov 10, 2024</td>
-                <td><div class="table-actions">
-                  <button title="View" aria-label="View"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-                  <button class="delete" title="Remove" aria-label="Remove"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
-                </div></td>
-              </tr>
+                <?php foreach($allJobs as $job): ?>;
+                  <tr>
+                    <td><strong><?= htmlspecialchars($job['title']) ?>;</strong></td>
+                    <td><?= htmlspecialchars($job['employer_name']) ?>;</td>
+                    <td><?= htmlspecialchars($job['category_name']) ?>;</td>
+                    <td><?= htmlspecialchars($job['city'] . ', ' . $job['country']) ?>;</td>
+                    <td><span class="status-badge <?= $job['is_active'] ? 'active' : 'inactive' ?>;">
+                      <?= $job['is_active'] ? 'Active' : 'Inactive' ?>;</span></td>
+                    <td><?= date('M d, Y', strtotime($job['created_at'])) ?>;</td>
+                    <td><div class="table-actions">
+                      <a href="<?= $baseUrl ?>;/jobs/detail?id=<?= $job['id'] ?>;" title="View">view icon</a>
+                      <form method="POST" action="index.php?c=admin&a=removeJob">
+                        <input type="hidden" name="job_id" value="<?= $job['id'] ?>;">
+                        <button class="delete" title="Remove">remove icon</button>
+                      </form>
+                    </div></td>
+                  </tr>
+                <?php endforeach; ?>;             
             </tbody>
           </table>
         </div>
