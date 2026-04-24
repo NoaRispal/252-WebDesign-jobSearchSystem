@@ -1,40 +1,15 @@
-<!-- BACKEND: Rename to employer-job-form.php -->
-<!-- BACKEND: &lt;?php session_start(); ?&gt; -->
-<!-- BACKEND: ACCESS GUARD — Employer only:
-     if(!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'employer') {
-       header('Location: login.php'); exit;
-     }
--->
-<!-- BACKEND: Controller passes these variables to this view:
-     - $job          (array|null)  — null for CREATE, populated for EDIT (from ?id=X)
-     - $jobTitles    (array)  — SELECT * FROM job_titles WHERE is_active = 1
-     - $categories   (array)  — SELECT * FROM categories WHERE is_active = 1
-     - $empTypes     (array)  — SELECT * FROM employment_types WHERE is_active = 1
-     - $industries   (array)  — SELECT * FROM industries WHERE is_active = 1
-     - $jobLevels    (array)  — SELECT * FROM job_levels WHERE is_active = 1
-     - $locations    (array)  — SELECT * FROM locations WHERE is_active = 1
-     - $salaryRanges (array)  — SELECT * FROM salary_ranges WHERE is_active = 1
-     - $skills       (array)  — SELECT * FROM skills WHERE is_active = 1
-     - $degrees      (array)  — SELECT * FROM degree_levels WHERE is_active = 1
-     - $jobSkills    (array)  — existing skills for this job (EDIT mode only)
-     
-     EDIT MODE detection:
-     if(isset($_GET['id'])) {
-       $job = JobVacancy::findByIdAndEmployer($_GET['id'], $_SESSION['user_id']);
-       if(!$job) { redirect('employer-dashboard.php'); exit; }
-       $jobSkills = JobSkill::getByJobId($job['id']);
-     }
--->
 <!-- ====== DASHBOARD LAYOUT ====== -->
   <div class="dashboard-layout" id="dashboard-layout">
     <!-- Sidebar -->
     <aside class="dashboard-sidebar" id="dashboard-sidebar">
       <div style="margin-bottom:var(--space-xl);">
         <div style="display:flex;align-items:center;gap:var(--space-md);">
-          <div style="width:44px;height:44px;border-radius:var(--radius-full);background:var(--clr-primary);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:16px;">EC</div>
+          <div style="width:44px;height:44px;border-radius:var(--radius-full);background:var(--clr-primary);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:16px;">
+            <?= strtoupper(substr($user['first_name'],0,1) . substr($user['last_name'],0,1)) ?>
+          </div>
           <div>
-            <div style="font-weight:600;color:white;font-size:15px;">Employer Corp.</div>
-            <div style="font-size:12px;color:rgba(255,255,255,0.5);">employer@company.com</div>
+            <div style="font-weight:600;color:white;font-size:15px;"><?= strtoupper(substr($user['first_name'],0,1) . substr($user['last_name'],0,1)) ?>.</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.5);"><?= htmlspecialchars($user['email']) ?></div>
           </div>
         </div>
       </div>
@@ -64,28 +39,11 @@
       <!-- BACKEND: FORM ACTION CHANGES:
            CREATE mode: action="index.php?c=job&a=create" method="POST"
            EDIT mode:   action="index.php?c=job&a=update" method="POST"
-           Add CSRF:    <input type="hidden" name="csrf_token" value="&lt;?= $_SESSION['csrf_token'] ?&gt;">
-           
-           Change page title dynamically:
-           <h1>&lt;?= isset($job) ? 'Edit Job' : 'Create New Job' ?&gt;</h1>
-           
-           JobController::create() should:
-           1. Validate all required fields exist  
-           2. Lookup/create location_id from country+city+district
-           3. INSERT INTO job_vacancies (...) VALUES (?,...)
-           4. Loop skills[]: INSERT INTO job_vacancy_skills (job_vacancy_id, skill_id, proficiency)
-           5. Redirect to employer-dashboard.php with success flash
-           
-           JobController::update() should:
-           1. Verify ownership: WHERE id = ? AND employer_id = ?
-           2. UPDATE job_vacancies SET ... WHERE id = ?
-           3. DELETE FROM job_vacancy_skills WHERE job_vacancy_id = ?
-           4. Re-INSERT skills from $_POST['skills']
-           5. Redirect to employer-dashboard.php with success flash
-      -->
-      <form action="<?= $baseUrl ?>/submit" method="POST" data-validate id="job-create-form">
+           Add CSRF:    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>"> -->
+
+      <form action="<?= $baseUrl ?>/index.php?c=job$a=create" method="POST" data-validate id="job-create-form">
         <!-- Hidden field for edit mode — PHP will populate this with the job ID when editing -->
-        <!-- BACKEND: value="&lt;?= isset($job) ? $job['id'] : '' ?&gt;" -->
+        <!-- BACKEND: value="<?= isset($job) ? $job['id'] : '' ?>" -->
         <input type="hidden" name="job_id" value="" id="job-id-hidden">
 
         <!-- Section A: Basic Job Information -->
@@ -95,30 +53,17 @@
             <div class="form-group">
               <label for="job-title">Job Title *</label>
               <!-- BACKEND: Populate from DB + set selected for EDIT:
-                   <select name="job_title" required id="job-title">
-                     <option value="">Select job title</option>
-                     &lt;?php foreach($jobTitles as $jt): ?&gt;
-                       <option value="&lt;?= $jt['id'] ?&gt;" &lt;?= (isset($job) && $job['job_title_id'] == $jt['id']) ? 'selected' : '' ?&gt;>
-                         &lt;?= htmlspecialchars($jt['name']) ?&gt;
-                       </option>
-                     &lt;?php endforeach; ?&gt;
-                   </select>
                    ↑ Apply this same pattern to ALL <select> elements in this form:
                    job_category, employment_type, industry, job_level, country, city, district,
                    work_arrangement, salary_range, salary_type, min_degree, min_experience
               -->
               <select class="form-control" name="job_title" required id="job-title">
                 <option value="">Select job title</option>
-                <option value="software-engineer">Software Engineer</option>
-                <option value="data-analyst">Data Analyst</option>
-                <option value="marketing-manager">Marketing Manager</option>
-                <option value="sales-representative">Sales Representative</option>
-                <option value="financial-analyst">Financial Analyst</option>
-                <option value="hr-specialist">HR Specialist</option>
-                <option value="project-manager">Project Manager</option>
-                <option value="graphic-designer">Graphic Designer</option>
-                <option value="customer-service-rep">Customer Service Representative</option>
-                <option value="security-director">Security Director</option>
+                <?php foreach($jobTitles as $jt): ?>
+                  <option value="<?= $jt['id'] ?>" <?= (isset($job) && $job['job_title_id'] == $jt['id']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($jt['name']) ?>
+                  </option>
+                <?php endforeach; ?>
               </select>
               <span class="form-error">Job title is required</span>
             </div>
@@ -126,16 +71,11 @@
               <label for="job-category">Job Category *</label>
               <select class="form-control" name="job_category" required id="job-category">
                 <option value="">Select category</option>
-                <option value="commerce">Commerce</option>
-                <option value="telecomunications">Telecomunications</option>
-                <option value="hotels-tourism">Hotels & Tourism</option>
-                <option value="education">Education</option>
-                <option value="financial-services">Financial Services</option>
-                <option value="construction">Construction</option>
-                <option value="media">Media</option>
-                <option value="transport">Transport</option>
-                <option value="agriculture">Agriculture</option>
-                <option value="metal-production">Metal Production</option>
+                <?php foreach($categories as $cat): ?>
+                  <option value="<?= $cat['id'] ?>" <?= (isset($job) && $job['job_category_id'] == $cat['id']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($cat['name']) ?>
+                  </option>
+                <?php endforeach; ?>
               </select>
               <span class="form-error">Category is required</span>
             </div>
@@ -145,11 +85,11 @@
               <label for="employment-type">Employment Type *</label>
               <select class="form-control" name="employment_type" required id="employment-type">
                 <option value="">Select type</option>
-                <option value="full-time">Full Time</option>
-                <option value="part-time">Part Time</option>
-                <option value="freelance">Freelance</option>
-                <option value="seasonal">Seasonal</option>
-                <option value="fixed-price">Fixed-Price</option>
+                <?php foreach($employment as $emp): ?>
+                  <option value="<?= $emp['id'] ?>" <?= (isset($job) && $job['job_employment_id'] == $emp['id']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($emp['name']) ?>
+                  </option>
+                <?php endforeach; ?>
               </select>
               <span class="form-error">Employment type is required</span>
             </div>
@@ -157,16 +97,11 @@
               <label for="industry">Industry *</label>
               <select class="form-control" name="industry" required id="industry">
                 <option value="">Select industry</option>
-                <option value="technology">Technology</option>
-                <option value="healthcare">Healthcare</option>
-                <option value="finance">Finance</option>
-                <option value="retail">Retail</option>
-                <option value="manufacturing">Manufacturing</option>
-                <option value="hospitality">Hospitality</option>
-                <option value="education">Education</option>
-                <option value="construction">Construction</option>
-                <option value="media">Media & Entertainment</option>
-                <option value="logistics">Logistics</option>
+                <?php foreach($industry as $i): ?>
+                  <option value="<?= $i['id'] ?>" <?= (isset($job) && $job['job_industry_id'] == $i['id']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($i['name']) ?>
+                  </option>
+                <?php endforeach; ?>
               </select>
               <span class="form-error">Industry is required</span>
             </div>
@@ -176,9 +111,11 @@
               <label for="job-level">Job Level *</label>
               <select class="form-control" name="job_level" required id="job-level">
                 <option value="">Select level</option>
-                <option value="junior">Junior</option>
-                <option value="mid">Mid</option>
-                <option value="senior">Senior</option>
+                <?php foreach($levels as $l): ?>
+                  <option value="<?= $l['id'] ?>" <?= (isset($job) && $job['job_level_id'] == $l['id']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($l['name']) ?>
+                  </option>
+                <?php endforeach; ?>
               </select>
               <span class="form-error">Job level is required</span>
             </div>
@@ -198,15 +135,11 @@
               <label for="country">Country *</label>
               <select class="form-control" name="country" required id="country">
                 <option value="">Select country</option>
-                <option value="usa">United States</option>
-                <option value="uk">United Kingdom</option>
-                <option value="canada">Canada</option>
-                <option value="australia">Australia</option>
-                <option value="germany">Germany</option>
-                <option value="france">France</option>
-                <option value="japan">Japan</option>
-                <option value="singapore">Singapore</option>
-                <option value="vietnam">Vietnam</option>
+                <?php foreach($countries as $c): ?>
+                  <option value="<?= $c['id'] ?>" <?= (isset($job) && $job['job_country_id'] == $c['id']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($c['name']) ?>
+                  </option>
+                <?php endforeach; ?>
               </select>
               <span class="form-error">Country is required</span>
             </div>
@@ -214,13 +147,11 @@
               <label for="city">City / Province *</label>
               <select class="form-control" name="city" required id="city">
                 <option value="">Select city</option>
-                <option value="new-york">New York</option>
-                <option value="los-angeles">Los Angeles</option>
-                <option value="boston">Boston</option>
-                <option value="texas">Texas</option>
-                <option value="florida">Florida</option>
-                <option value="london">London</option>
-                <option value="toronto">Toronto</option>
+                <?php foreach($cities as $c): ?>
+                  <option value="<?= $c['id'] ?>" <?= (isset($job) && $job['job_city_id'] == $c['id']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($c['name']) ?>
+                  </option>
+                <?php endforeach; ?>
               </select>
               <span class="form-error">City is required</span>
             </div>
@@ -230,19 +161,22 @@
               <label for="district">District (Optional)</label>
               <select class="form-control" name="district" id="district">
                 <option value="">Select district</option>
-                <option value="manhattan">Manhattan</option>
-                <option value="brooklyn">Brooklyn</option>
-                <option value="queens">Queens</option>
-                <option value="bronx">Bronx</option>
+                <?php foreach($district as $d): ?>
+                  <option value="<?= $d['id'] ?>" <?= (isset($job) && $job['job_district_id'] == $d['id']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($d['name']) ?>
+                  </option>
+                <?php endforeach; ?>
               </select>
             </div>
             <div class="form-group">
               <label for="work-arrangement">Work Arrangement *</label>
               <select class="form-control" name="work_arrangement" required id="work-arrangement">
                 <option value="">Select arrangement</option>
-                <option value="onsite">Onsite</option>
-                <option value="remote">Remote</option>
-                <option value="hybrid">Hybrid</option>
+                <?php foreach($arrangement as $a): ?>
+                  <option value="<?= $a['id'] ?>" <?= (isset($job) && $job['job_arrangement_id'] == $a['id']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($a['name']) ?>
+                  </option>
+                <?php endforeach; ?>
               </select>
               <span class="form-error">Work arrangement is required</span>
             </div>
@@ -256,15 +190,11 @@
             <div class="form-group">
               <label for="salary-range">Salary Range *</label>
               <select class="form-control" name="salary_range" required id="salary-range-select">
-                <option value="">Select range</option>
-                <option value="0-1000">$0 - $1,000</option>
-                <option value="1000-2000">$1,000 - $2,000</option>
-                <option value="2000-3000">$2,000 - $3,000</option>
-                <option value="3000-5000">$3,000 - $5,000</option>
-                <option value="5000-7500">$5,000 - $7,500</option>
-                <option value="7500-10000">$7,500 - $10,000</option>
-                <option value="10000-15000">$10,000 - $15,000</option>
-                <option value="15000+">$15,000+</option>
+              <?php foreach($salary as $s): ?>
+                  <option value="<?= $s['id'] ?>" <?= (isset($job) && $job['job_salary_id'] == $s['id']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($s['name']) ?>
+                  </option>
+                <?php endforeach; ?>
               </select>
               <span class="form-error">Salary range is required</span>
             </div>
@@ -272,8 +202,11 @@
               <label for="salary-type">Salary Type *</label>
               <select class="form-control" name="salary_type" required id="salary-type">
                 <option value="">Select type</option>
-                <option value="gross">Gross</option>
-                <option value="net">Net</option>
+                <?php foreach($salary_type as $st): ?>
+                  <option value="<?= $st['id'] ?>" <?= (isset($job) && $job['job_salary_type_id'] == $st['id']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($st['name']) ?>
+                  </option>
+                <?php endforeach; ?>
               </select>
               <span class="form-error">Salary type is required</span>
             </div>
@@ -317,30 +250,21 @@
               <label for="skill-select">Skill</label>
               <select class="form-control" id="skill-select">
                 <option value="">Select a skill</option>
-                <option value="JavaScript">JavaScript</option>
-                <option value="Python">Python</option>
-                <option value="Java">Java</option>
-                <option value="React">React</option>
-                <option value="Node.js">Node.js</option>
-                <option value="SQL">SQL</option>
-                <option value="Project Management">Project Management</option>
-                <option value="Communication">Communication</option>
-                <option value="Leadership">Leadership</option>
-                <option value="Data Analysis">Data Analysis</option>
-                <option value="Marketing">Marketing</option>
-                <option value="Design">Design</option>
-                <option value="Problem Solving">Problem Solving</option>
-                <option value="Team Management">Team Management</option>
-                <option value="Sales">Sales</option>
+                <?php foreach($skills as $s): ?>
+                  <option value="<?= $s['id'] ?>" <?= (isset($job) && $job['job_skill_id'] == $s['id']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($s['name']) ?>
+                  </option>
+                <?php endforeach; ?>
               </select>
             </div>
             <div class="form-group" style="margin-bottom:0;">
               <label for="proficiency-select">Minimum Proficiency</label>
               <select class="form-control" id="proficiency-select">
-                <option value="Beginner">Beginner</option>
-                <option value="Intermediate" selected>Intermediate</option>
-                <option value="Advanced">Advanced</option>
-                <option value="Expert">Expert</option>
+              <?php foreach($proficiency as $p): ?>
+                  <option value="<?= $p['id'] ?>" <?= (isset($job) && $job['job_proficiency_id'] == $p['id']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($p['name']) ?>
+                  </option>
+                <?php endforeach; ?>
               </select>
             </div>
             <button type="button" class="btn btn-primary" id="add-skill-btn" style="height:44px;margin-top:auto;">Add Skill</button>
@@ -359,12 +283,11 @@
               <label for="min-degree">Minimum Degree Level *</label>
               <select class="form-control" name="min_degree" required id="min-degree">
                 <option value="">Select degree</option>
-                <option value="high-school">High School</option>
-                <option value="associate">Associate Degree</option>
-                <option value="bachelor">Bachelor's Degree</option>
-                <option value="master">Master's Degree</option>
-                <option value="doctorate">Doctorate</option>
-                <option value="none">No requirement</option>
+                <?php foreach($degree as $d): ?>
+                  <option value="<?= $d['id'] ?>" <?= (isset($job) && $job['job_degree_id'] == $d['id']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($d['name']) ?>
+                  </option>
+                <?php endforeach; ?>
               </select>
               <span class="form-error">Minimum degree is required</span>
             </div>
@@ -372,13 +295,11 @@
               <label for="min-experience">Minimum Years of Experience *</label>
               <select class="form-control" name="min_experience" required id="min-experience">
                 <option value="">Select experience</option>
-                <option value="0">No experience</option>
-                <option value="1">1 year</option>
-                <option value="2">2 years</option>
-                <option value="3">3 years</option>
-                <option value="5">5 years</option>
-                <option value="7">7 years</option>
-                <option value="10">10+ years</option>
+                <?php foreach($experience as $e): ?>
+                  <option value="<?= $e['id'] ?>" <?= (isset($job) && $job['job_experience_id'] == $e['id']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($e['name']) ?>
+                  </option>
+                <?php endforeach; ?>
               </select>
               <span class="form-error">Minimum experience is required</span>
             </div>
