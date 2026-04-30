@@ -1,3 +1,13 @@
+<!-- BEFORE DASHBOARD FOOTER REFACTOR:
+     Footer was shown on ALL pages including admin/employer dashboards.
+     Now it is hidden on dashboard pages since those have self-contained layouts.
+END BEFORE DASHBOARD FOOTER REFACTOR -->
+
+<?php
+  $isFooterDashboard = (strpos($urlParam, 'admin') === 0) || (strpos($urlParam, 'employer') === 0);
+?>
+
+<?php if (!$isFooterDashboard): ?>
 <!-- ====== FOOTER ====== -->
   <footer class="footer" id="footer">
     <div class="container">
@@ -48,6 +58,7 @@
       </div>
     </div>
   </footer>
+<?php endif; ?>
 
   <script src="<?= $baseUrl ?>/script.js"></script>
 </body>

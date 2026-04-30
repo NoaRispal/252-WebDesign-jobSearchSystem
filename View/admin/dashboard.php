@@ -31,7 +31,8 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
           Settings
         </a>
-        <a href="<?= $baseUrl ?>/login" style="margin-top:var(--space-xl);color:rgba(255,255,255,0.4);">
+        <!-- BEFORE LOGOUT FIX: href pointed to /login without clearing session -->
+        <a href="<?= $baseUrl ?>/logout" style="margin-top:var(--space-xl);color:rgba(255,255,255,0.4);">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
           Logout
         </a>
@@ -91,7 +92,8 @@
               </tr>
             </thead>
             <tbody>
-                <?php foreach($allJobs as $job): ?>;
+                <!-- OLD VERSION (Commented out for reference)
+                <?php /* foreach($allJobs as $job): ?>;
                   <tr>
                     <td><strong><?= htmlspecialchars($job['title']) ?>;</strong></td>
                     <td><?= htmlspecialchars($job['employer_name']) ?>;</td>
@@ -108,7 +110,55 @@
                       </form>
                     </div></td>
                   </tr>
-                <?php endforeach; ?>;             
+                <?php endforeach; */ ?> 
+                -->
+                <!-- BEFORE RESPONSIVE CARD REFACTOR:
+                <?php /* foreach($allJobs as $job): ?>
+                  <tr>
+                    <td><strong><?= htmlspecialchars($job['Title_Name'] ?? 'Unknown Title') ?></strong></td>
+                    <td><?= htmlspecialchars($job['Company_Name'] ?? 'Unknown Employer') ?></td>
+                    <td><?= htmlspecialchars($job['Category_Name'] ?? 'Unknown Category') ?></td>
+                    <td><?= htmlspecialchars(($job['City_Name'] ?? '') . ', ' . ($job['Country_Name'] ?? '')) ?></td>
+                    <td><span class="status-badge <?= !empty($job['Is_Active']) ? 'active' : 'inactive' ?>">
+                      <?= !empty($job['Is_Active']) ? 'Active' : 'Inactive' ?></span></td>
+                    <td><?= date('M d, Y', strtotime($job['Posting_Date'] ?? 'now')) ?></td>
+                    <td><div class="table-actions">
+                      <a href="<?= $baseUrl ?>/jobs/detail?id=<?= $job['Vacancy_ID'] ?? '' ?>" title="View">view icon</a>
+                      <form method="POST" action="index.php?c=admin&a=removeJob">
+                        <input type="hidden" name="job_id" value="<?= $job['Vacancy_ID'] ?? '' ?>">
+                        <button class="delete" title="Remove">remove icon</button>
+                      </form>
+                    </div></td>
+                  </tr>
+                <?php endforeach; */ ?>
+                END BEFORE RESPONSIVE CARD REFACTOR -->
+
+                <?php foreach($allJobs as $job): ?>
+                  <tr>
+                    <td class="card-primary" data-label="Job Title"><strong><?= htmlspecialchars($job['Title_Name'] ?? 'Unknown Title') ?></strong></td>
+                    <td class="card-detail" data-label="Employer"><?= htmlspecialchars($job['Company_Name'] ?? 'Unknown Employer') ?></td>
+                    <td class="card-detail" data-label="Category"><?= htmlspecialchars($job['Category_Name'] ?? 'Unknown Category') ?></td>
+                    <td class="card-detail" data-label="Location"><?= htmlspecialchars(($job['City_Name'] ?? '') . ', ' . ($job['Country_Name'] ?? '')) ?></td>
+                    <td class="card-primary" data-label="Status"><span class="status-badge <?= !empty($job['Is_Active']) ? 'active' : 'inactive' ?>">
+                      <?= !empty($job['Is_Active']) ? 'Active' : 'Inactive' ?></span></td>
+                    <td class="card-detail" data-label="Posted"><?= date('M d, Y', strtotime($job['Posting_Date'] ?? 'now')) ?></td>
+                    <!-- BEFORE ICON FIX: <a ...>view icon</a> / <button ...>remove icon</button> -->
+                    <td class="card-detail" data-label="Actions"><div class="table-actions">
+                      <a href="<?= $baseUrl ?>/jobs/detail?id=<?= $job['Vacancy_ID'] ?? '' ?>" title="View">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                      </a>
+                      <form method="POST" action="index.php?c=admin&a=removeJob">
+                        <input type="hidden" name="job_id" value="<?= $job['Vacancy_ID'] ?? '' ?>">
+                        <button class="delete" title="Remove">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                        </button>
+                      </form>
+                    </div></td>
+                    <td class="card-chevron" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>             
             </tbody>
           </table>
         </div>

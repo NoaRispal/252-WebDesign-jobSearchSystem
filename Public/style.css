@@ -2300,6 +2300,8 @@ select.form-control {
   gap: var(--space-sm);
 }
 
+/* BEFORE ICON FIX: only button had styled; now both a and button are styled identically */
+.table-actions a,
 .table-actions button {
   width: 32px;
   height: 32px;
@@ -2310,8 +2312,10 @@ select.form-control {
   transition: all var(--transition-fast);
   border: 1px solid var(--clr-border);
   background: var(--clr-white);
+  color: var(--clr-text-gray);
 }
 
+.table-actions a:hover,
 .table-actions button:hover {
   border-color: var(--clr-primary);
   color: var(--clr-primary);
@@ -2320,6 +2324,11 @@ select.form-control {
 .table-actions button.delete:hover {
   border-color: var(--clr-error);
   color: var(--clr-error);
+}
+
+/* Chevron cell: hidden on desktop/tablet, shown only via mobile media query */
+.card-chevron {
+  display: none;
 }
 
 /* ============================================
@@ -2762,6 +2771,128 @@ select.form-control {
 
   .form-row {
     grid-template-columns: 1fr;
+  }
+
+  /* ============================================
+     RESPONSIVE CARD PATTERN — Dashboard Tables
+     Transforms <table> rows into expandable cards
+     on screens < 768px.
+     ============================================ */
+
+  /* BEFORE RESPONSIVE CARD REFACTOR (original table mobile rules):
+     .dashboard-table { font-size: 13px; }
+     .dashboard-table th, .dashboard-table td { padding: var(--space-sm) var(--space-md); }
+  END BEFORE RESPONSIVE CARD REFACTOR */
+
+  /* Hide table header row on mobile */
+  .dashboard-table thead {
+    display: none;
+  }
+
+  /* Table body becomes a vertical card list */
+  .dashboard-table tbody {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding: var(--space-md);
+  }
+
+  /* Each row becomes a card */
+  .dashboard-table tbody tr {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    background: var(--clr-white);
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md);
+    cursor: pointer;
+    position: relative;
+    transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
+  }
+
+  .dashboard-table tbody tr:hover {
+    background-color: var(--clr-white);
+    border-color: var(--clr-primary);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Remove default table cell styling */
+  .dashboard-table tbody td {
+    display: block;
+    border-bottom: none;
+    padding: 0;
+    font-size: 14px;
+  }
+
+  /* ---- Primary cells: always visible in collapsed row ---- */
+  .dashboard-table tbody td.card-primary {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* Job title takes most of the row width */
+  .dashboard-table tbody td.card-primary[data-label="Job Title"] {
+    flex: 1;
+    min-width: 0;
+    margin-right: var(--space-sm);
+  }
+
+  /* Status badge sits to the right of title */
+  .dashboard-table tbody td.card-primary[data-label="Status"] {
+    flex-shrink: 0;
+  }
+
+  /* ---- Chevron: visible on mobile, sits far-right ---- */
+  .dashboard-table tbody td.card-chevron {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-left: var(--space-sm);
+    color: var(--clr-text-light);
+    transition: transform var(--transition-normal);
+  }
+
+  .dashboard-table tbody tr.is-expanded td.card-chevron {
+    transform: rotate(180deg);
+  }
+
+  /* ---- Detail cells: hidden by default, shown on expand ---- */
+  .dashboard-table tbody td.card-detail {
+    display: none;
+    width: 100%;
+    padding: var(--space-sm) 0;
+    border-top: 1px solid var(--clr-bg-gray);
+  }
+
+  /* First detail item gets extra spacing from the primary row */
+  .dashboard-table tbody tr.is-expanded td.card-detail:first-of-type {
+    margin-top: var(--space-md);
+  }
+
+  /* Show detail cells when expanded */
+  .dashboard-table tbody tr.is-expanded td.card-detail {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* Data labels via ::before pseudo-element */
+  .dashboard-table tbody td.card-detail::before {
+    content: attr(data-label);
+    font-weight: var(--fw-semibold);
+    font-size: 12px;
+    color: var(--clr-text-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+    margin-right: var(--space-md);
+  }
+
+  /* Table overflow wrapper should not clip cards */
+  .dashboard-table-card > div[style*="overflow-x"] {
+    overflow-x: visible !important;
   }
 }
 

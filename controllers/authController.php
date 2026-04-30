@@ -20,6 +20,7 @@ class AuthController {
 
             $email = strtolower(trim($email));
 
+            /* BEFORE FIX:
             switch($email) { 
                 case "admin@jobportal.com":
                     $_SESSION['user_id'] = 1;
@@ -41,6 +42,27 @@ class AuthController {
                     header("Location: home");
                     break;
                 }
+            */
+            switch($email) { 
+                case "admin@jobportal.com":
+                    $_SESSION['user_id'] = 1;
+                    $_SESSION['role'] = "admin";
+                    $_SESSION['full_name'] = "John Admin";
+                    header("Location: ".$this->baseUrl."/admin/dashboard");
+                    exit();
+                case 'employer@company.com':
+                    $_SESSION['user_id'] = 2;
+                    $_SESSION['role'] = "employer";
+                    $_SESSION['full_name'] = "John employer";
+                    header("Location: " . $this->baseUrl . "/employer/dashboard");
+                    exit();
+                default:
+                    $_SESSION['user_id'] = 3;
+                    $_SESSION['role'] = "job_seeker";
+                    $_SESSION['full_name'] = "John Seeker";
+                    header("Location: " . $this->baseUrl . "/home");
+                    exit();
+            }
 
             #######################################
             #### DEMO (DELETE WHEN DB FINISH) #####
@@ -79,6 +101,31 @@ class AuthController {
             //     exit;
             // }
         }
+    }
+
+    /**
+     * Logout — destroy session and redirect to login page.
+     * BEFORE LOGOUT FIX: No logout method existed; sidebar links just navigated to /login without clearing session.
+     */
+    public function logout() {
+        // Clear all session variables
+        $_SESSION = array();
+
+        // Destroy the session cookie
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $params["path"], $params["domain"],
+                $params["secure"], $params["httponly"]
+            );
+        }
+
+        // Destroy the session
+        session_destroy();
+
+        // Redirect to login page
+        header("Location: " . $this->baseUrl . "/login");
+        exit();
     }
 }
 ?>

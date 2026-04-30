@@ -15,9 +15,14 @@ $basePath = __DIR__ . '/../view/';
 $baseUrl = "/252-WebDesign-jobSearchSystem/Public";
 $viewFile = '';
 
-// $database = new Database();
-// $db = $database->getConnection();
-$db = 3;
+// // $database = new Database();
+// // $db = $database->getConnection();
+// $db = 3;
+
+require_once __DIR__ . '/../Config/database.php';
+
+$database = new Database();
+$db = $database->getConnection();
 
 switch($page) {
     case 'home':
@@ -55,11 +60,18 @@ switch($page) {
     case 'reset':
         $viewFile = 'auth/reset.php';
         break;
+    // BEFORE LOGOUT FIX: No logout route existed in the front controller.
+    case 'logout':
+        require_once '../controllers/AuthController.php';
+        $auth = new AuthController($db, $baseUrl);
+        $auth->logout();
+        // logout() calls exit(), so nothing below runs
+        break;
     case 'employer':
         if (isset($urlParts[1]) && $urlParts[1] === 'dashboard') {
             $viewFile = 'employer/dashboard.php';
         } elseif (isset($urlParts[1]) && $urlParts[1] === 'job-form') {
-            $viewFile = 'employer/job-form.php';
+            $viewFile = 'employer/job_form.php';
         } else {
             $viewFile = 'employer/dashboard.php';
         }
@@ -75,7 +87,15 @@ switch($page) {
         $adminCtrl = new AdminController($db,$baseUrl);
         $action = isset($urlParts[1]) ? $urlParts[1] : 'dashboard';
 
+        ob_start();
         $adminCtrl->handleRequest($action);
+        $adminContent = ob_get_clean();
+
+        require_once $basePath . 'layouts/header.php';
+        echo $adminContent;
+        require_once $basePath . 'layouts/footer.php';
+        
+        exit(); // Exit here so we don't fall through to the default view handler below
         // if (isset($urlParts[1]) && $urlParts[1] === 'dashboard') {
         //     $viewFile = 'admin/dashboard.php';
         // } elseif (isset($urlParts[1]) && $urlParts[1] === 'references') {

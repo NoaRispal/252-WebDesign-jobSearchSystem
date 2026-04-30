@@ -16,11 +16,25 @@ class AdminController {
     private $base_url;
     private $userModel;
 
+    // public function __construct($db,$base_url) {
+    //     $this->db = $db;
+    //     $this->$base_url = $base_url;
+    //     $this->job_model = new JobVacancy($db);
+    //     $this->lookup_model = new lookup_model($db);
+    //     $this->userModel = new User($db);
+        
+    //     // Security : check if admin
+    //     if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') { 
+    //         header("Location:".$this->base_url."/login.php");
+    //         exit;
+    //     }
+    // }
+
     public function __construct($db,$base_url) {
         $this->db = $db;
-        $this->$base_url = $base_url;
+        $this->base_url = $base_url; // Fixed syntax: Removed the extra $
         $this->job_model = new JobVacancy($db);
-        $this->lookup_model = new lookup_model($db);
+        $this->lookup_model = new LookupModel($db); // Fixed syntax: Capitalized 'LookupModel'
         $this->userModel = new User($db);
         
         // Security : check if admin
@@ -30,6 +44,7 @@ class AdminController {
         }
     }
 
+
     public function handleRequest($action = 'dashboard') {
 
         switch($action) {
@@ -38,6 +53,8 @@ class AdminController {
                 $totalPostings = $this->job_model->countAll();
                 $employerCount = $this->userModel->countByRole('employer');
                 $seekerCount = $this->userModel->countByRole('job_seeker');
+                // BEFORE LOGOUT FIX: $baseUrl was not exposed to the view scope, causing undefined variable errors in sidebar links
+                $baseUrl = $this->base_url;
                 include '../view/admin/dashboard.php';
                 break;
 
@@ -81,13 +98,14 @@ class AdminController {
                     'titles'     => $this->lookup_model->getAllFromTable('job_titles')->fetchAll(PDO::FETCH_ASSOC),
                     'skills'     => $this->lookup_model->getAllFromTable('skills')->fetchAll(PDO::FETCH_ASSOC),
                     'industries' => $this->lookup_model->getAllFromTable('industries')->fetchAll(PDO::FETCH_ASSOC),
-                    'locations'  => $this->lookup_model->getAllFromTable('locations')->fetchAll(PDO::FETCH_ASSOC),
+                    // BEFORE COLUMN FIX: 'locations' was fetched here but the table doesn't exist in the DB
                     'employment' => $this->lookup_model->getAllFromTable('employment_types')->fetchAll(PDO::FETCH_ASSOC),
                     'levels'     => $this->lookup_model->getAllFromTable('job_levels')->fetchAll(PDO::FETCH_ASSOC),
                     'salary'     => $this->lookup_model->getAllFromTable('salary_ranges')->fetchAll(PDO::FETCH_ASSOC)
                 ];
 
-                include '../views/admin/references.php';
+                $baseUrl = $this->base_url;
+                include '../view/admin/references.php';
                 break;
         }
     }

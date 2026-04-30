@@ -10,7 +10,7 @@
           </div>
         </div>
       </div>
-      <nav class="dashboard-sidebar-nav">
+      <nav class="dashboard-sidebar-nav" id="sidebar-nav">
         <a href="<?= $baseUrl ?>/admin/dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Dashboard</a>
         <a href="<?= $baseUrl ?>/admin/references" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4a2 2 0 012-2h8.5L20 7.5V20a2 2 0 01-2 2H6a2 2 0 01-2-2V7z"/><polyline points="14 2 14 8 20 8"/></svg> Reference Tables</a>
         <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg> All Job Postings</a>
@@ -35,7 +35,6 @@
         <button class="admin-tab" data-tab="titles">Job Titles</button>
         <button class="admin-tab" data-tab="skills">Skills</button>
         <button class="admin-tab" data-tab="industries">Industries</button>
-        <button class="admin-tab" data-tab="locations">Locations</button>
         <button class="admin-tab" data-tab="employment">Employment Types</button>
         <button class="admin-tab" data-tab="levels">Job Levels</button>
         <button class="admin-tab" data-tab="salary">Salary Ranges</button>
@@ -50,21 +49,22 @@
           </div>
           <div style="overflow-x:auto;">
             <table class="dashboard-table">
-              <thead><tr><th>#</th><th>Category Name</th><th>Job Count</th><th>Status</th><th>Actions</th></tr></thead>
+              <thead><tr><th>#</th><th>Category Name</th><th>Job Count</th><th>Actions</th></tr></thead>
               <tbody>
                 <?php foreach($data['categories'] as $cat): ?>
                   <tr>
                     <td><?= $cat['id'] ?></td>
                     <td><?= htmlspecialchars($cat['name']) ?></td>
-                    <td><span class="status-badge <?= $cat['is_active'] ? 'active' : 'inactive' ?>">
-                      <?= $cat['is_active'] ? 'Active' : 'Inactive' ?></span></td>
+                    <!-- FUTURE CHANGELOG: Backend team needs to populate Job Count here (e.g., using a JOIN with job_vacancies) -->
+                    <td>0</td>
                     <td><div class="table-actions">
-                      <button data-modal="add-entry-modal" data-edit-id="<?= $cat['id'] ?>" 
-                              data-edit-name="<?= htmlspecialchars($cat['name']) ?>">Edit</button>
+                      <button data-modal="add-modal" data-edit-id="<?= $cat['id'] ?>" 
+                              data-edit-name="<?= htmlspecialchars($cat['name']) ?>"
+                              data-edit-table="job_categories" class="edit-btn" title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
                       <form method="POST" action="index.php?c=admin&a=deleteRef">
-                        <input type="hidden" name="table" value="categories">
+                        <input type="hidden" name="table" value="job_categories">
                         <input type="hidden" name="id" value="<?= $cat['id'] ?>">
-                        <button class="delete">Delete</button>
+                        <button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
                       </form>
                     </div></td>
                   </tr>
@@ -87,15 +87,16 @@
                   <tr>
                     <td><?= $t['id'] ?></td>
                     <td><?= htmlspecialchars($t['name']) ?></td>
-                    <td><span class="status-badge <?= $t['is_active'] ? 'active' : 'inactive' ?>">
-                      <?= $t['is_active'] ? 'Active' : 'Inactive' ?></span></td>
+                    <!-- FUTURE CHANGELOG: Backend team needs to populate Used By Jobs count here -->
+                    <td>0</td>
                     <td><div class="table-actions">
-                      <button data-modal="add-entry-modal" data-edit-id="<?= $t['id'] ?>" 
-                              data-edit-name="<?= htmlspecialchars($t['name']) ?>">Edit</button>
+                      <button data-modal="add-modal" data-edit-id="<?= $t['id'] ?>" 
+                              data-edit-name="<?= htmlspecialchars($t['name']) ?>"
+                              data-edit-table="job_titles" class="edit-btn" title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
                       <form method="POST" action="index.php?c=admin&a=deleteRef">
-                        <input type="hidden" name="table" value="titles">
+                        <input type="hidden" name="table" value="job_titles">
                         <input type="hidden" name="id" value="<?= $t['id'] ?>">
-                        <button class="delete">Delete</button>
+                        <button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
                       </form>
                     </div></td>
                   </tr>
@@ -118,15 +119,16 @@
                   <tr>
                     <td><?= $s['id'] ?></td>
                     <td><?= htmlspecialchars($s['name']) ?></td>
-                    <td><span class="status-badge <?= $s['is_active'] ? 'active' : 'inactive' ?>">
-                      <?= $s['is_active'] ? 'Active' : 'Inactive' ?></span></td>
+                    <!-- FUTURE CHANGELOG: Backend team needs to populate Used By Jobs count here -->
+                    <td>0</td>
                     <td><div class="table-actions">
-                      <button data-modal="add-entry-modal" data-edit-id="<?= $s['id'] ?>" 
-                              data-edit-name="<?= htmlspecialchars($s['name']) ?>">Edit</button>
+                      <button data-modal="add-modal" data-edit-id="<?= $s['id'] ?>" 
+                              data-edit-name="<?= htmlspecialchars($s['name']) ?>"
+                              data-edit-table="skills" class="edit-btn" title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
                       <form method="POST" action="index.php?c=admin&a=deleteRef">
                         <input type="hidden" name="table" value="skills">
                         <input type="hidden" name="id" value="<?= $s['id'] ?>">
-                        <button class="delete">Delete</button>
+                        <button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
                       </form>
                     </div></td>
                   </tr>
@@ -148,15 +150,16 @@
                   <tr>
                     <td><?= $s['id'] ?></td>
                     <td><?= htmlspecialchars($s['name']) ?></td>
-                    <td><span class="status-badge <?= $s['is_active'] ? 'active' : 'inactive' ?>">
-                      <?= $s['is_active'] ? 'Active' : 'Inactive' ?></span></td>
+                    <!-- FUTURE CHANGELOG: Backend team needs to populate Used By Jobs count here -->
+                    <td>0</td>
                     <td><div class="table-actions">
-                      <button data-modal="add-entry-modal" data-edit-id="<?= $s['id'] ?>" 
-                              data-edit-name="<?= htmlspecialchars($s['name']) ?>">Edit</button>
+                      <button data-modal="add-modal" data-edit-id="<?= $s['id'] ?>" 
+                              data-edit-name="<?= htmlspecialchars($s['name']) ?>"
+                              data-edit-table="industries" class="edit-btn" title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
                       <form method="POST" action="index.php?c=admin&a=deleteRef">
                         <input type="hidden" name="table" value="industries">
                         <input type="hidden" name="id" value="<?= $s['id'] ?>">
-                        <button class="delete">Delete</button>
+                        <button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
                       </form>
                     </div></td>
                   </tr>
@@ -167,34 +170,6 @@
         </div>
       </div>
 
-      <div class="admin-panel" id="panel-locations" style="display:none;">
-        <div class="dashboard-table-card">
-          <div class="dashboard-table-header"><h2>Locations</h2><span style="font-size:13px;color:var(--clr-text-gray);"><?=count($data['locations'])?></span></div>
-          <div style="overflow-x:auto;">
-            <table class="dashboard-table">
-              <thead><tr><th>#</th><th>Location</th><th>Used By Jobs</th><th>Actions</th></tr></thead>
-              <tbody>
-              <?php foreach($data['locations'] as $s): ?>
-                  <tr>
-                    <td><?= $s['id'] ?></td>
-                    <td><?= htmlspecialchars($s['name']) ?></td>
-                    <td><span class="status-badge <?= $s['is_active'] ? 'active' : 'inactive' ?>">
-                      <?= $s['is_active'] ? 'Active' : 'Inactive' ?></span></td>
-                    <td><div class="table-actions">
-                      <button data-modal="add-entry-modal" data-edit-id="<?= $s['id'] ?>" 
-                              data-edit-name="<?= htmlspecialchars($s['name']) ?>">Edit</button>
-                      <form method="POST" action="index.php?c=admin&a=deleteRef">
-                        <input type="hidden" name="table" value="locations">
-                        <input type="hidden" name="id" value="<?= $s['id'] ?>">
-                        <button class="delete">Delete</button>
-                      </form>
-                    </div></td>
-                  </tr>
-                <?php endforeach; ?>              
-              </tbody>
-            </table>
-          </div>
-        </div>
       </div>
 
       <div class="admin-panel" id="panel-employment" style="display:none;">
@@ -208,15 +183,16 @@
                   <tr>
                     <td><?= $s['id'] ?></td>
                     <td><?= htmlspecialchars($s['name']) ?></td>
-                    <td><span class="status-badge <?= $s['is_active'] ? 'active' : 'inactive' ?>">
-                      <?= $s['is_active'] ? 'Active' : 'Inactive' ?></span></td>
+                    <!-- FUTURE CHANGELOG: Backend team needs to populate Used By Jobs count here -->
+                    <td>0</td>
                     <td><div class="table-actions">
-                      <button data-modal="add-entry-modal" data-edit-id="<?= $s['id'] ?>" 
-                              data-edit-name="<?= htmlspecialchars($s['name']) ?>">Edit</button>
+                      <button data-modal="add-modal" data-edit-id="<?= $s['id'] ?>" 
+                              data-edit-name="<?= htmlspecialchars($s['name']) ?>"
+                              data-edit-table="employment_types" class="edit-btn" title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
                       <form method="POST" action="index.php?c=admin&a=deleteRef">
-                        <input type="hidden" name="table" value="employment">
+                        <input type="hidden" name="table" value="employment_types">
                         <input type="hidden" name="id" value="<?= $s['id'] ?>">
-                        <button class="delete">Delete</button>
+                        <button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
                       </form>
                     </div></td>
                   </tr>
@@ -238,15 +214,16 @@
                   <tr>
                     <td><?= $s['id'] ?></td>
                     <td><?= htmlspecialchars($s['name']) ?></td>
-                    <td><span class="status-badge <?= $s['is_active'] ? 'active' : 'inactive' ?>">
-                      <?= $s['is_active'] ? 'Active' : 'Inactive' ?></span></td>
+                    <!-- FUTURE CHANGELOG: Backend team needs to populate Used By Jobs count here -->
+                    <td>0</td>
                     <td><div class="table-actions">
-                      <button data-modal="add-entry-modal" data-edit-id="<?= $s['id'] ?>" 
-                              data-edit-name="<?= htmlspecialchars($s['name']) ?>">Edit</button>
+                      <button data-modal="add-modal" data-edit-id="<?= $s['id'] ?>" 
+                              data-edit-name="<?= htmlspecialchars($s['name']) ?>"
+                              data-edit-table="job_levels" class="edit-btn" title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
                       <form method="POST" action="index.php?c=admin&a=deleteRef">
-                        <input type="hidden" name="table" value="levels">
+                        <input type="hidden" name="table" value="job_levels">
                         <input type="hidden" name="id" value="<?= $s['id'] ?>">
-                        <button class="delete">Delete</button>
+                        <button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
                       </form>
                     </div></td>
                   </tr>
@@ -262,21 +239,22 @@
           <div class="dashboard-table-header"><h2>Salary Range</h2><span style="font-size:13px;color:var(--clr-text-gray);"><?=count($data['salary'])?></span></div>
           <div style="overflow-x:auto;">
             <table class="dashboard-table">
-              <thead><tr><th>#</th><th>Salary Range/th><th>Used By Jobs</th><th>Actions</th></tr></thead>
+              <thead><tr><th>#</th><th>Salary Range</th><th>Used By Jobs</th><th>Actions</th></tr></thead>
               <tbody>
               <?php foreach($data['salary'] as $s): ?>
                   <tr>
                     <td><?= $s['id'] ?></td>
                     <td><?= htmlspecialchars($s['name']) ?></td>
-                    <td><span class="status-badge <?= $s['is_active'] ? 'active' : 'inactive' ?>">
-                      <?= $s['is_active'] ? 'Active' : 'Inactive' ?></span></td>
+                    <!-- FUTURE CHANGELOG: Backend team needs to populate Used By Jobs count here -->
+                    <td>0</td>
                     <td><div class="table-actions">
-                      <button data-modal="add-entry-modal" data-edit-id="<?= $s['id'] ?>" 
-                              data-edit-name="<?= htmlspecialchars($s['name']) ?>">Edit</button>
+                      <button data-modal="add-modal" data-edit-id="<?= $s['id'] ?>" 
+                              data-edit-name="<?= htmlspecialchars($s['name']) ?>"
+                              data-edit-table="salary_ranges" class="edit-btn" title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
                       <form method="POST" action="index.php?c=admin&a=deleteRef">
-                        <input type="hidden" name="table" value="salary">
+                        <input type="hidden" name="table" value="salary_ranges">
                         <input type="hidden" name="id" value="<?= $s['id'] ?>">
-                        <button class="delete">Delete</button>
+                        <button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
                       </form>
                     </div></td>
                   </tr>
@@ -294,21 +272,17 @@
   <div class="modal-overlay" id="add-modal">
     <div class="modal">
       <div class="modal-header">
-        <h2>Add New Entry</h2>
+        <h2 id="modal-title">Add New Entry</h2>
         <button class="modal-close" aria-label="Close modal">&times;</button>
       </div>
-      <form action="<?= $baseUrl ?>/submit" method="POST" id="add-entry-form">
+      <form action="<?= $baseUrl ?>/index.php?c=admin&a=addRef" method="POST" id="add-entry-form">
+        <input type="hidden" name="id" id="entry-id">
+        <input type="hidden" name="table" id="entry-table" value="job_categories">
         <div class="form-group">
           <label for="entry-name">Name</label>
           <input type="text" class="form-control" name="entry_name" placeholder="Enter name" required id="entry-name">
         </div>
-        <div class="form-group">
-          <label for="entry-status">Status</label>
-          <select class="form-control" name="entry_status" id="entry-status">
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-          </select>
-        </div>
+        <!-- BEFORE STATUS REMOVAL: The status dropdown was removed here because is_active does not exist in DB -->
         <div style="display:flex;gap:var(--space-md);justify-content:flex-end;margin-top:var(--space-lg);">
           <button type="button" class="btn btn-outline modal-close">Cancel</button>
           <button type="submit" class="btn btn-primary">Save Entry</button>
@@ -317,6 +291,7 @@
     </div>
   </div>
 
+  <script src="<?= $baseUrl ?>/script.js"></script>
   <script src="<?= $baseUrl ?>/script.js"></script>
   <script>
     // Show/hide panels on tab click
@@ -327,7 +302,56 @@
         tab.classList.add('active');
         var panel = document.querySelector('#panel-' + tab.getAttribute('data-tab'));
         if (panel) { panel.style.display = 'block'; panel.classList.add('active'); }
+        
+        // Update the hidden table input for new entries when switching tabs
+        var activeTab = tab.getAttribute('data-tab');
+        var tableMap = {
+            'categories': 'job_categories',
+            'titles': 'job_titles',
+            'skills': 'skills',
+            'industries': 'industries',
+            'employment': 'employment_types',
+            'levels': 'job_levels',
+            'salary': 'salary_ranges'
+        };
+        document.getElementById('entry-table').value = tableMap[activeTab];
       });
+    });
+
+    // Handle Edit Buttons
+    document.querySelectorAll('.edit-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var id = this.getAttribute('data-edit-id');
+            var name = this.getAttribute('data-edit-name');
+            var table = this.getAttribute('data-edit-table');
+            
+            document.getElementById('modal-title').innerText = 'Edit Entry';
+            document.getElementById('add-entry-form').action = "<?= $baseUrl ?>/index.php?c=admin&a=updateRef";
+            document.getElementById('entry-id').value = id;
+            document.getElementById('entry-table').value = table;
+            document.getElementById('entry-name').value = name;
+            
+            // Show modal (assuming script.js handles the data-modal click, but we manually trigger it if needed)
+            document.getElementById('add-modal').classList.add('active');
+        });
+    });
+
+    // Handle Add New Button
+    document.getElementById('add-new-btn').addEventListener('click', function() {
+        document.getElementById('modal-title').innerText = 'Add New Entry';
+        document.getElementById('add-entry-form').action = "<?= $baseUrl ?>/index.php?c=admin&a=addRef";
+        document.getElementById('entry-id').value = '';
+        document.getElementById('entry-name').value = '';
+        // The table hidden input is already set by the tab switching logic
+        
+        document.getElementById('add-modal').classList.add('active');
+    });
+
+    // Handle modal close
+    document.querySelectorAll('.modal-close').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            document.getElementById('add-modal').classList.remove('active');
+        });
     });
   </script>
 </body>

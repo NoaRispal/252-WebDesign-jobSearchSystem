@@ -1,3 +1,12 @@
+<!-- BEFORE $user FIX: $user was expected from an employer controller that doesn't exist yet. -->
+<?php if (!isset($user)):
+  $fullNameParts = explode(' ', $_SESSION['full_name'] ?? 'Employer User', 2);
+  $user = [
+    'first_name' => $fullNameParts[0] ?? 'Employer',
+    'last_name'  => $fullNameParts[1] ?? '',
+    'email'      => $_SESSION['email'] ?? ($_SESSION['full_name'] ?? 'employer') . '@company.com',
+  ];
+endif; ?>
 <!-- ====== DASHBOARD LAYOUT ====== -->
   <div class="dashboard-layout" id="dashboard-layout">
     <!-- Sidebar -->
@@ -25,7 +34,8 @@
         <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg> My Jobs</a>
         <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Profile</a>
         <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg> Settings</a>
-        <a href="<?= $baseUrl ?>/login" style="margin-top:var(--space-xl);color:rgba(255,255,255,0.4);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Logout</a>
+        <!-- BEFORE LOGOUT FIX: href pointed to /login without clearing session -->
+        <a href="<?= $baseUrl ?>/logout" style="margin-top:var(--space-xl);color:rgba(255,255,255,0.4);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Logout</a>
       </nav>
     </aside>
 
@@ -218,6 +228,7 @@
         </div>
 
         <!-- Section D: Job Description -->
+        <!-- BEFORE FIX:
         <div class="job-form-card" id="description-card">
           <h2>D. Job Description</h2>
           <div class="form-group">
@@ -237,6 +248,17 @@
           <div class="form-group">
             <label for="additional-notes">Additional Notes</label>
             <textarea class="form-control" name="additional_notes" placeholder="Any additional information..." rows="3" id="additional-notes"></textarea>
+          </div>
+        </div>
+        -->
+        <div class="job-form-card" id="description-card">
+          <h2>D. Job Description</h2>
+          <div class="form-group">
+            <label for="job-description">Job Description *</label>
+            <p style="font-size: 13px; color: var(--clr-text-gray); margin-bottom: 8px;">Please provide a comprehensive description of the role, including responsibilities, qualifications, and any preferred skills or additional notes.</p>
+            <!-- BACKEND: Consider integrating a Rich Text Editor like Quill, TinyMCE, or CKEditor here -->
+            <textarea class="form-control" name="job_description" placeholder="Write a detailed job description..." rows="12" required id="job-description"><?= isset($job) ? htmlspecialchars($job['Job_Description']) : '' ?></textarea>
+            <span class="form-error">Job description is required</span>
           </div>
         </div>
 
@@ -291,6 +313,7 @@
               </select>
               <span class="form-error">Minimum degree is required</span>
             </div>
+            <!-- BEFORE FIX:
             <div class="form-group">
               <label for="min-experience">Minimum Years of Experience *</label>
               <select class="form-control" name="min_experience" required id="min-experience">
@@ -301,6 +324,12 @@
                   </option>
                 <?php endforeach; ?>
               </select>
+              <span class="form-error">Minimum experience is required</span>
+            </div>
+            -->
+            <div class="form-group">
+              <label for="min-experience">Minimum Years of Experience *</label>
+              <input type="number" class="form-control" name="min_experience" placeholder="e.g., 2" min="0" required id="min-experience" value="<?= isset($job) ? htmlspecialchars($job['Min_Years_Experience']) : '' ?>">
               <span class="form-error">Minimum experience is required</span>
             </div>
           </div>

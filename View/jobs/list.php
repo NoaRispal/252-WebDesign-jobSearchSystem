@@ -54,6 +54,7 @@
                  </option>
                &lt;?php endforeach; ?&gt;
           -->
+          <!-- BEFORE FIX:
           <div class="sidebar-section">
             <h3>Location</h3>
             <select class="sidebar-select" id="sidebar-location">
@@ -64,6 +65,30 @@
               <option value="texas">Texas, USA</option>
               <option value="florida">Florida, USA</option>
             </select>
+          </div>
+          -->
+          <div class="sidebar-section">
+            <h3>Location</h3>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <select class="sidebar-select" name="country" id="sidebar-country">
+                <option value="">Choose Country</option>
+                <option value="usa">USA</option>
+                <option value="canada">Canada</option>
+                <option value="uk">UK</option>
+              </select>
+              <select class="sidebar-select" name="city" id="sidebar-city">
+                <option value="">Choose City</option>
+                <option value="new-york">New York</option>
+                <option value="los-angeles">Los Angeles</option>
+                <option value="boston">Boston</option>
+              </select>
+              <select class="sidebar-select" name="district" id="sidebar-district">
+                <option value="">Choose District</option>
+                <option value="manhattan">Manhattan</option>
+                <option value="brooklyn">Brooklyn</option>
+                <option value="queens">Queens</option>
+              </select>
+            </div>
           </div>
 
           <!-- Category -->
@@ -117,6 +142,47 @@
               </div>
             </div>
             <button class="btn-show-more" onclick="toggleShowMore(this)" id="category-show-more">Show More</button>
+          </div>
+
+          <!-- Required Skills -->
+          <!-- BACKEND: Populate from DB 'skills' table. Search functionality is handled via JS matching 'data-skill' attribute -->
+          <div class="sidebar-section">
+            <h3>Required Skills</h3>
+            <div class="sidebar-search" style="margin-bottom: var(--space-sm);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              <input type="text" placeholder="Search skills..." id="skills-search-input">
+            </div>
+            <div class="checkbox-group" id="skills-filter-list" style="max-height: 180px; overflow-y: auto; padding-right: 5px;">
+              <div class="checkbox-item" data-skill="javascript">
+                <label><input type="checkbox" name="skills[]" value="javascript"> JavaScript</label>
+                <span class="checkbox-count">42</span>
+              </div>
+              <div class="checkbox-item" data-skill="python">
+                <label><input type="checkbox" name="skills[]" value="python"> Python</label>
+                <span class="checkbox-count">38</span>
+              </div>
+              <div class="checkbox-item" data-skill="react">
+                <label><input type="checkbox" name="skills[]" value="react"> React</label>
+                <span class="checkbox-count">35</span>
+              </div>
+              <div class="checkbox-item" data-skill="project management">
+                <label><input type="checkbox" name="skills[]" value="project-management"> Project Management</label>
+                <span class="checkbox-count">28</span>
+              </div>
+              <div class="checkbox-item" data-skill="communication">
+                <label><input type="checkbox" name="skills[]" value="communication"> Communication</label>
+                <span class="checkbox-count">25</span>
+              </div>
+              <div class="checkbox-item" data-skill="html css">
+                <label><input type="checkbox" name="skills[]" value="html-css"> HTML/CSS</label>
+                <span class="checkbox-count">20</span>
+              </div>
+              <div class="checkbox-item" data-skill="ui ux design">
+                <label><input type="checkbox" name="skills[]" value="ui-ux"> UI/UX Design</label>
+                <span class="checkbox-count">18</span>
+              </div>
+            </div>
+            <p id="skills-no-results" style="display: none; font-size: 13px; color: var(--clr-text-gray); text-align: center; margin-top: 10px;">No skills found.</p>
           </div>
 
           <!-- Job Type -->
@@ -212,6 +278,7 @@
           </div>
 
           <!-- Salary -->
+          <!-- BEFORE FIX:
           <div class="sidebar-section">
             <h3>Salary</h3>
             <div class="salary-range">
@@ -221,6 +288,16 @@
                 <button class="btn btn-primary btn-sm" id="salary-apply-btn">Apply</button>
               </div>
             </div>
+          </div>
+          -->
+          <div class="sidebar-section">
+            <h3>Salary Range</h3>
+            <div class="salary-inputs" style="display: flex; gap: var(--space-sm); margin-bottom: var(--space-md); align-items: center;">
+              <input type="number" name="salary_min" min="0" placeholder="Min $" class="form-control" style="width: 100%; padding: 8px;">
+              <span style="color: var(--clr-text-gray);">-</span>
+              <input type="number" name="salary_max" min="0" placeholder="Max $" class="form-control" style="width: 100%; padding: 8px;">
+            </div>
+            <button class="btn btn-primary btn-sm" id="salary-apply-btn" style="width: 100%;">Apply Filter</button>
           </div>
 
           <!-- Tags -->

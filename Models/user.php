@@ -47,11 +47,26 @@ class User {
      * Count users by their specific role
      * Used for Admin Dashboard statistics (Employers / Job Seekers)
      */
+    // public function countByRole($role) {
+    //     // Valid roles according to system specifications: employer, job_seeker, admin 
+    //     $query = "SELECT COUNT(*) as total 
+    //               FROM " . $this->table_name . " 
+    //               WHERE role = :role";
+
+    //     $stmt = $this->db->prepare($query);
+    //     $stmt->bindParam(':role', $role);
+    //     $stmt->execute();
+
+    //     $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    //     return $row['total'] ?? 0;
+    // }
+
     public function countByRole($role) {
         // Valid roles according to system specifications: employer, job_seeker, admin 
         $query = "SELECT COUNT(*) as total 
-                  FROM " . $this->table_name . " 
-                  WHERE role = :role";
+                  FROM " . $this->table_name . " u
+                  JOIN Roles r ON u.Role_ID = r.Role_ID
+                  WHERE r.Role_Name = :role";
 
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':role', $role);
@@ -60,6 +75,7 @@ class User {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return $row['total'] ?? 0;
     }
+
 
     public function create($data) {
         $query = "INSERT INTO " . $this->table_name . " 

@@ -38,6 +38,12 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // ---- Delete Confirmations ----
   initDeleteConfirm();
+  
+  // ---- Responsive Card Expand (Mobile) ----
+  initCardExpand();
+  
+  // ---- Skills Sidebar Filter ----
+  initSkillsFilter();
 });
 
 /* ============================================
@@ -413,5 +419,68 @@ function initDeleteConfirm() {
         e.stopPropagation();
       }
     });
+  });
+}
+
+/* ============================================
+   RESPONSIVE CARD EXPAND/COLLAPSE
+   Toggles .is-expanded on dashboard table rows
+   for the mobile stacked-card pattern.
+   Only active on screens < 768px.
+   ============================================ */
+function initCardExpand() {
+  var rows = document.querySelectorAll('.dashboard-table tbody tr');
+  if (!rows.length) return;
+
+  var mobileQuery = window.matchMedia('(max-width: 768px)');
+
+  rows.forEach(function(row) {
+    row.addEventListener('click', function(e) {
+      // Only toggle on mobile
+      if (!mobileQuery.matches) return;
+
+      // Don't toggle if clicking inside action buttons, links, or forms
+      var target = e.target;
+      if (target.closest('.table-actions') || target.closest('a') || target.closest('button') || target.closest('form')) {
+        return;
+      }
+
+      row.classList.toggle('is-expanded');
+    });
+  });
+}
+
+/* ============================================
+   SKILLS FILTER (Sidebar)
+   ============================================ */
+function initSkillsFilter() {
+  const searchInput = document.getElementById('skills-search-input');
+  const skillsList = document.getElementById('skills-filter-list');
+  const noResults = document.getElementById('skills-no-results');
+  
+  if (!searchInput || !skillsList || !noResults) return;
+
+  const skillItems = skillsList.querySelectorAll('.checkbox-item');
+
+  searchInput.addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase().trim();
+    let matchCount = 0;
+
+    skillItems.forEach(item => {
+      const skillName = item.querySelector('label').textContent.toLowerCase();
+      
+      if (skillName.includes(searchTerm)) {
+        item.style.display = 'flex'; // Restore default flex display
+        matchCount++;
+      } else {
+        item.style.display = 'none';
+      }
+    });
+
+    if (matchCount === 0) {
+      noResults.style.display = 'block';
+    } else {
+      noResults.style.display = 'none';
+    }
   });
 }
