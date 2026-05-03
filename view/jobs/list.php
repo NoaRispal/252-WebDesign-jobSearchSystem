@@ -1,6 +1,6 @@
 <!-- ====== PAGE HERO ====== -->
 <section class="page-hero" id="page-hero">
-  <h1>Jobs</h1>
+  <h1>Job Search</h1>
 </section>
 
 <!-- ====== JOBS LAYOUT ====== -->
@@ -15,13 +15,12 @@
     <div class="jobs-layout">
       <!-- ====== LEFT SIDEBAR ====== -->
       <aside class="jobs-sidebar" id="jobs-sidebar">
-        <!-- Search by Job Title -->
+        <!-- Search by Keywords -->
         <div class="sidebar-section">
-          <h3>Search by Job Title</h3>
-          <div class="sidebar-search">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-            <input type="text" placeholder="Job title or company" id="sidebar-search-input">
-          </div>
+          <h3>Search by Keywords</h3>
+          <div class="sidebar-search"><input type="text" placeholder="Job Title or Description" id="keyword-input"></div>
+          <div id="keyword-tags" style="margin:10px 0;display:flex;flex-wrap:wrap;gap:8px;"></div>
+          <p style="font-size:13px;color:var(--clr-text-gray);">(Press Enter to add new keywords)</p>
         </div>
 
         <!-- Location -->
@@ -52,81 +51,60 @@
         <!-- Category -->
         <div class="sidebar-section">
           <h3>Category</h3>
-          <div class="checkbox-group" id="category-filters">
+          <div class="checkbox-group" style="max-height: 180px; overflow-y: auto; padding-right: 5px;">
             <div class="checkbox-item">
               <label><input type="checkbox" name="category" value="commerce"> Commerce</label>
-              <span class="checkbox-count">10</span>
             </div>
             <div class="checkbox-item">
               <label><input type="checkbox" name="category" value="telecomunications"> Telecomunications</label>
-              <span class="checkbox-count">10</span>
             </div>
             <div class="checkbox-item">
               <label><input type="checkbox" name="category" value="hotels-tourism"> Hotels & Tourism</label>
-              <span class="checkbox-count">10</span>
             </div>
             <div class="checkbox-item">
               <label><input type="checkbox" name="category" value="education"> Education</label>
-              <span class="checkbox-count">10</span>
             </div>
             <div class="checkbox-item">
               <label><input type="checkbox" name="category" value="financial-services"> Financial Services</label>
-              <span class="checkbox-count">10</span>
             </div>
             <div class="checkbox-item hidden-item" style="display:none;">
               <label><input type="checkbox" name="category" value="construction"> Construction</label>
-              <span class="checkbox-count">10</span>
             </div>
             <div class="checkbox-item hidden-item" style="display:none;">
               <label><input type="checkbox" name="category" value="media"> Media</label>
-              <span class="checkbox-count">10</span>
             </div>
             <div class="checkbox-item hidden-item" style="display:none;">
               <label><input type="checkbox" name="category" value="transport"> Transport</label>
-              <span class="checkbox-count">10</span>
             </div>
           </div>
-          <button class="btn-show-more" onclick="toggleShowMore(this)" id="category-show-more">Show More</button>
         </div>
 
         <!-- Required Skills -->
         <div class="sidebar-section">
           <h3>Required Skills</h3>
-          <div class="sidebar-search" style="margin-bottom: var(--space-sm);">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-            <input type="text" placeholder="Search skills..." id="skills-search-input">
-          </div>
           <div class="checkbox-group" id="skills-filter-list" style="max-height: 180px; overflow-y: auto; padding-right: 5px;">
             <div class="checkbox-item" data-skill="javascript">
               <label><input type="checkbox" name="skills[]" value="javascript"> JavaScript</label>
-              <span class="checkbox-count">42</span>
             </div>
             <div class="checkbox-item" data-skill="python">
               <label><input type="checkbox" name="skills[]" value="python"> Python</label>
-              <span class="checkbox-count">38</span>
             </div>
             <div class="checkbox-item" data-skill="react">
               <label><input type="checkbox" name="skills[]" value="react"> React</label>
-              <span class="checkbox-count">35</span>
             </div>
             <div class="checkbox-item" data-skill="project management">
               <label><input type="checkbox" name="skills[]" value="project-management"> Project Management</label>
-              <span class="checkbox-count">28</span>
             </div>
             <div class="checkbox-item" data-skill="communication">
               <label><input type="checkbox" name="skills[]" value="communication"> Communication</label>
-              <span class="checkbox-count">25</span>
             </div>
             <div class="checkbox-item" data-skill="html css">
               <label><input type="checkbox" name="skills[]" value="html-css"> HTML/CSS</label>
-              <span class="checkbox-count">20</span>
             </div>
             <div class="checkbox-item" data-skill="ui ux design">
               <label><input type="checkbox" name="skills[]" value="ui-ux"> UI/UX Design</label>
-              <span class="checkbox-count">18</span>
             </div>
           </div>
-          <p id="skills-no-results" style="display: none; font-size: 13px; color: var(--clr-text-gray); text-align: center; margin-top: 10px;">No skills found.</p>
         </div>
 
         <!-- Job Type -->
@@ -135,23 +113,18 @@
           <div class="checkbox-group" id="job-type-filters">
             <div class="checkbox-item">
               <label><input type="checkbox" name="job_type" value="full-time"> Full Time</label>
-              <span class="checkbox-count">10</span>
             </div>
             <div class="checkbox-item">
               <label><input type="checkbox" name="job_type" value="part-time"> Part Time</label>
-              <span class="checkbox-count">10</span>
             </div>
             <div class="checkbox-item">
               <label><input type="checkbox" name="job_type" value="freelance"> Freelance</label>
-              <span class="checkbox-count">10</span>
             </div>
             <div class="checkbox-item">
               <label><input type="checkbox" name="job_type" value="seasonal"> Seasonal</label>
-              <span class="checkbox-count">10</span>
             </div>
             <div class="checkbox-item">
               <label><input type="checkbox" name="job_type" value="fixed-price"> Fixed-Price</label>
-              <span class="checkbox-count">10</span>
             </div>
           </div>
         </div>
@@ -162,15 +135,12 @@
           <div class="checkbox-group" id="job-level-filters">
             <div class="checkbox-item">
               <label><input type="checkbox" name="job_level" value="junior"> Junior</label>
-              <span class="checkbox-count">10</span>
             </div>
             <div class="checkbox-item">
               <label><input type="checkbox" name="job_level" value="mid"> Mid</label>
-              <span class="checkbox-count">10</span>
             </div>
             <div class="checkbox-item">
               <label><input type="checkbox" name="job_level" value="senior"> Senior</label>
-              <span class="checkbox-count">10</span>
             </div>
           </div>
         </div>
@@ -181,42 +151,12 @@
           <div class="checkbox-group" id="work-arrangement-filters">
             <div class="checkbox-item">
               <label><input type="checkbox" name="work_arrangement" value="onsite"> Onsite</label>
-              <span class="checkbox-count">10</span>
             </div>
             <div class="checkbox-item">
               <label><input type="checkbox" name="work_arrangement" value="remote"> Remote</label>
-              <span class="checkbox-count">10</span>
             </div>
             <div class="checkbox-item">
               <label><input type="checkbox" name="work_arrangement" value="hybrid"> Hybrid</label>
-              <span class="checkbox-count">10</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Date Posted -->
-        <div class="sidebar-section">
-          <h3>Date Posted</h3>
-          <div class="checkbox-group" id="date-filters">
-            <div class="checkbox-item">
-              <label><input type="radio" name="date_posted" value="all" checked> All</label>
-              <span class="checkbox-count">10</span>
-            </div>
-            <div class="checkbox-item">
-              <label><input type="radio" name="date_posted" value="last-hour"> Last Hour</label>
-              <span class="checkbox-count">10</span>
-            </div>
-            <div class="checkbox-item">
-              <label><input type="radio" name="date_posted" value="last-24h"> Last 24 Hours</label>
-              <span class="checkbox-count">10</span>
-            </div>
-            <div class="checkbox-item">
-              <label><input type="radio" name="date_posted" value="last-7d"> Last 7 Days</label>
-              <span class="checkbox-count">10</span>
-            </div>
-            <div class="checkbox-item">
-              <label><input type="radio" name="date_posted" value="last-30d"> Last 30 Days</label>
-              <span class="checkbox-count">10</span>
             </div>
           </div>
         </div>
@@ -229,43 +169,29 @@
             <span style="color: var(--clr-text-gray);">-</span>
             <input type="number" name="salary_max" min="0" placeholder="Max $" class="form-control" style="width: 100%; padding: 8px;">
           </div>
-          <button class="btn btn-primary btn-sm" id="salary-apply-btn" style="width: 100%;">Apply Filter</button>
         </div>
 
-        <!-- Tags -->
+        <!-- Sort By -->
         <div class="sidebar-section">
-          <h3>Tags</h3>
-          <div class="tags-cloud" id="tags-cloud">
-            <span class="tag-item">engineering</span>
-            <span class="tag-item">design</span>
-            <span class="tag-item">ui/ux</span>
-            <span class="tag-item">marketing</span>
-            <span class="tag-item">management</span>
-            <span class="tag-item">soft</span>
-            <span class="tag-item">construction</span>
+          <h3>Sort By</h3>
+          <div class="jobs-sort">
+            <select id="sort-select">
+              <option value="latest">Latest</option>
+              <option value="salary-asc">Salary (Low to High)</option>
+              <option value="salary-desc">Salary (High to Low)</option>
+              <option value="title-asc">Job Title (A-Z)</option>
+              <option value="title-desc">Job Title (Z-A)</option>
+            </select>
           </div>
         </div>
 
-        <!-- Hiring Banner -->
-        <div class="hiring-banner" id="hiring-banner">
-          <h3>WE ARE HIRING</h3>
-          <p>Apply Today!</p>
-        </div>
+        <button class="btn btn-primary btn-sm" id="salary-apply-btn" style="width: 100%;">Apply Filter</button>
       </aside>
 
       <!-- ====== RIGHT - JOB LISTINGS ====== -->
       <div class="jobs-content" id="jobs-content">
         <div class="jobs-results-header">
           <span class="jobs-results-count">Showing 6-6 of 10 results</span>
-          <div class="jobs-sort">
-            <select id="sort-select">
-              <option value="latest">Sort by latest</option>
-              <option value="salary-asc">Salary (Low to High)</option>
-              <option value="salary-desc">Salary (High to Low)</option>
-              <option value="title-asc">Title (A-Z)</option>
-              <option value="title-desc">Title (Z-A)</option>
-            </select>
-          </div>
         </div>
 
         <!-- Job Card 1 -->
@@ -418,41 +344,6 @@
           <a href="#">2</a>
           <a href="#" class="next-btn">Next <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></a>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ====== TOP COMPANY ====== -->
-<section class="section" id="top-company" style="background:var(--clr-bg-light);">
-  <div class="container">
-    <h2 class="section-title">Top Company</h2>
-    <p class="section-subtitle">Browse opportunities across a wide range of industries and find the perfect fit for your career</p>
-
-    <div class="top-companies-grid">
-      <div class="company-card">
-        <div class="company-card-logo">📸</div>
-        <h3>Instagram</h3>
-        <p>Discover exciting roles in the fast-growing commerce industry, from retail management to supply chain operations</p>
-        <a href="#" class="open-jobs">8 open jobs</a>
-      </div>
-      <div class="company-card">
-        <div class="company-card-logo">🚗</div>
-        <h3>Tesla</h3>
-        <p>Connect with leading telco companies offering competitive packages and cutting-edge technology projects</p>
-        <a href="#" class="open-jobs">18 open jobs</a>
-      </div>
-      <div class="company-card">
-        <div class="company-card-logo">🍔</div>
-        <h3>McDonald's</h3>
-        <p>Find rewarding positions in the hospitality sector, from luxury hotels to adventure tourism operators</p>
-        <a href="#" class="open-jobs">12 open jobs</a>
-      </div>
-      <div class="company-card">
-        <div class="company-card-logo">🍎</div>
-        <h3>Apple</h3>
-        <p>Shape the future of learning with teaching, research, and administrative roles at top institutions</p>
-        <a href="#" class="open-jobs">9 open jobs</a>
       </div>
     </div>
   </div>

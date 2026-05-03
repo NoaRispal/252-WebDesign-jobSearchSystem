@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
   initFormValidation();
   initDeleteConfirm();
   initCardExpand();
-  initSkillsFilter();
+  initJobKeywordTags();
 });
 
 /* ============================================
@@ -367,20 +367,6 @@ function initFormValidation() {
 }
 
 /* ============================================
-   UTILITY: Show More / Less for checkboxes
-   ============================================ */
-function toggleShowMore(btn) {
-  var parent = btn.parentElement;
-  var hidden = parent.querySelectorAll('.hidden-item');
-  
-  hidden.forEach(function(item) {
-    item.style.display = item.style.display === 'none' ? 'flex' : 'none';
-  });
-  
-  btn.textContent = btn.textContent === 'Show More' ? 'Show Less' : 'Show More';
-}
-
-/* ============================================
    DELETE CONFIRMATION
    ============================================ */
 function initDeleteConfirm() {
@@ -424,36 +410,29 @@ function initCardExpand() {
 }
 
 /* ============================================
-   SKILLS FILTER (Sidebar)
-   ============================================ */
-function initSkillsFilter() {
-  const searchInput = document.getElementById('skills-search-input');
-  const skillsList = document.getElementById('skills-filter-list');
-  const noResults = document.getElementById('skills-no-results');
-  
-  if (!searchInput || !skillsList || !noResults) return;
+  JOB KEYWORD TAGS (view/jobs/list.php)
+  Handles adding and removing keyword tags.
+  ============================================ */
+function initJobKeywordTags() {
+  const input = document.getElementById('keyword-input');
+  const tags = document.getElementById('keyword-tags');
+  if (!input || !tags) return;
 
-  const skillItems = skillsList.querySelectorAll('.checkbox-item');
+  const keywords = new Set();
+  input.addEventListener('keyup', (e) => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
 
-  searchInput.addEventListener('input', function(e) {
-    const searchTerm = e.target.value.toLowerCase().trim();
-    let matchCount = 0;
+    const value = input.value.trim().toLowerCase();
+    input.value = '';
 
-    skillItems.forEach(item => {
-      const skillName = item.querySelector('label').textContent.toLowerCase();
-      
-      if (skillName.includes(searchTerm)) {
-        item.style.display = 'flex'; // Restore default flex display
-        matchCount++;
-      } else {
-        item.style.display = 'none';
-      }
-    });
+    if (!value || keywords.has(value)) return;
+    keywords.add(value);
 
-    if (matchCount === 0) {
-      noResults.style.display = 'block';
-    } else {
-      noResults.style.display = 'none';
-    }
+    const tag = document.createElement('span');
+    tag.className = 'tag-item';
+    tag.textContent = value;
+    tag.addEventListener('click', () => { keywords.delete(value); tag.remove(); });
+    tags.appendChild(tag);
   });
 }
