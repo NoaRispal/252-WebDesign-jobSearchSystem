@@ -78,7 +78,10 @@ CREATE TABLE Work_Arrangements (
 
 CREATE TABLE Salary_Ranges (
     Range_ID INT PRIMARY KEY AUTO_INCREMENT,
-    Range_Description VARCHAR(100) UNIQUE NOT NULL
+
+    -- TODO: Add CHECK constraint (MIN_SALARY <= Min_Salary <= Max_Salary <= MAX_SALARY)
+    Min_Salary INT NOT NULL,
+    Max_Salary INT NOT NULL
 );
 
 CREATE TABLE Salary_Types (
@@ -175,7 +178,8 @@ INSERT INTO Employers (User_ID, Company_Name, Company_Description, Website) VALU
 
 -- 4. Job Categories
 INSERT INTO Job_Categories (Category_Name) VALUES 
-('IT & Software'), ('Marketing'), ('Engineering'), ('Finance'), ('Healthcare');
+('IT & Software'), ('Marketing'), ('Engineering'), ('Finance'), ('Healthcare'),
+('Education'), ('Sales'), ('Customer Service'), ('Design'), ('Human Resources');
 
 -- 5. Job Titles
 INSERT INTO Job_Titles (Title_Name) VALUES 
@@ -191,11 +195,15 @@ INSERT INTO Countries (Country_Name) VALUES
 
 -- 8. Cities
 INSERT INTO Cities (Country_ID, City_Name) VALUES 
-(1, 'Bangkok'), (2, 'New York'), (3, 'London'), (4, 'Singapore City'), (5, 'Tokyo');
+(1, 'Bangkok'), (2, 'New York'), (3, 'London'), (4, 'Singapore City'), (5, 'Tokyo'),
+(1, 'Chiang Mai'), (2, 'Los Angeles'), (3, 'Manchester'), (4, 'Jurong'), (5, 'Osaka'),
+(1, 'Phuket'), (2, 'Chicago'), (3, 'Bristol'), (4, 'Tampines'), (5, 'Kyoto');
 
 -- 9. Districts
 INSERT INTO Districts (City_ID, District_Name) VALUES 
-(1, 'Sukhumvit'), (2, 'Manhattan'), (3, 'Westminster'), (4, 'Jurong East'), (5, 'Shibuya');
+(1, 'Sukhumvit'), (2, 'Manhattan'), (3, 'Westminster'), (4, 'Jurong East'), (5, 'Shibuya'),
+(6, 'Silom'), (7, 'Brooklyn'), (8, 'Camden'), (9, 'Tampines'), (10, 'Shinjuku'),
+(11, 'Chatuchak'), (12, 'Queens'), (13, 'Islington'), (14, 'Yishun'), (15, 'Ginza');
 
 -- 10. Employment Types
 INSERT INTO Employment_Types (Type_Name) VALUES 
@@ -210,8 +218,8 @@ INSERT INTO Work_Arrangements (Arrangement_Name) VALUES
 ('On-site'), ('Remote'), ('Hybrid'), ('Flexible'), ('Traveling');
 
 -- 13. Salary Ranges
-INSERT INTO Salary_Ranges (Range_Description) VALUES 
-('20k - 30k'), ('40k - 60k'), ('70k - 100k'), ('120k - 150k'), ('Negotiable');
+INSERT INTO Salary_Ranges (Min_Salary, Max_Salary) VALUES 
+(20000, 30000), (40000, 60000), (70000, 100000), (120000, 150000);
 
 -- 14. Salary_Types
 INSERT INTO Salary_Types (Type_Name) VALUES 
@@ -223,7 +231,8 @@ INSERT INTO Degree_Levels (Degree_Name) VALUES
 
 -- 16. Skills
 INSERT INTO Skills (Skill_Name) VALUES 
-('PHP'), ('SQL'), ('JavaScript'), ('Project Management'), ('Data Analysis');
+('PHP'), ('SQL'), ('JavaScript'), ('Project Management'), ('Data Analysis'),
+('Embedded Systems'), ('Digital Marketing'), ('Civil Engineering'), ('Financial Modeling'), ('Patient Care');
 
 -- 17. Proficiency Levels
 INSERT INTO Proficiency_Levels (Proficiency_Name) VALUES 
