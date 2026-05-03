@@ -15,12 +15,7 @@ $basePath = __DIR__ . '/../view/';
 $baseUrl = "/252-WebDesign-jobSearchSystem/public";
 $viewFile = '';
 
-// // $database = new Database();
-// // $db = $database->getConnection();
-// $db = 3;
-
 require_once __DIR__ . '/../config/database.php';
-
 $database = new Database();
 $db = $database->getConnection();
 

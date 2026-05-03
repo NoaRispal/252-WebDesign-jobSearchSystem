@@ -3,46 +3,19 @@
    ============================================ */
 
 document.addEventListener('DOMContentLoaded', function() {
-  // ---- Mobile Navigation ----
   initMobileNav();
-  
-  // ---- FAQ Accordion ----
   initFAQ();
-  
-  // ---- Salary Range Slider ----
   initSalarySlider();
-  
-  // ---- Sidebar Toggle (Jobs page) ----
   initSidebarToggle();
-  
-  // ---- Scroll Reveal Animations ----
   initScrollReveal();
-  
-  // ---- Dashboard Sidebar Toggle ----
   initDashboardSidebar();
-  
-  // ---- Admin Tabs ----
   initAdminTabs();
-  
-  // ---- Skills Management ----
   initSkillsManager();
-  
-  // ---- Role Selector (Auth) ----
   initRoleSelector();
-  
-  // ---- Modal ----
   initModals();
-  
-  // ---- Form Validation ----
   initFormValidation();
-  
-  // ---- Delete Confirmations ----
   initDeleteConfirm();
-  
-  // ---- Responsive Card Expand (Mobile) ----
   initCardExpand();
-  
-  // ---- Skills Sidebar Filter ----
   initSkillsFilter();
 });
 
