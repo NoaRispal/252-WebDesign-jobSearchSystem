@@ -29,10 +29,11 @@ switch($page) {
 
         if (!isset($urlParts[1])) $viewFile = 'jobs/list.php';
         elseif ($urlParts[1] === 'detail') {
-            $viewFile = 'jobs/detail.php';
-            if (isset($urlParts[2])) {
-                $_GET['id'] = $urlParts[2]; // Pass clean ID into GET if needed
-            }
+            $response = JobseekerController::getJobDetail($db);
+            require_once $basePath.'layouts/header.php';
+            require_once $basePath.'jobs/detail.php';
+            require_once $basePath.'layouts/footer.php';
+            exit();
         } elseif ($urlParts[1] === 'api') {
             header('Content-Type: application/json');
             $response = JobseekerController::handle_request($db, $urlParts);

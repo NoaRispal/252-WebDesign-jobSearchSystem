@@ -136,3 +136,48 @@ class JobSearchResults {
         ];
     }
 }
+
+class JobDetails {
+    public static function handle($db, $vacancyId) {
+        $sql = "SELECT jv.Posting_Date,
+                       jt.Title_Name,
+                       e.Company_Name,
+                       jc.Category_Name,
+                       et.Type_Name,
+                       sr.Min_Salary,
+                       sr.Max_Salary,
+                       c.Country_Name,
+                       ci.City_Name,
+                       d.District_Name,
+                       jv.Job_Description,
+                       jv.Benefits,
+                       jv.Min_Years_Experience,
+                       dl.Degree_Name
+                FROM Job_Vacancies jv
+                JOIN Job_Titles jt ON jv.Title_ID = jt.Title_ID
+                JOIN Employers e ON jv.Employer_ID = e.Employer_ID
+                JOIN Job_Categories jc ON jv.Category_ID = jc.Category_ID
+                JOIN Employment_Types et ON jv.Emp_Type_ID = et.Emp_Type_ID
+                JOIN Salary_Ranges sr ON jv.Salary_Range_ID = sr.Range_ID
+                JOIN Countries c ON jv.Country_ID = c.Country_ID
+                JOIN Cities ci  ON jv.City_ID = ci.City_ID
+                JOIN Degree_Levels dl ON jv.Min_Degree_ID = dl.Degree_ID
+                LEFT JOIN Districts d ON jv.District_ID = d.District_ID
+                WHERE jv.Vacancy_ID = ? AND jv.Is_Active = TRUE";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([$vacancyId]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$result) return;
+
+        $skillsSql = "SELECT s.Skill_Name, pl.Proficiency_Name
+                      FROM Job_Vacancy_Skills jvs
+                      JOIN Skills s ON jvs.Skill_ID = s.Skill_ID
+                      JOIN Proficiency_Levels pl ON jvs.Min_Proficiency_ID = pl.Proficiency_ID
+                      WHERE jvs.Vacancy_ID = ?
+                      ORDER BY s.Skill_Name";
+        $stmt = $db->prepare($skillsSql);
+        $stmt->execute([$vacancyId]);
+        $result['skills'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+}

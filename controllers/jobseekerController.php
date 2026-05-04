@@ -82,4 +82,9 @@ class JobseekerController {
         if ($urlParts[2] === 'get-districts') return JobseekerController::get_districts($db);
         if ($urlParts[2] === 'job-filter-form') return JobseekerController::get_jobs($db);
     }
+
+    static public function getJobDetail($db) {
+        if (!isset($_GET['id'])) return;
+        return JobDetails::handle($db, $_GET['id']);
+    }
 }

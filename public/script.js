@@ -535,6 +535,18 @@ function htmlEscape(text) {
   div.textContent = text;
   return div.innerHTML;
 }
+/* ============================================
+  GENERATE JOB CARD ICON (view/jobs/list.php)
+  ============================================ */
+function generateJobListIcon(title, index) {
+  const colors = ['#E8F5E9', '#FFF3E0', '#F3E5F5', '#E3F2FD', '#FCE4EC', '#E0F2F1'];
+  const textColors = ['#4CAF50', '#FF9800', '#9C27B0', '#2196F3', '#E91E63', '#009688'];
+
+  const initials = title.split(' ').map(word => word[0]).join('').toUpperCase().slice(0, 2);
+  const bgColor = colors[index % colors.length];
+  const textColor = textColors[index % textColors.length];
+  return `<div class="job-card-icon" style="background:${bgColor};color:${textColor};">${initials}</div>`;
+}
 
 /* ============================================
   RENDER JOB RESULT CARDS (view/jobs/list.php)
@@ -542,14 +554,7 @@ function htmlEscape(text) {
 function generateJobListResultContent(result) {
   const jobsContent = document.getElementById('job-result-content');
   jobsContent.innerHTML = '';
-
-  const colors = ['#E8F5E9', '#FFF3E0', '#F3E5F5', '#E3F2FD', '#FCE4EC', '#E0F2F1'];
-  const textColors = ['#4CAF50', '#FF9800', '#9C27B0', '#2196F3', '#E91E63', '#009688'];
   result.jobs.forEach((job, index) => {
-    const initials = job.Title_Name.split(' ').map(word => word[0]).join('').toUpperCase().slice(0, 2);
-    const bgColor = colors[index % colors.length];
-    const textColor = textColors[index % textColors.length];
-
     const jobCard = document.createElement('div');
     jobCard.className = 'job-card';
     jobCard.innerHTML = `
@@ -562,7 +567,7 @@ function generateJobListResultContent(result) {
         </button>
       </div>
       <div class="job-card-info">
-        <div class="job-card-icon" style="background:${bgColor};color:${textColor};">${initials}</div>
+        ${generateJobListIcon(job.Title_Name, job.Vacancy_ID)}
         <div>
           <h3 class="job-card-title">${htmlEscape(job.Title_Name)}</h3>
           <p class="job-card-company">${htmlEscape(job.Company_Name)}</p>
@@ -592,7 +597,7 @@ function generateJobListResultContent(result) {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
             </svg>
-            ${htmlEscape(job.City_Name)}${job.District_Name ? ', ' + htmlEscape(job.District_Name) : ''}, ${htmlEscape(job.Country_Name)}
+            ${htmlEscape(job.City_Name)}, ${htmlEscape(job.District_Name)}, ${htmlEscape(job.Country_Name)}
           </span>
         </div>
         <a href="/252-WebDesign-jobSearchSystem/public/jobs/detail?id=${job.Vacancy_ID}" class="btn-job-details">Job Details</a>
