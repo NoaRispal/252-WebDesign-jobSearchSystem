@@ -24,14 +24,21 @@ switch($page) {
         $viewFile = 'home/index.php';
         break;
     case 'jobs':
-        if (isset($urlParts[1]) && $urlParts[1] === 'detail') {
+        require_once __DIR__ . '/../controllers/jobseekerController.php';
+        require_once __DIR__ . '/../models/jobSearch.php';
+
+        if (!isset($urlParts[1])) $viewFile = 'jobs/list.php';
+        elseif ($urlParts[1] === 'detail') {
             $viewFile = 'jobs/detail.php';
             if (isset($urlParts[2])) {
                 $_GET['id'] = $urlParts[2]; // Pass clean ID into GET if needed
             }
-        } else {
-            $viewFile = 'jobs/list.php';
-        }
+        } elseif ($urlParts[1] === 'api') {
+            header('Content-Type: application/json');
+            $response = JobseekerController::handle_request($db, $urlParts);
+            echo json_encode($response);
+            exit();
+        } else $viewFile = 'errors/404.php';
         break;
     case 'about':
         $viewFile = 'pages/about.php';

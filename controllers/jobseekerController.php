@@ -1,62 +1,85 @@
 <?php
-public function searchJobs() {
-    $filters = [];
-
-    // Build filters from GET parameters
-    if (isset($_GET['q']) && !empty($_GET['q'])) {
-        $filters['keyword'] = trim($_GET['q']);
+class JobseekerController {
+    static public function get_countries($db) {
+        return (new JobSearchQuery($db, "Countries", "Country_ID", "Country_Name"))();
     }
 
-    if (isset($_GET['category']) && is_array($_GET['category'])) {
-        $filters['category_id'] = array_map('intval', $_GET['category']);
-    } elseif (isset($_GET['category']) && !empty($_GET['category'])) {
-        $filters['category_id'] = (int)$_GET['category'];
+    static public function get_categories($db) {
+        return (new JobSearchQuery($db, "Job_Categories", "Category_ID", "Category_Name"))();
     }
 
-    if (isset($_GET['country']) && !empty($_GET['country'])) {
-        $filters['country_id'] = (int)$_GET['country'];
+    static public function get_required_skills($db) {
+        return (new JobSearchQuery($db, "Skills", "Skill_ID", "Skill_Name"))();
     }
 
-    if (isset($_GET['city']) && !empty($_GET['city'])) {
-        $filters['city_id'] = (int)$_GET['city'];
+    static public function get_job_types($db) {
+        return (new JobSearchQuery($db, "Employment_Types", "Emp_Type_ID", "Type_Name"))();
     }
 
-    if (isset($_GET['job_type']) && is_array($_GET['job_type'])) {
-        $filters['employment_type'] = array_map('intval', $_GET['job_type']);
-    } elseif (isset($_GET['job_type']) && !empty($_GET['job_type'])) {
-        $filters['employment_type'] = (int)$_GET['job_type'];
+    static public function get_job_levels($db) {
+        return (new JobSearchQuery($db, "Job_Levels", "Level_ID", "Level_Name"))();
     }
 
-    if (isset($_GET['job_level']) && is_array($_GET['job_level'])) {
-        $filters['job_level'] = array_map('intval', $_GET['job_level']);
-    } elseif (isset($_GET['job_level']) && !empty($_GET['job_level'])) {
-        $filters['job_level'] = (int)$_GET['job_level'];
+    static public function get_work_arrangements($db) {
+        return (new JobSearchQuery($db, "Work_Arrangements", "Arrangement_ID", "Arrangement_Name"))();
     }
 
-    if (isset($_GET['salary_range']) && !empty($_GET['salary_range'])) {
-        $filters['salary_range'] = (int)$_GET['salary_range'];
+    static public function get_cities($db) {
+        if (!isset($_GET['country_id'])) return;
+        $query = new JobSearchQuery($db, "Cities", "City_ID", "City_Name");
+        $query->where_col_has_val("Country_ID", $_GET['country_id']);
+        return $query();
     }
 
-    if (isset($_GET['work_arrangement']) && is_array($_GET['work_arrangement'])) {
-        $filters['work_arrangement'] = array_map('intval', $_GET['work_arrangement']);
-    } elseif (isset($_GET['work_arrangement']) && !empty($_GET['work_arrangement'])) {
-        $filters['work_arrangement'] = (int)$_GET['work_arrangement'];
+    static public function get_districts($db) {
+        if (!isset($_GET['city_id'])) return;
+        $query = new JobSearchQuery($db, "Districts", "District_ID", "District_Name");
+        $query->where_col_has_val("City_ID", $_GET['city_id']);
+        return $query();
     }
 
-    if (isset($_GET['skills']) && is_array($_GET['skills'])) {
-        $filters['skill_ids'] = array_map('intval', $_GET['skills']);
+    static public function get_jobs($db) {
+        $params = [];
+
+        $params['keywords'] = [];
+        if (isset($_POST['keywords']) && is_array($_POST['keywords'])) {
+            foreach ($_POST['keywords'] as $k) {
+                $k = htmlspecialchars(trim($k));
+                if ($k !== '' && !in_array($k, $params['keywords'])) $params['keywords'][] = $k;
+            }
+        }
+
+        foreach(['country', 'city', 'district', 'salary_min', 'salary_max'] as $field) {
+            $params[$field] = null;
+            if (!isset($_POST[$field]) || $_POST[$field] === '') continue;
+            $params[$field] = (int)$_POST[$field];
+        }
+
+        foreach(['category', 'skills', 'job_type', 'job_level', 'work_arrangement'] as $field) {
+            $params[$field] = [];
+            if (!isset($_POST[$field]) || !is_array($_POST[$field])) continue;
+
+            foreach ($_POST[$field] as $val) {
+                $val = (int)$val;
+                if (!in_array($val, $params[$field])) $params[$field][] = $val;
+            }
+        }
+
+        $params["sort-select"] = "latest";
+        if (isset($_POST['sort-select']) && in_array($_POST['sort-select'], ["latest", "salary-asc", "salary-desc", "title-asc", "title-desc"])) {
+            $params["sort-select"] = $_POST['sort-select'];
+        }
+
+        $params["page"] = 1;
+        if (isset($_POST['page'])) $params["page"] = max($params["page"], (int)$_POST['page']);
+
+        return JobSearchResults::handle($db, $params);
     }
 
-    $filters['sort'] = isset($_GET['sort']) && !empty($_GET['sort'])
-        ? trim($_GET['sort'])
-        : 'latest';
-
-    $jobs = $this->jobSearch->searchJobs($filters);
-
-    return [
-        'success' => true,
-        'jobs' => $jobs,
-        'totalJobs' => count($jobs),
-        'filters' => $filters
-    ];
+    static public function handle_request($db, $urlParts) {
+        if (!isset($urlParts[2])) return;
+        if ($urlParts[2] === 'get-cities') return JobseekerController::get_cities($db);
+        if ($urlParts[2] === 'get-districts') return JobseekerController::get_districts($db);
+        if ($urlParts[2] === 'job-filter-form') return JobseekerController::get_jobs($db);
+    }
 }

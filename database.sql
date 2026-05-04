@@ -254,3 +254,26 @@ INSERT INTO Job_Vacancies (
 -- 19. Job Vacancy Skills
 INSERT INTO Job_Vacancy_Skills (Vacancy_ID, Skill_ID, Min_Proficiency_ID) VALUES 
 (1, 1, 4), (1, 2, 3), (2, 4, 3), (4, 5, 2), (5, 5, 4);
+
+-- Additional Job Vacancies (15 more entries)
+INSERT INTO Job_Vacancies (
+    Employer_ID, Title_ID, Category_ID, Emp_Type_ID, Industry_ID, Level_ID, 
+    Number_Of_Openings, Country_ID, City_ID, District_ID, Arrangement_ID, 
+    Salary_Range_ID, Salary_Type_ID, Benefits, Job_Description, Min_Degree_ID, 
+    Min_Years_Experience
+) VALUES 
+(1, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 3, 1, 'Health insurance, Stock options', 'Mid-level PHP Developer with Laravel experience.', 1, 3),
+(2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 'Remote work, Flexible hours', 'Junior Marketing Specialist for social media campaigns.', 1, 1),
+(3, 3, 3, 1, 3, 4, 1, 3, 3, 3, 3, 3, 1, 'On-site housing, Transportation', 'Senior Project Engineer for infrastructure projects.', 1, 7),
+(4, 4, 4, 3, 4, 2, 2, 4, 4, 4, 1, 2, 1, 'Performance bonus, Mentorship', 'Intermediate Financial Analyst for risk assessment.', 1, 2),
+(5, 5, 5, 1, 5, 3, 3, 5, 5, 5, 2, 4, 1, 'Medical coverage, Professional development', 'Experienced Nurse Practitioner for Tokyo medical center.', 1, 5),
+(1, 1, 1, 2, 1, 1, 1, 1, 6, 6, 2, 1, 1, 'Learning budget, Free tools', 'Junior PHP Developer for web applications.', 1, 0),
+(2, 2, 2, 1, 2, 3, 1, 2, 7, 7, 3, 3, 1, 'Annual raise, Conference tickets', 'Senior Marketing Manager for North America region.', 1, 6),
+(3, 3, 3, 3, 3, 2, 2, 3, 8, 8, 1, 2, 1, 'Relocation package, Visa support', 'Contract Project Engineer for bridge construction.', 1, 3),
+(4, 4, 4, 1, 4, 1, 1, 4, 9, 9, 2, 1, 1, 'Gym membership, Meal plans', 'Entry-level Financial Analyst for banking sector.', 1, 0),
+(5, 5, 5, 1, 5, 4, 2, 5, 10, 10, 3, 3, 1, 'Housing allowance, Insurance', 'Senior Nurse for Tokyo International Medical Center.', 1, 8),
+(1, 1, 1, 1, 1, 2, 2, 1, 11, 11, 1, 2, 1, 'Remote flexibility, Bonuses', 'Mid-level Backend Developer for fintech startup.', 1, 2),
+(2, 2, 2, 2, 2, 1, 1, 2, 12, 12, 2, 1, 1, 'Flexible schedule, Creative freedom', 'Junior Content Marketing Specialist.', 1, 1),
+(3, 3, 3, 1, 3, 3, 1, 3, 13, 13, 3, 3, 1, 'On-site meals, Transportation', 'Mid-level Structural Engineer for UK projects.', 1, 4),
+(4, 4, 4, 1, 4, 3, 1, 4, 14, 14, 1, 3, 1, 'Performance incentives, Training', 'Senior Financial Analyst for Singapore office.', 1, 5),
+(1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 2, 4, 1, 'Executive perks, Stock options', 'Principal Architect for enterprise solutions.', 1, 10);

@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', function() {
   initDeleteConfirm();
   initCardExpand();
   initJobKeywordTags();
+  initJobLocation();
+  initSubmitJobFilter();
 });
 
 /* ============================================
@@ -413,12 +415,12 @@ function initCardExpand() {
   JOB KEYWORD TAGS (view/jobs/list.php)
   Handles adding and removing keyword tags.
   ============================================ */
+const keywords = new Set();
 function initJobKeywordTags() {
   const input = document.getElementById('keyword-input');
   const tags = document.getElementById('keyword-tags');
   if (!input || !tags) return;
 
-  const keywords = new Set();
   input.addEventListener('keyup', (e) => {
     if (e.key !== 'Enter') return;
     e.preventDefault();
@@ -435,4 +437,226 @@ function initJobKeywordTags() {
     tag.addEventListener('click', () => { keywords.delete(value); tag.remove(); });
     tags.appendChild(tag);
   });
+}
+
+/* ============================================
+  LOAD JOB LOCATION OPTIONS (view/jobs/list.php)
+  Loads city and district options based on selected country and city.
+  ============================================ */
+function initJobLocation() {
+  const countrySelect = document.getElementById('sidebar-country');
+  const citySelect = document.getElementById('sidebar-city');
+  const districtSelect = document.getElementById('sidebar-district');
+  if (!countrySelect || !citySelect || !districtSelect) return;
+
+  countrySelect.addEventListener('change', async function() {
+    citySelect.innerHTML = '<option value="">Choose City</option>';
+    districtSelect.innerHTML = '<option value="">Choose District</option>';
+    const countryId = this.value;
+    if (countryId) try {
+      const response = await fetch(`/252-WebDesign-jobSearchSystem/public/jobs/api/get-cities/?country_id=${encodeURIComponent(countryId)}`);
+      const cities = await response.json();
+      
+      cities.forEach(([id, value]) => {
+        const option = document.createElement('option');
+        option.value = id;
+        option.textContent = value;
+        citySelect.appendChild(option);
+      });
+    } catch (error) { console.error('Error loading cities:', error); }
+  });
+
+  citySelect.addEventListener('change', async function() {
+    districtSelect.innerHTML = '<option value="">Choose District</option>';
+    const cityId = this.value;
+    if (cityId) try {
+      const response = await fetch(`/252-WebDesign-jobSearchSystem/public/jobs/api/get-districts/?city_id=${encodeURIComponent(cityId)}`);
+      const districts = await response.json();
+
+      districts.forEach(([id, value]) => {
+        const option = document.createElement('option');
+        option.value = id;
+        option.textContent = value;
+        districtSelect.appendChild(option);
+      });
+    } catch (error) { console.error('Error loading districts:', error); }
+  });
+}
+
+/* ============================================
+  INITIALIZE JOB FILTER SUBMISSION (view/jobs/list.php)
+  - Prevents default Enter-key submit behavior
+  - Collects form fields and keyword tags
+  - Triggers first load
+  ============================================ */
+let formData = null;
+function initSubmitJobFilter() {
+  const form = document.getElementById('job-filter-form');
+  if (!form) return;
+
+  form.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    formData = new FormData(form);
+    keywords.forEach((keyword) => { formData.append('keywords[]', keyword); });
+    submitJobFilter();
+  });
+
+  form.requestSubmit();
+}
+
+/* ============================================
+  SUBMIT JOB FILTER REQUEST (view/jobs/list.php)
+  Sends filter data to the backend API and updates frontend.
+  ============================================ */
+async function submitJobFilter() {
+  try {
+    const response = await fetch("/252-WebDesign-jobSearchSystem/public/jobs/api/job-filter-form", {method: "POST", body: formData});
+    const result = await response.json();
+    generateJobListCount(result);
+    generateJobListResultContent(result);
+    generateJobListPagination(result);
+  } catch (err) { console.error("Error processing form:", err); }
+}
+
+/* ============================================
+  RENDER JOB RESULTS COUNT (view/jobs/list.php)
+  ============================================ */
+function generateJobListCount(result) {
+  document.getElementById('jobs-results-count').textContent = `(${result.total} results)`;
+}
+
+/* ============================================
+  ESCAPE HTML TEXT (Utility)
+  ============================================ */
+function htmlEscape(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+/* ============================================
+  RENDER JOB RESULT CARDS (view/jobs/list.php)
+  ============================================ */
+function generateJobListResultContent(result) {
+  const jobsContent = document.getElementById('job-result-content');
+  jobsContent.innerHTML = '';
+
+  const colors = ['#E8F5E9', '#FFF3E0', '#F3E5F5', '#E3F2FD', '#FCE4EC', '#E0F2F1'];
+  const textColors = ['#4CAF50', '#FF9800', '#9C27B0', '#2196F3', '#E91E63', '#009688'];
+  result.jobs.forEach((job, index) => {
+    const initials = job.Title_Name.split(' ').map(word => word[0]).join('').toUpperCase().slice(0, 2);
+    const bgColor = colors[index % colors.length];
+    const textColor = textColors[index % textColors.length];
+
+    const jobCard = document.createElement('div');
+    jobCard.className = 'job-card';
+    jobCard.innerHTML = `
+      <div class="job-card-header">
+        <span class="job-card-time">Posted on ${(new Date(job.Posting_Date)).toLocaleDateString()}</span>
+        <button class="job-card-bookmark" aria-label="Bookmark">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
+          </svg>
+        </button>
+      </div>
+      <div class="job-card-info">
+        <div class="job-card-icon" style="background:${bgColor};color:${textColor};">${initials}</div>
+        <div>
+          <h3 class="job-card-title">${htmlEscape(job.Title_Name)}</h3>
+          <p class="job-card-company">${htmlEscape(job.Company_Name)}</p>
+        </div>
+      </div>
+      <div class="job-card-footer">
+        <div class="job-card-tags">
+          <span class="job-tag">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
+            </svg>
+            ${htmlEscape(job.Category_Name)}
+          </span>
+          <span class="job-tag">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+            </svg>
+            ${htmlEscape(job.Type_Name)}
+          </span>
+          <span class="job-tag">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/>
+            </svg>
+            $${Number(job.Min_Salary).toLocaleString()}-$${Number(job.Max_Salary).toLocaleString()}
+          </span>
+          <span class="job-tag">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+            ${htmlEscape(job.City_Name)}${job.District_Name ? ', ' + htmlEscape(job.District_Name) : ''}, ${htmlEscape(job.Country_Name)}
+          </span>
+        </div>
+        <a href="/252-WebDesign-jobSearchSystem/public/jobs/detail?id=${job.Vacancy_ID}" class="btn-job-details">Job Details</a>
+      </div>
+    `;
+    jobsContent.appendChild(jobCard);
+  });
+}
+
+/* ============================================
+  RENDER RESULTS PAGINATION (view/jobs/list.php)
+  Builds page number controls.
+  ============================================ */
+function generateJobListPagination(result) {
+  const paginationContainer = document.getElementById('pagination');
+  paginationContainer.innerHTML = '';
+
+  // Previous button
+  if (result.page > 1) {
+    const prevLink = document.createElement('a');
+    prevLink.href = '#';
+    prevLink.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg> Prev';
+    prevLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      formData.set('page', result.page - 1);
+      submitJobFilter();
+    });
+    paginationContainer.appendChild(prevLink);
+  }
+
+  // Page number buttons (show up to 5 pages)
+  const maxButtonsShown = 5;
+  let startPage = Math.max(1, result.page - Math.floor(maxButtonsShown / 2));
+  let endPage = Math.min(result.numPage, startPage + maxButtonsShown - 1);
+  if (endPage - startPage + 1 < maxButtonsShown) {
+    startPage = Math.max(1, endPage - maxButtonsShown + 1);
+  }
+
+  for (let page = startPage; page <= endPage; page++) {
+    const link = document.createElement(page === result.page ? 'span' : 'a');
+    link.textContent = page;
+    if (page === result.page) link.className = 'active';
+    else {
+      link.href = '#';
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        formData.set('page', page);
+        submitJobFilter();
+      });
+    }
+    paginationContainer.appendChild(link);
+  }
+
+  // Next button
+  if (result.page < result.numPage) {
+    const nextLink = document.createElement('a');
+    nextLink.href = '#';
+    nextLink.className = 'next-btn';
+    nextLink.innerHTML = 'Next <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>';
+    nextLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      formData.set('page', result.page + 1);
+      submitJobFilter();
+    });
+    paginationContainer.appendChild(nextLink);
+  }
 }
