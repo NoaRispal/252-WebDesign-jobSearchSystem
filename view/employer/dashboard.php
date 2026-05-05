@@ -64,10 +64,10 @@ endif; ?>
 
       <!-- Stats -->
       <!-- BACKEND: Replace hardcoded stats with DB counts:
-           <h3><?= $totalJobs ?></h3>     (Total Jobs Posted)
-           <h3><?= $count(all_jobs[]) ?></h3>     (Active Jobs)
-           <h3><?= $pendingJobs ?></h3>    (Pending Review)
-           <h3><?= $inactiveJobs ?></h3>   (Inactive Jobs)
+           <h3>< ?= $totalJobs ?></h3>     (Total Jobs Posted)
+           <h3>< ?= $count(all_jobs[]) ?></h3>     (Active Jobs)
+           <h3>< ?= $pendingJobs ?></h3>    (Pending Review)
+           <h3>< ?= $inactiveJobs ?></h3>   (Inactive Jobs)
 
            SQL: SELECT
                   COUNT(*) as total,
@@ -146,31 +146,31 @@ endif; ?>
                    → Also DELETE FROM job_vacancy_skills WHERE job_vacancy_id = ?
             -->
             <!-- BEFORE RESPONSIVE CARD REFACTOR:
-            <?php /* foreach($all_jobs as $job): ?>
+            < ?php /* foreach($all_jobs as $job): ?>
                 <tr>
-                  <td><strong><?= htmlspecialchars($job['title']) ?></strong></td>
-                  <td><?= htmlspecialchars($job['category_name']) ?></td>
-                  <td><?= htmlspecialchars($job['employment_type_name']) ?></td>
-                  <td><?= htmlspecialchars($job['city'] . ', ' . $job['country']) ?></td>
-                  <td><?= htmlspecialchars($job['salary_label']) ?></td>
-                  <td><span class="status-badge <?= $job['is_active'] ? 'active' : 'inactive' ?>">
-                    <?= $job['is_active'] ? 'Active' : 'Inactive' ?></span></td>
-                  <td><?= date('M d, Y', strtotime($job['created_at'])) ?></td>
+                  <td><strong>< ?= htmlspecialchars($job['title']) ?></strong></td>
+                  <td>< ?= htmlspecialchars($job['category_name']) ?></td>
+                  <td>< ?= htmlspecialchars($job['employment_type_name']) ?></td>
+                  <td>< ?= htmlspecialchars($job['city'] . ', ' . $job['country']) ?></td>
+                  <td>< ?= htmlspecialchars($job['salary_label']) ?></td>
+                  <td><span class="status-badge < ?= $job['is_active'] ? 'active' : 'inactive' ?>">
+                    < ?= $job['is_active'] ? 'Active' : 'Inactive' ?></span></td>
+                  <td>< ?= date('M d, Y', strtotime($job['created_at'])) ?></td>
                   <td>
                     <div class="table-actions">
-                      <a href="employer-job-form.php?id=<?= $job['id'] ?>" title="Edit">edit icon</a>
+                      <a href="employer-job-form.php?id=< ?= $job['id'] ?>" title="Edit">edit icon</a>
                       <form method="POST" action="index.php?c=job&a=toggleStatus" style="display:inline;">
-                        <input type="hidden" name="job_id" value="<?= $job['id'] ?>">
+                        <input type="hidden" name="job_id" value="< ?= $job['id'] ?>">
                         <button type="submit" title="Toggle Status">toggle icon</button>
                       </form>
                       <form method="POST" action="index.php?c=job&a=delete" style="display:inline;">
-                        <input type="hidden" name="job_id" value="<?= $job['id'] ?>">
+                        <input type="hidden" name="job_id" value="< ?= $job['id'] ?>">
                         <button type="submit" class="delete" title="Delete">delete icon</button>
                       </form>
                     </div>
                   </td>
                 </tr>
-              <?php endforeach; */ ?>
+              < ?php endforeach; */ ?>
             END BEFORE RESPONSIVE CARD REFACTOR -->
 
             <?php foreach($all_jobs as $job): ?>

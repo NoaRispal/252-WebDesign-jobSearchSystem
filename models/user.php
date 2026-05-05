@@ -6,7 +6,7 @@ This model supports Role-Based Access Control (RBAC) as required by the system.
  */
 class User {
     private $db;
-    private $table_name = "users";
+    private $table_name = "Users";
 
     // Table columns
     public $id;

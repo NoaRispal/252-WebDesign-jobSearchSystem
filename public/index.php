@@ -49,7 +49,7 @@ switch($page) {
         break;
     case 'login':
         if (isset($urlParts[1]) && $urlParts[1] === 'auth') {
-            require_once '../controllers/AuthController.php';
+            require_once __DIR__ . '/../controllers/authController.php';
             $auth = new AuthController($db,$baseUrl);
             $auth->login();
         } else {
@@ -65,7 +65,7 @@ switch($page) {
         break;
     // BEFORE LOGOUT FIX: No logout route existed in the front controller.
     case 'logout':
-        require_once '../controllers/AuthController.php';
+        require_once '../controllers/authController.php';
         $auth = new AuthController($db, $baseUrl);
         $auth->logout();
         // logout() calls exit(), so nothing below runs
@@ -86,7 +86,7 @@ switch($page) {
             exit();
         }
         //
-        require_once __DIR__ . '/../controllers/AdminController.php';
+        require_once __DIR__ . '/../controllers/adminController.php';
         $adminCtrl = new AdminController($db,$baseUrl);
         $action = isset($urlParts[1]) ? $urlParts[1] : 'dashboard';
 

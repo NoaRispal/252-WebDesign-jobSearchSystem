@@ -17,42 +17,33 @@ class LookupModel {
     // Column mapping: table => [id_column, name_column]
     // The actual DB schema uses table-specific column names (Category_ID, Title_Name, etc.)
     private $columnMap = [
-        'job_categories'   => ['Category_ID',  'Category_Name'],
-        'job_titles'       => ['Title_ID',     'Title_Name'],
-        'skills'           => ['Skill_ID',     'Skill_Name'],
-        'industries'       => ['Industry_ID',  'Industry_Name'],
-        'employment_types' => ['Emp_Type_ID',  'Type_Name'],
-        'job_levels'       => ['Level_ID',     'Level_Name'],
-        'salary_ranges'    => ['Range_ID',     'Range_Description'],
+        'Job_Categories'   => ['Category_ID',  'Category_Name'],
+        'Job_Titles'       => ['Title_ID',     'Title_Name'],
+        'Skills'           => ['Skill_ID',     'Skill_Name'],
+        'Industries'       => ['Industry_ID',  'Industry_Name'],
+        'Employment_Types' => ['Emp_Type_ID',  'Type_Name'],
+        'Job_Levels'       => ['Level_ID',     'Level_Name'],
+        'Salary_Ranges'    => ['Range_ID',     'CONCAT(Min_Salary, "-", Max_Salary)'],
     ];
-
-    private $allowed = ['job_categories', 'job_titles', 'skills', 'industries', 'employment_types', 'job_levels', 'salary_ranges'];
 
     public function __construct($db) {
         $this->db = $db;
     }
 
-    /**
-     * Get the [id_column, name_column] pair for a given table.
-     */
-    private function getColumns($table) {
-        return $this->columnMap[$table] ?? ['id', 'name'];
-    }
-
     public function getAllFromTable($table) {
-        if (!in_array($table, $this->allowed)) return [];
+        if (!isset($this->columnMap[$table])) return [];
 
-        list($idCol, $nameCol) = $this->getColumns($table);
-        $query = "SELECT $idCol AS id, $nameCol AS name FROM $table ORDER BY $nameCol ASC";
+        list($idCol, $nameCol) = $this->columnMap[$table];
+        $query = "SELECT $idCol AS id, $nameCol AS name FROM $table ORDER BY name ASC";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
-        return $stmt;
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function addEntry($table, $name, $is_active = 1) {
-        if (!in_array($table, $this->allowed)) return false;
+        if (!isset($this->columnMap[$table])) return false;
 
-        list($idCol, $nameCol) = $this->getColumns($table);
+        list($idCol, $nameCol) = $this->columnMap[$table];
         $query = "INSERT INTO $table ($nameCol) VALUES (:name)";
         $stmt = $this->db->prepare($query);
         $stmt->execute(['name' => $name]);
@@ -60,9 +51,9 @@ class LookupModel {
     }
 
     public function deleteEntry($table, $id) {
-        if (!in_array($table, $this->allowed)) return false;
+        if (!isset($this->columnMap[$table])) return false;
 
-        list($idCol, $nameCol) = $this->getColumns($table);
+        list($idCol, $nameCol) = $this->columnMap[$table];
 
         // BEFORE COLUMN FIX:
         // $map = [ 'job_categories' => 'category_id', 'job_titles' => 'job_title_id', ... ];
@@ -110,9 +101,9 @@ class LookupModel {
     // BEFORE COLUMN FIX: public function updateEntry($table,$id,$is_active) {
     // BEFORE PROPERTY FIX: used $this->conn instead of $this->db
     public function updateEntry($table, $id, $name, $is_active = 1) {
-        if (!in_array($table, $this->allowed)) return false;
+        if (!isset($this->columnMap[$table])) return false;
 
-        list($idCol, $nameCol) = $this->getColumns($table);
+        list($idCol, $nameCol) = $this->columnMap[$table];
         $query = "UPDATE $table SET $nameCol = :name WHERE $idCol = :id";
         $stmt = $this->db->prepare($query);
         $stmt->execute(['name' => $name, 'id' => $id]);

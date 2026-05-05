@@ -94,14 +94,14 @@ class AdminController {
                     exit();
                 }
                 $data = [
-                    'categories' => $this->lookup_model->getAllFromTable('job_categories')->fetchAll(PDO::FETCH_ASSOC),
-                    'titles'     => $this->lookup_model->getAllFromTable('job_titles')->fetchAll(PDO::FETCH_ASSOC),
-                    'skills'     => $this->lookup_model->getAllFromTable('skills')->fetchAll(PDO::FETCH_ASSOC),
-                    'industries' => $this->lookup_model->getAllFromTable('industries')->fetchAll(PDO::FETCH_ASSOC),
+                    'categories' => $this->lookup_model->getAllFromTable('Job_Categories'),
+                    'titles'     => $this->lookup_model->getAllFromTable('Job_Titles'),
+                    'skills'     => $this->lookup_model->getAllFromTable('Skills'),
+                    'industries' => $this->lookup_model->getAllFromTable('Industries'),
                     // BEFORE COLUMN FIX: 'locations' was fetched here but the table doesn't exist in the DB
-                    'employment' => $this->lookup_model->getAllFromTable('employment_types')->fetchAll(PDO::FETCH_ASSOC),
-                    'levels'     => $this->lookup_model->getAllFromTable('job_levels')->fetchAll(PDO::FETCH_ASSOC),
-                    'salary'     => $this->lookup_model->getAllFromTable('salary_ranges')->fetchAll(PDO::FETCH_ASSOC)
+                    'employment' => $this->lookup_model->getAllFromTable('Employment_Types'),
+                    'levels'     => $this->lookup_model->getAllFromTable('Job_Levels'),
+                    'salary'     => $this->lookup_model->getAllFromTable('Salary_Ranges')
                 ];
 
                 $baseUrl = $this->base_url;
