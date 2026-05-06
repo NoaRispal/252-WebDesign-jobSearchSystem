@@ -12,94 +12,53 @@ class AuthController {
 
     public function login() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            #######################################
-            #### DEMO (DELETE WHEN DB FINISH) #####
-            #######################################
-
             $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+            $password = $_POST['password'];
 
-            $email = strtolower(trim($email));
+            $stmt = $this->db->prepare("SELECT * FROM Users WHERE Email = :email");
+            $stmt->execute(['email' => $email]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            /* BEFORE FIX:
-            switch($email) { 
-                case "admin@jobportal.com":
-                    $_SESSION['user_id'] = 1;
-                    $_SESSION['role'] = "admin";
-                    $_SESSION['full_name'] = "John Admin";
-                    header("Location: ".$this->baseUrl."/admin/dashboard");
-                    exit();
-                    break;
-                case 'employer@company.com':
-                    $_SESSION['user_id'] = 2;
-                    $_SESSION['role'] = "employer";
-                    $_SESSION['full_name'] = "John employer";
-                    header("Location: employer/dashboard");
-                    break;
-                default:
-                    $_SESSION['user_id'] = 3;
-                    $_SESSION['role'] = "job_seeker";
-                    $_SESSION['full_name'] = "John Seeker";
-                    header("Location: home");
-                    break;
-                }
-            */
-            switch($email) { 
-                case "admin@jobportal.com":
-                    $_SESSION['user_id'] = 1;
-                    $_SESSION['role'] = "admin";
-                    $_SESSION['full_name'] = "John Admin";
-                    header("Location: ".$this->baseUrl."/admin/dashboard");
-                    exit();
-                case 'employer@company.com':
-                    $_SESSION['user_id'] = 2;
-                    $_SESSION['role'] = "employer";
-                    $_SESSION['full_name'] = "John employer";
-                    header("Location: " . $this->baseUrl . "/employer/dashboard");
-                    exit();
-                default:
-                    $_SESSION['user_id'] = 3;
-                    $_SESSION['role'] = "job_seeker";
-                    $_SESSION['full_name'] = "John Seeker";
-                    header("Location: " . $this->baseUrl . "/home");
-                    exit();
+            if (!$user) {
+                $_SESSION['flash'] = "Invalid email or password. Please try again.";
+                header("Location: ".$this->baseUrl."/login");
+                exit;
             }
 
-            #######################################
-            #### DEMO (DELETE WHEN DB FINISH) #####
-            #######################################
+            $req = "SELECT Role_Name 
+            FROM ROLES 
+            WHERE Role_ID = :id;";
+            $stmtRole = $this->db->prepare($req);
+            $stmtRole->execute(['id' => $user['Role_ID']]);
+            $role = $stmtRole->fetch(PDO::FETCH_ASSOC);
+            $roleName = strtolower($role['Role_Name']);
 
-            // $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-            // $password = $_POST['password'];
+            // password_verify (PHP built-in) verify hash and salt of a password 
+            // (hash and salt are stocked in the password_hash as well as the true password)
 
-            // $stmt = $this->db->prepare("SELECT * FROM users WHERE email = :email");
-            // $stmt->execute(['email' => $email]);
-            // $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($user && password_verify($password, $user['Password_Hash'])) { 
+                $_SESSION['user_id'] = $user['User_ID'];
+                $_SESSION['role'] = $roleName; // admin, employer, or job_seeker
+                // $_SESSION['full_name'] = $user['full_name'];
 
-            // // password_verify (PHP built-in) verify hash and salt of a password 
-            // // (hash and salt are stocked in the password_hash as well as the true password)
-
-            // if ($user && password_verify($password, $user['password_hash'])) { 
-            //     $_SESSION['user_id'] = $user['id'];
-            //     $_SESSION['role'] = $user['role']; // admin, employer, or job_seeker
-            //     $_SESSION['full_name'] = $user['full_name'];
-
-            //     switch($user['role']) {
-            //         case 'admin':
-            //             header("Location: /admin/dashboard");
-            //             break;
-            //         case 'employer':
-            //             header("Location: /employer/dashboard");
-            //             break;
-            //         default:
-            //             header("Location: /home");
-            //             break;
-            //     }
-            //     exit;
-            // } else {
-            //     $_SESSION['login_error'] = "Invalid email or password.";
-            //     header("Location: /login");
-            //     exit;
-            // }
+                switch($roleName) {
+                    case 'admin':
+                        header("Location: ".$this->baseUrl."/admin/dashboard");
+                        break;
+                    case 'employer':
+                        header("Location: ".$this->baseUrl."/employer/dashboard");
+                        break;
+                    default:
+                        header("Location: ".$this->baseUrl."/home");
+                        break;
+                }
+                exit;
+            } else {
+                // $_SESSION['flash'] = password_hash("admin123",PASSWORD_DEFAULT);
+                $_SESSION['flash'] = "Invalid email or password. Please try again.";
+                header("Location: ".$this->baseUrl."/login");
+                exit;
+            }
         }
     }
 

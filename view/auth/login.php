@@ -1,3 +1,13 @@
+<!-- ====== FLASH ====== -->
+<?php if (isset($_SESSION['flash'])): ?>
+    <div class="alert alert-danger" style="padding: 15px; background-color: #f8d7da; color: black; border: 1px solid #c3e6cb; border-radius: 4px; margin-bottom: 20px;">
+        <?= $_SESSION['flash']; ?>
+    </div>
+    <?php 
+        unset($_SESSION['flash']); 
+    ?>
+<?php endif; ?>
+
 <!-- ====== LOGIN FORM ====== -->
   <main class="auth-page" id="login-page">
     <div class="auth-card" id="login-card">
@@ -42,7 +52,7 @@
       <div style="margin-top:var(--space-lg);padding:var(--space-md);background:var(--clr-primary-light);border-radius:var(--radius-md);font-size:13px;">
         <strong style="color:var(--clr-primary);">Demo Accounts:</strong>
         <div style="margin-top:var(--space-sm);color:var(--clr-text-gray);line-height:1.8;">
-          <strong>Admin:</strong> admin@jobportal.com / admin123<br>
+          <strong>Admin:</strong> admin@example.com / admin123<br>
           <strong>Employer:</strong> employer@company.com / employer123<br>
           <strong>Job Seeker:</strong> seeker@email.com / seeker123
         </div>
