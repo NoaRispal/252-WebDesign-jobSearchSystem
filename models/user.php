@@ -34,8 +34,19 @@ class User {
 
     public function getUserDataById($id) {
         $query = "SELECT * 
-                  FROM " . $this->table_name . " 
-                  WHERE id = :id 
+                  FROM Users
+                  WHERE User_ID = :id 
+                  LIMIT 1";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([':id'=>$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getEmployerDataById($id) {
+        $query = "SELECT * 
+                  FROM Employers
+                  WHERE User_ID = :id 
                   LIMIT 1";
 
         $stmt = $this->db->prepare($query);

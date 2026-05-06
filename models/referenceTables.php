@@ -24,6 +24,13 @@ class LookupModel {
         'employment_types' => ['Emp_Type_ID',  'Type_Name'],
         'job_levels'       => ['Level_ID',     'Level_Name'],
         'salary_ranges'    => ['Range_ID',     'CONCAT(Min_Salary, "-", Max_Salary)'],
+        'salary_types'    => ['Type_ID',     'Type_Name'],
+        'cities'    => ['City_ID',     'City_Name'],
+        'countries'    => ['Country_ID',     'Country_Name'],
+        'districts'    => ['District_ID','District_Name'],
+        'work_arrangements'    => ['Arrangement_ID',     'Arrangement_Name'],
+        'proficiency_levels'    => ['Proficiency_ID',     'Proficiency_Name'],
+        'degree_levels'    => ['Degree_ID',     'Degree_Name'],
     ];
 
     public function __construct($db) {

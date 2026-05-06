@@ -187,6 +187,11 @@ function initAdminTabs() {
 /* ============================================
    SKILLS MANAGER (Job Form)
    ============================================ */
+// Need global in case you remove and re-add a skill 
+// (other case since selectedSkills is not updated you will have the "skills already added")
+let selectedSkills = []; 
+const maxSkills = 5;
+
 function initSkillsManager() {
   const addBtn = document.querySelector('#add-skill-btn');
   const skillSelect = document.querySelector('#skill-select');
@@ -195,9 +200,6 @@ function initSkillsManager() {
   const skillCount = document.querySelector('#skill-count');
   
   if (!addBtn || !skillSelect || !skillsList) return;
-  
-  let selectedSkills = [];
-  const maxSkills = 5;
   
   addBtn.addEventListener('click', function() {
     if (selectedSkills.length >= maxSkills) {
@@ -212,8 +214,8 @@ function initSkillsManager() {
       alert('Please select a skill.');
       return;
     }
-    
     if (selectedSkills.includes(skill)) {
+      console.log(selectedSkills);
       alert('Skill already added.');
       return;
     }
@@ -244,7 +246,8 @@ function initSkillsManager() {
 function removeSkill(btn, skill) {
   var badge = btn.parentElement;
   badge.remove();
-  
+  const remainingBadges = document.querySelectorAll('.skill-badge');
+  selectedSkills = Array.from(remainingBadges).map(b => b.getAttribute('data-skill'));
   // Re-index all remaining hidden inputs so skills[] array is sequential
   var badges = document.querySelectorAll('.skill-badge');
   badges.forEach(function(b, i) {

@@ -71,13 +71,16 @@ switch($page) {
         // logout() calls exit(), so nothing below runs
         break;
     case 'employer':
-        if (isset($urlParts[1]) && $urlParts[1] === 'dashboard') {
-            $viewFile = 'employer/dashboard.php';
-        } elseif (isset($urlParts[1]) && $urlParts[1] === 'job-form') {
-            $viewFile = 'employer/job_form.php';
-        } else {
-            $viewFile = 'employer/dashboard.php';
-        }
+        require_once __DIR__ . '/../controllers/employerController.php';
+        $emplCtrl = new EmployerController($db,$baseUrl);
+        $action = isset($urlParts[1]) ? $urlParts[1] : 'dashboard';
+        ob_start();
+        $emplCtrl->handleRequest($action);
+        $emplCtrl = ob_get_clean();
+        require_once $basePath . 'layouts/header.php';
+        echo $emplCtrl;
+        require_once $basePath . 'layouts/footer.php';
+        exit();
         break;
     case 'admin':
         // RBAC
@@ -98,14 +101,7 @@ switch($page) {
         echo $adminContent;
         require_once $basePath . 'layouts/footer.php';
         
-        exit(); // Exit here so we don't fall through to the default view handler below
-        // if (isset($urlParts[1]) && $urlParts[1] === 'dashboard') {
-        //     $viewFile = 'admin/dashboard.php';
-        // } elseif (isset($urlParts[1]) && $urlParts[1] === 'references') {
-        //     $viewFile = 'admin/references.php';
-        // } else {
-        //     $viewFile = 'admin/dashboard.php';
-        // }
+        exit();
         break;
     default:
         // 404 Not Found

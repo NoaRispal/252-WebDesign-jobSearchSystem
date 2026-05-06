@@ -6,10 +6,12 @@ And toggling the status of their own job postings
 */
 include_once '../config/database.php';
 include_once '../models/jobVacancy.php';
+include_once '../models/referenceTables.php';
 include_once '../models/user.php';
 
 class EmployerController {
     private $jobModel;
+    private $lookup_model;
     private $db;
     private $base_url;
     private $userModel;
@@ -18,7 +20,8 @@ class EmployerController {
         $this->db = $db;
         $this->jobModel = new JobVacancy($db);
         $this->userModel = new User($db);
-        $this->$base_url = $base_url;
+        $this->lookup_model = new LookupModel($db); 
+        $this->base_url = $base_url;
         
         // Security : check if employer
         if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'employer') { 
@@ -27,72 +30,108 @@ class EmployerController {
         }
     }
 
-    public function handleRequest() {
-        $action = $_GET['action'] ?? 'dashboard';
-        $employer_id = $_SESSION['user_id'];
+    public function handleRequest($action) {
+        $user_id = $_SESSION['user_id'];
 
         switch($action) {
             case 'dashboard':
-                $all_jobs = $this->jobModel->readByEmployer($employer_id);
-                $user_data = $this->userModel->getUserData($employer_id,'employer');
-                include '../views/employer/dashboard.php';
-            case 'create':
-                // Case 1: form is completed and we need to verify the input and then tu update db
-                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                    $this->publish();
-                }
-                // Case 2: we show the empty form
+                $user = $this->userModel->getUserDataById($user_id);
+                $employer = $this->userModel->getEmployerDataById($user_id);
+                $all_jobs = $this->jobModel->listByEmployer($employer["Employer_ID"]);
+                $baseUrl = $this->base_url;
+                include '../view/employer/dashboard.php';
+                break;
+            case 'job-form':
+                $job_id = $_GET['job_id_edit'] ?? null;
                 $job = null;
-                $jobSkills = [];
+                if ($job_id) {
+                    $job = $this->jobModel->getJobById($job_id); 
+                }
 
-                if (isset($_GET['id'])) {
-                    $jobId = intval($_GET['id']);
-                    $job = $this->jobModel->findByIdAndEmployer($jobId, $_SESSION['user_id']);
-                    
-                    if (!$job) {
-                        header("Location: " . $this->baseUrl . "/employer/dashboard");
+                $data = [
+                    'categories' => $this->lookup_model->getAllFromTable('job_categories'),
+                    'titles'     => $this->lookup_model->getAllFromTable('job_titles'),
+                    'skills'     => $this->lookup_model->getAllFromTable('skills'),
+                    'industries' => $this->lookup_model->getAllFromTable('industries'),
+                    'cities'  => $this->lookup_model->getAllFromTable('cities'),
+                    'countries'  => $this->lookup_model->getAllFromTable('countries'),
+                    'employment' => $this->lookup_model->getAllFromTable('employment_types'),
+                    'levels'     => $this->lookup_model->getAllFromTable('job_levels'),
+                    'salary'     => $this->lookup_model->getAllFromTable('salary_ranges'),
+                    'salary_types'     => $this->lookup_model->getAllFromTable('Salary_Types'),
+                    'districts'     => $this->lookup_model->getAllFromTable('districts'),
+                    'arrangement'     => $this->lookup_model->getAllFromTable('Work_Arrangements'),
+                    'proficiency'     => $this->lookup_model->getAllFromTable('proficiency_levels'),
+                    'degrees'     => $this->lookup_model->getAllFromTable('degree_levels'),
+
+                ];
+                $user = $this->userModel->getUserDataByID($user_id);
+                $baseUrl = $this->base_url;
+                include '../view/employer/job_form.php';
+                break;
+            case 'create':
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    $jobId = $_POST['job_id'] ?? null;
+
+                    $jobData = [
+                        'employer_id'            => $this->userModel->getEmployerDataById($_SESSION['user_id'])['Employer_ID'],
+                        'title_id'               => $_POST['job_title'],
+                        'category_id'            => $_POST['job_category'],
+                        'district_id'            => $_POST['district'],
+                        'city_id'                => $_POST['city'],
+                        'country_id'             => $_POST['country'],
+                        'industry_id'            => $_POST['industry'],
+                        'emp_type_id'            => $_POST['employment_type'],
+                        'level_id'               => $_POST['job_level'],
+                        'number_of_openings'     => $_POST['num_openings'] ?? 1,
+                        'salary_range_id'        => $_POST['salary_range'],
+                        'salary_type_id'         => $_POST['salary_type'],
+                        'arrangement_id'         => $_POST['work_arrangement'],
+                        'benefits'               => $_POST['benefits'],
+                        'job_description'        => $_POST['job_description'],
+                        'min_degree_id'          => $_POST['min_degree'],
+                        'min_years_experience'  => $_POST['min_experience'],
+                    ];
+                    if ($jobId) {
+                        $success = $this->jobModel->update($jobId, $jobData, $_POST['skills'] ?? []);
+                        if ($success) $_SESSION['flash'] = "Job edited successfully!";
+                        header("Location: " . $this->base_url . "/employer/dashboard");
                         exit();
                     }
-                    $jobSkills = $this->jobModel->getSkillsByJobId($jobId);
+                    else {
+                        $vacancy_id = $this->jobModel->create($jobData); // return the id from the new jobs
+                        // Now we link skills to this job
+                        if ($vacancy_id) {
+                            if (!empty($_POST['skills']) && is_array($_POST['skills'])) {
+                                $this->jobModel->addJobSkills($vacancy_id, $_POST['skills']);
+                            }
+                            $_SESSION['flash'] = "Job posted successfully!";
+                            header("Location: " . $this->base_url . "/employer/dashboard");
+                            exit();
+                        } else {
+                            $error = "Failed to create job.";
+                            $_SESSION['flash'] = $error;
+                            header("Location: " . $this->base_url . "/employer/dashboard");
+                            exit();
+                        }
+                    }
                 }
-
-                // Préparation des listes pour les menus déroulants (LookupModel)
-                $data = [
-                    'categories' => $this->lookup_model->getAllFromTable('job_categories')->fetchAll(PDO::FETCH_ASSOC),
-                    'titles'     => $this->lookup_model->getAllFromTable('job_titles')->fetchAll(PDO::FETCH_ASSOC),
-                    'skills'     => $this->lookup_model->getAllFromTable('skills')->fetchAll(PDO::FETCH_ASSOC),
-                    'industries' => $this->lookup_model->getAllFromTable('industries')->fetchAll(PDO::FETCH_ASSOC),
-                    'locations'  => $this->lookup_model->getAllFromTable('locations')->fetchAll(PDO::FETCH_ASSOC),
-                    'employment' => $this->lookup_model->getAllFromTable('employment_types')->fetchAll(PDO::FETCH_ASSOC),
-                    'levels'     => $this->lookup_model->getAllFromTable('job_levels')->fetchAll(PDO::FETCH_ASSOC),
-                    'salary'     => $this->lookup_model->getAllFromTable('salary_ranges')->fetchAll(PDO::FETCH_ASSOC)
-                ];
-                $user_data = $this->userModel->getUserData($employer_id,'employer');
-                include '../views/employer/create.php';
                 break;
+
             case 'delete':
-                $this->jobModel->delete($_GET['id']);
-                header("Location: dashboard.php");
+                $employer_id = $this->userModel->getEmployerDataById($_SESSION['user_id'])['Employer_ID'];
+                $success = $this->jobModel->delete($_POST['job_id'],$employer_id);
+                $_SESSION['flash'] = $success ? "Job deleted successfully!" : "Error : The job has not been deleted.";
+                header("Location: " . $this->base_url . "/employer/dashboard");
+                exit();
                 break;
+
             case 'toggle':
-                $this->jobModel->toggleStatus($_GET['id'], $_GET['status']);
-                header("Location: dashboard.php");
+                $this->jobModel->toggleStatus($_POST['job_id'],$_POST['status']);
+                $_SESSION['flash'] = "Job status changed successfully!";
+                header("Location: " . $this->base_url . "/employer/dashboard");
+                exit();
                 break;
-        }
-    }
-
-    public function publishJob(){
-        $data = $_POST;
-        $data['employer_id'] = $_SESSION['user_id'];
-
-        // Add:  Some security verification 
-        
-        $success = $this->jobModel->create($data);
-        
-        if ($success) {
-            $_SESSION['flash'] = "Job published!";
-            header("Location: " . $this->baseUrl . "/employer/dashboard");
-            exit();
         }
     }
 }

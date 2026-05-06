@@ -1,24 +1,23 @@
-<!-- BEFORE $user FIX: $user was expected from an employer controller that doesn't exist yet. -->
-<?php if (!isset($user)):
-  $fullNameParts = explode(' ', $_SESSION['full_name'] ?? 'Employer User', 2);
-  $user = [
-    'first_name' => $fullNameParts[0] ?? 'Employer',
-    'last_name'  => $fullNameParts[1] ?? '',
-    'email'      => $_SESSION['email'] ?? ($_SESSION['full_name'] ?? 'employer') . '@company.com',
-  ];
-endif; ?>
+<!-- ====== FLASH ====== -->
+<?php if (isset($_SESSION['flash'])): ?>
+    <div class="alert alert-success" style="padding: 15px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 4px; margin-bottom: 20px;">
+        <?= $_SESSION['flash']; ?>
+    </div>
+    <?php 
+        unset($_SESSION['flash']); 
+    ?>
+<?php endif; ?>
+
 <!-- ====== DASHBOARD LAYOUT ====== -->
   <div class="dashboard-layout" id="dashboard-layout">
     <!-- Sidebar -->
     <aside class="dashboard-sidebar" id="dashboard-sidebar">
       <div style="margin-bottom:var(--space-xl);">
         <div style="display:flex;align-items:center;gap:var(--space-md);">
-          <div style="width:44px;height:44px;border-radius:var(--radius-full);background:var(--clr-primary);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:16px;">
-            <?= strtoupper(substr($user['first_name'],0,1) . substr($user['last_name'],0,1)) ?>
-          </div>
+          <div style="width:44px;height:44px;border-radius:var(--radius-full);background:green;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:16px;">E</div>
           <div>
-            <div style="font-weight:600;color:white;font-size:15px;"><?= strtoupper(substr($user['first_name'],0,1) . substr($user['last_name'],0,1)) ?>.</div>
-            <div style="font-size:12px;color:rgba(255,255,255,0.5);"><?= htmlspecialchars($user['email']) ?></div>
+            <div style="font-weight:600;color:white;font-size:15px;">Employer</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.5);">employer@company.com</div>
           </div>
         </div>
       </div>
@@ -31,10 +30,7 @@ endif; ?>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
           Create Job
         </a>
-        <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg> My Jobs</a>
-        <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Profile</a>
         <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg> Settings</a>
-        <!-- BEFORE LOGOUT FIX: href pointed to /login without clearing session -->
         <a href="<?= $baseUrl ?>/logout" style="margin-top:var(--space-xl);color:rgba(255,255,255,0.4);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Logout</a>
       </nav>
     </aside>
@@ -42,19 +38,14 @@ endif; ?>
     <!-- Main Content -->
     <main class="dashboard-main" id="dashboard-main">
       <div class="dashboard-header">
-        <h1>Create New Job</h1>
+      <h1><?= $job ? 'Edit Job Posting' : 'Create New Job' ?></h1>
         <a href="<?= $baseUrl ?>/employer/dashboard" class="btn btn-outline btn-sm" id="back-to-dashboard">← Back to Dashboard</a>
       </div>
 
-      <!-- BACKEND: FORM ACTION CHANGES:
-           CREATE mode: action="index.php?c=job&a=create" method="POST"
-           EDIT mode:   action="index.php?c=job&a=update" method="POST"
-           Add CSRF:    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>"> -->
-
-      <form action="<?= $baseUrl ?>/index.php?c=job$a=create" method="POST" data-validate id="job-create-form">
-        <!-- Hidden field for edit mode — PHP will populate this with the job ID when editing -->
-        <!-- BACKEND: value="<?= isset($job) ? $job['id'] : '' ?>" -->
-        <input type="hidden" name="job_id" value="" id="job-id-hidden">
+      <form action="<?= $baseUrl ?>/employer/create" method="POST" data-validate id="job-create-form">
+        <?php if ($job): ?>
+            <input type="hidden" name="job_id" value="<?= $job['Vacancy_ID'] ?>">
+        <?php endif; ?>
 
         <!-- Section A: Basic Job Information -->
         <div class="job-form-card" id="basic-info-card">
@@ -62,15 +53,10 @@ endif; ?>
           <div class="form-row">
             <div class="form-group">
               <label for="job-title">Job Title *</label>
-              <!-- BACKEND: Populate from DB + set selected for EDIT:
-                   ↑ Apply this same pattern to ALL <select> elements in this form:
-                   job_category, employment_type, industry, job_level, country, city, district,
-                   work_arrangement, salary_range, salary_type, min_degree, min_experience
-              -->
               <select class="form-control" name="job_title" required id="job-title">
                 <option value="">Select job title</option>
-                <?php foreach($jobTitles as $jt): ?>
-                  <option value="<?= $jt['id'] ?>" <?= (isset($job) && $job['job_title_id'] == $jt['id']) ? 'selected' : '' ?>>
+                <?php foreach($data['titles'] as $jt): ?>
+                  <option value="<?= $jt['id'] ?>" <?= (isset($job) && $job['Title_ID'] == $jt['id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($jt['name']) ?>
                   </option>
                 <?php endforeach; ?>
@@ -81,8 +67,8 @@ endif; ?>
               <label for="job-category">Job Category *</label>
               <select class="form-control" name="job_category" required id="job-category">
                 <option value="">Select category</option>
-                <?php foreach($categories as $cat): ?>
-                  <option value="<?= $cat['id'] ?>" <?= (isset($job) && $job['job_category_id'] == $cat['id']) ? 'selected' : '' ?>>
+                <?php foreach($data['categories'] as $cat): ?>
+                  <option value="<?= $cat['id'] ?>" <?= (isset($job) && $job['Category_ID'] == $cat['id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($cat['name']) ?>
                   </option>
                 <?php endforeach; ?>
@@ -95,8 +81,8 @@ endif; ?>
               <label for="employment-type">Employment Type *</label>
               <select class="form-control" name="employment_type" required id="employment-type">
                 <option value="">Select type</option>
-                <?php foreach($employment as $emp): ?>
-                  <option value="<?= $emp['id'] ?>" <?= (isset($job) && $job['job_employment_id'] == $emp['id']) ? 'selected' : '' ?>>
+                <?php foreach($data['employment'] as $emp): ?>
+                  <option value="<?= $emp['id'] ?>" <?= (isset($job) && $job['Emp_Type_ID'] == $emp['id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($emp['name']) ?>
                   </option>
                 <?php endforeach; ?>
@@ -107,8 +93,8 @@ endif; ?>
               <label for="industry">Industry *</label>
               <select class="form-control" name="industry" required id="industry">
                 <option value="">Select industry</option>
-                <?php foreach($industry as $i): ?>
-                  <option value="<?= $i['id'] ?>" <?= (isset($job) && $job['job_industry_id'] == $i['id']) ? 'selected' : '' ?>>
+                <?php foreach($data['industries'] as $i): ?>
+                  <option value="<?= $i['id'] ?>" <?= (isset($job) && $job['Industry_ID'] == $i['id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($i['name']) ?>
                   </option>
                 <?php endforeach; ?>
@@ -121,8 +107,8 @@ endif; ?>
               <label for="job-level">Job Level *</label>
               <select class="form-control" name="job_level" required id="job-level">
                 <option value="">Select level</option>
-                <?php foreach($levels as $l): ?>
-                  <option value="<?= $l['id'] ?>" <?= (isset($job) && $job['job_level_id'] == $l['id']) ? 'selected' : '' ?>>
+                <?php foreach($data['levels'] as $l): ?>
+                  <option value="<?= $l['id'] ?>" <?= (isset($job) && $job['Level_ID'] == $l['id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($l['name']) ?>
                   </option>
                 <?php endforeach; ?>
@@ -131,7 +117,7 @@ endif; ?>
             </div>
             <div class="form-group">
               <label for="num-openings">Number of Openings *</label>
-              <input type="number" class="form-control" name="num_openings" placeholder="e.g., 3" min="1" required id="num-openings">
+              <input type="number" class="form-control" name="num_openings" placeholder="e.g., 3" min="1" required id="num-openings" value="<?= isset($job) ? htmlspecialchars($job['Number_Of_Openings']) : '1' ?>">
               <span class="form-error">Number of openings is required</span>
             </div>
           </div>
@@ -145,8 +131,8 @@ endif; ?>
               <label for="country">Country *</label>
               <select class="form-control" name="country" required id="country">
                 <option value="">Select country</option>
-                <?php foreach($countries as $c): ?>
-                  <option value="<?= $c['id'] ?>" <?= (isset($job) && $job['job_country_id'] == $c['id']) ? 'selected' : '' ?>>
+                <?php foreach($data['countries'] as $c): ?>
+                  <option value="<?= $c['id'] ?>" <?= (isset($job) && $job['Country_ID'] == $c['id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($c['name']) ?>
                   </option>
                 <?php endforeach; ?>
@@ -157,8 +143,8 @@ endif; ?>
               <label for="city">City / Province *</label>
               <select class="form-control" name="city" required id="city">
                 <option value="">Select city</option>
-                <?php foreach($cities as $c): ?>
-                  <option value="<?= $c['id'] ?>" <?= (isset($job) && $job['job_city_id'] == $c['id']) ? 'selected' : '' ?>>
+                <?php foreach($data['cities'] as $c): ?>
+                  <option value="<?= $c['id'] ?>" <?= (isset($job) && $job['City_ID'] == $c['id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($c['name']) ?>
                   </option>
                 <?php endforeach; ?>
@@ -171,8 +157,8 @@ endif; ?>
               <label for="district">District (Optional)</label>
               <select class="form-control" name="district" id="district">
                 <option value="">Select district</option>
-                <?php foreach($district as $d): ?>
-                  <option value="<?= $d['id'] ?>" <?= (isset($job) && $job['job_district_id'] == $d['id']) ? 'selected' : '' ?>>
+                <?php foreach($data['districts'] as $d): ?>
+                  <option value="<?= $d['id'] ?>" <?= (isset($job) && $job['District_ID'] == $d['id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($d['name']) ?>
                   </option>
                 <?php endforeach; ?>
@@ -182,8 +168,8 @@ endif; ?>
               <label for="work-arrangement">Work Arrangement *</label>
               <select class="form-control" name="work_arrangement" required id="work-arrangement">
                 <option value="">Select arrangement</option>
-                <?php foreach($arrangement as $a): ?>
-                  <option value="<?= $a['id'] ?>" <?= (isset($job) && $job['job_arrangement_id'] == $a['id']) ? 'selected' : '' ?>>
+                <?php foreach($data['arrangement'] as $a): ?>
+                  <option value="<?= $a['id'] ?>" <?= (isset($job) && $job['Arrangement_ID'] == $a['id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($a['name']) ?>
                   </option>
                 <?php endforeach; ?>
@@ -200,8 +186,8 @@ endif; ?>
             <div class="form-group">
               <label for="salary-range">Salary Range *</label>
               <select class="form-control" name="salary_range" required id="salary-range-select">
-              <?php foreach($salary as $s): ?>
-                  <option value="<?= $s['id'] ?>" <?= (isset($job) && $job['job_salary_id'] == $s['id']) ? 'selected' : '' ?>>
+              <?php foreach($data['salary'] as $s): ?>
+                  <option value="<?= $s['id'] ?>" <?= (isset($job) && $job['Salary_Range_ID'] == $s['id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($s['name']) ?>
                   </option>
                 <?php endforeach; ?>
@@ -212,8 +198,8 @@ endif; ?>
               <label for="salary-type">Salary Type *</label>
               <select class="form-control" name="salary_type" required id="salary-type">
                 <option value="">Select type</option>
-                <?php foreach($salary_type as $st): ?>
-                  <option value="<?= $st['id'] ?>" <?= (isset($job) && $job['job_salary_type_id'] == $st['id']) ? 'selected' : '' ?>>
+                <?php foreach($data['salary_types'] as $st): ?>
+                  <option value="<?= $st['id'] ?>" <?= (isset($job) && $job['Salary_Type_ID'] == $st['id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($st['name']) ?>
                   </option>
                 <?php endforeach; ?>
@@ -223,7 +209,7 @@ endif; ?>
           </div>
           <div class="form-group">
             <label for="benefits">Benefits</label>
-            <textarea class="form-control" name="benefits" placeholder="e.g., Health insurance, 401k, Remote work options, Gym membership..." rows="3" id="benefits"></textarea>
+            <textarea class="form-control" name="benefits" placeholder="e.g., Health insurance, 401k, Remote work options, Gym membership..." rows="3" id="benefits"><?= isset($job) ? htmlspecialchars($job['Benefits']) : '' ?></textarea>
           </div>
         </div>
 
@@ -272,8 +258,8 @@ endif; ?>
               <label for="skill-select">Skill</label>
               <select class="form-control" id="skill-select">
                 <option value="">Select a skill</option>
-                <?php foreach($skills as $s): ?>
-                  <option value="<?= $s['id'] ?>" <?= (isset($job) && $job['job_skill_id'] == $s['id']) ? 'selected' : '' ?>>
+                <?php foreach($data['skills'] as $s): ?>
+                  <option value="<?= $s['id'] ?>">
                     <?= htmlspecialchars($s['name']) ?>
                   </option>
                 <?php endforeach; ?>
@@ -282,8 +268,8 @@ endif; ?>
             <div class="form-group" style="margin-bottom:0;">
               <label for="proficiency-select">Minimum Proficiency</label>
               <select class="form-control" id="proficiency-select">
-              <?php foreach($proficiency as $p): ?>
-                  <option value="<?= $p['id'] ?>" <?= (isset($job) && $job['job_proficiency_id'] == $p['id']) ? 'selected' : '' ?>>
+              <?php foreach($data['proficiency'] as $p): ?>
+                  <option value="<?= $p['id'] ?>">
                     <?= htmlspecialchars($p['name']) ?>
                   </option>
                 <?php endforeach; ?>
@@ -293,7 +279,7 @@ endif; ?>
           </div>
 
           <div class="skills-list" id="skills-list">
-            <!-- Skills will be added here dynamically -->
+            <!-- Skills will be added here dynamically (script.js) -->
           </div>
         </div>
 
@@ -305,28 +291,14 @@ endif; ?>
               <label for="min-degree">Minimum Degree Level *</label>
               <select class="form-control" name="min_degree" required id="min-degree">
                 <option value="">Select degree</option>
-                <?php foreach($degree as $d): ?>
-                  <option value="<?= $d['id'] ?>" <?= (isset($job) && $job['job_degree_id'] == $d['id']) ? 'selected' : '' ?>>
+                <?php foreach($data['degrees'] as $d): ?>
+                  <option value="<?= $d['id'] ?>" <?= (isset($job) && $job['Min_Degree_ID'] == $d['id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($d['name']) ?>
                   </option>
                 <?php endforeach; ?>
               </select>
               <span class="form-error">Minimum degree is required</span>
             </div>
-            <!-- BEFORE FIX:
-            <div class="form-group">
-              <label for="min-experience">Minimum Years of Experience *</label>
-              <select class="form-control" name="min_experience" required id="min-experience">
-                <option value="">Select experience</option>
-                <?php foreach($experience as $e): ?>
-                  <option value="<?= $e['id'] ?>" <?= (isset($job) && $job['job_experience_id'] == $e['id']) ? 'selected' : '' ?>>
-                    <?= htmlspecialchars($e['name']) ?>
-                  </option>
-                <?php endforeach; ?>
-              </select>
-              <span class="form-error">Minimum experience is required</span>
-            </div>
-            -->
             <div class="form-group">
               <label for="min-experience">Minimum Years of Experience *</label>
               <input type="number" class="form-control" name="min_experience" placeholder="e.g., 2" min="0" required id="min-experience" value="<?= isset($job) ? htmlspecialchars($job['Min_Years_Experience']) : '' ?>">
@@ -340,7 +312,7 @@ endif; ?>
           <a href="<?= $baseUrl ?>/employer/dashboard" class="btn btn-outline" id="cancel-btn">Cancel</a>
           <button type="submit" class="btn btn-primary btn-lg" id="publish-job-btn">
             <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            Publish Job
+            <?= $job ? 'Save Changes' : 'Publish Job' ?>
           </button>
         </div>
       </form>
