@@ -26,7 +26,7 @@
       <h2 class="section-title">How it works</h2>
       <p class="section-subtitle">Our core values drive everything we do</p>
 
-      <div class="how-it-works-grid">
+      <div class="how-it-works-grid" style="display: grid; grid-template-columns: 1fr 1fr;">
         <div class="step-card reveal">
           <div class="step-card-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -36,24 +36,10 @@
         </div>
         <div class="step-card reveal">
           <div class="step-card-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-          </div>
-          <h3>Upload Resume</h3>
-          <p>Upload your CV and showcase your skills to employers</p>
-        </div>
-        <div class="step-card reveal">
-          <div class="step-card-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
           </div>
           <h3>Find Jobs</h3>
           <p>Search and filter through thousands of job listings</p>
-        </div>
-        <div class="step-card reveal">
-          <div class="step-card-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          </div>
-          <h3>Apply Job</h3>
-          <p>Apply to your dream job with just a few clicks</p>
         </div>
       </div>
     </div>
@@ -192,38 +178,6 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
               <span>Top Talents</span>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ====== NEWS AND BLOG ====== -->
-  <section class="section" id="news-blog">
-    <div class="container">
-      <h2 class="section-title">News and Blog</h2>
-      <p class="section-subtitle">Learn exactly how our platform can help you achieve your goals</p>
-      <div class="blog-grid">
-        <div class="blog-card reveal">
-          <div class="blog-card-image">
-            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80" alt="Team Meeting" loading="lazy">
-            <span class="blog-card-badge">Tips</span>
-          </div>
-          <div class="blog-card-content">
-            <span class="blog-card-date">Nov 17, 2024</span>
-            <h3>The best ways to land your dream job in 2024</h3>
-            <a href="#" class="blog-read-more">Read more →</a>
-          </div>
-        </div>
-        <div class="blog-card reveal">
-          <div class="blog-card-image">
-            <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&q=80" alt="Professional Interview" loading="lazy">
-            <span class="blog-card-badge">Career</span>
-          </div>
-          <div class="blog-card-content">
-            <span class="blog-card-date">Nov 12, 2024</span>
-            <h3>How to prepare for a technical interview: A complete guide</h3>
-            <a href="#" class="blog-read-more">Read more →</a>
           </div>
         </div>
       </div>

@@ -292,5 +292,48 @@ class JobVacancy {
         $stmt->execute();
         return $stmt->fetchAll();
     }
+
+    public function getRecentJobs($limit = 6) {
+        $query = "SELECT jv.*, 
+                         jt.Title_Name,
+                         jc.Category_Name,
+                         e.Company_Name,
+                         it.Industry_Name,
+                         jl.Level_Name,
+                         wa.Arrangement_Name,
+                         CONCAT(sr.Min_Salary, '-', sr.Max_Salary) as Range_Description,
+                         st.Type_Name,
+                         GROUP_CONCAT(DISTINCT s.Skill_Name) as Required_Skills,
+                         c.City_Name,
+                         co.Country_Name
+                  FROM Job_Vacancies jv
+                  LEFT JOIN Job_Titles jt ON jv.Title_ID = jt.Title_ID
+                  LEFT JOIN Job_Categories jc ON jv.Category_ID = jc.Category_ID
+                  LEFT JOIN Employers e ON jv.Employer_ID = e.Employer_ID
+                  LEFT JOIN Industries it ON jv.Industry_ID = it.Industry_ID
+                  LEFT JOIN Job_Levels jl ON jv.Level_ID = jl.Level_ID
+                  LEFT JOIN Work_Arrangements wa ON jv.Arrangement_ID = wa.Arrangement_ID
+                  LEFT JOIN Salary_Ranges sr ON jv.Salary_Range_ID = sr.Range_ID
+                  LEFT JOIN Salary_Types st ON jv.Salary_Type_ID = st.Type_ID
+                  LEFT JOIN Cities c ON jv.City_ID = c.City_ID
+                  LEFT JOIN Countries co ON jv.Country_ID = co.Country_ID
+                  LEFT JOIN Job_Vacancy_Skills jvs ON jv.Vacancy_ID = jvs.Vacancy_ID
+                  LEFT JOIN Skills s ON jvs.Skill_ID = s.Skill_ID
+                  GROUP BY jv.Vacancy_ID
+                  ORDER BY jv.Posting_Date DESC LIMIT :limit";
+                
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getTotalUniqueCompanies() {
+        $sql = "SELECT COUNT(DISTINCT Employer_ID) AS total_companies FROM Job_Vacancies;";
+                
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return (int) $stmt->fetchColumn();
+    }
 }
 ?>

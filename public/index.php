@@ -21,7 +21,15 @@ $db = $database->getConnection();
 
 switch($page) {
     case 'home':
-        $viewFile = 'home/index.php';
+        require_once __DIR__ . '/../controllers/homeController.php';
+        $homeCtrl = new HomeController($db,$baseUrl);
+        ob_start();
+        $homeCtrl->index();
+        $homeCtrl = ob_get_clean();
+        require_once $basePath . 'layouts/header.php';
+        echo $homeCtrl;
+        require_once $basePath . 'layouts/footer.php';
+        exit();
         break;
     case 'jobs':
         require_once __DIR__ . '/../controllers/jobseekerController.php';

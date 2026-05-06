@@ -59,7 +59,7 @@
                  &lt;?php unset($_SESSION['flash_success']); ?&gt;
                &lt;?php endif; ?&gt;
           -->
-          <form action="<?= $baseUrl ?>/submit" method="POST" data-validate id="contact-form">
+          <form action="<?= $baseUrl ?>/contact" method="POST" data-validate id="contact-form">
             <div class="form-row">
               <div class="form-group">
                 <label for="first-name">First Name</label>
@@ -86,22 +86,6 @@
           </form>
         </div>
       </div>
-
-      <!-- Map -->
-      <div class="contact-map" id="contact-map">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12095.521695058773!2d-73.8288611!3d40.7230685!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c2600472e50e2b%3A0x82e6954e1feddd28!2sForest%20Hills%2C%20Queens%2C%20NY%2C%20USA!5e0!3m2!1sen!2s!4v1" allowfullscreen="" loading="lazy" title="Office Location Map"></iframe>
-      </div>
-
-      <!-- Company Logos -->
-      <div class="logos-bar" style="border:none;padding:var(--space-xl) 0;">
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <div class="logo-item" style="font-size:28px;">zoom</div>
-          <div class="logo-item" style="font-size:28px;">🔥 tinder</div>
-          <div class="logo-item" style="font-size:28px;">dribbble</div>
-          <div class="logo-item" style="font-size:28px;">✦ asana</div>
-        </div>
-      </div>
-    </div>
   </section>
 
   
