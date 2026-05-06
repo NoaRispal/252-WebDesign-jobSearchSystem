@@ -66,7 +66,13 @@ switch($page) {
         }
         break;
     case 'reset':
-        $viewFile = 'auth/reset.php';
+        if (isset($urlParts[1]) && $urlParts[1] === 'auth') {
+            require_once __DIR__ . '/../controllers/authController.php';
+            $auth = new AuthController($db,$baseUrl);
+            $auth->reset();
+        } else {
+            $viewFile = 'auth/reset.php';
+        }
         break;
     // BEFORE LOGOUT FIX: No logout route existed in the front controller.
     case 'logout':

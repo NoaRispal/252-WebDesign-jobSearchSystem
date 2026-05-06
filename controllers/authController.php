@@ -120,6 +120,48 @@ class AuthController {
         }
     }
 
+    public function reset() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+            $newPassword = $_POST['new_password'];
+            $confirmPassword = $_POST['confirm_password'];
+    
+            if ($newPassword !== $confirmPassword) {
+                $_SESSION['flash'] = "The passwords do not match.";
+                $_SESSION['flash_type'] = "danger";
+                header("Location: " . $this->baseUrl."/reset");
+                exit;
+            }
+    
+            // User exists ?
+            $stmt = $this->db->prepare("SELECT User_ID FROM Users WHERE Email = :email");
+            $stmt->execute(['email' => $email]);
+            $user = $stmt->fetch();
+    
+            if ($user) {
+                $newHash = password_hash($newPassword, PASSWORD_DEFAULT);
+    
+                $update = $this->db->prepare("UPDATE Users SET Password_Hash = :hash WHERE Email = :email");
+                $success = $update->execute([
+                    'hash'  => $newHash,
+                    'email' => $email
+                ]);
+    
+                if ($success) {
+                    $_SESSION['flash'] = "Your password has been updated !";
+                    $_SESSION['flash_type'] = "success";
+                    header("Location: " . $this->baseUrl . "/login");
+                    exit;
+                }
+            } else {
+                $_SESSION['flash'] = "No account linked to this email.";
+                $_SESSION['flash_type'] = "danger";
+                header("Location: " . $this->baseUrl . "/reset");
+                exit;
+            }
+        }
+    }
+
     /**
      * Logout — destroy session and redirect to login page.
      * BEFORE LOGOUT FIX: No logout method existed; sidebar links just navigated to /login without clearing session.

@@ -1,3 +1,18 @@
+<!-- ====== FLASH ====== -->
+<?php 
+$isDanger = ($_SESSION['flash_type'] === 'danger');
+$bgColor  = $isDanger ? "#f8d7da" : "#d4edda";
+$brColor  = $isDanger ? "#f5c6cb" : "#c3e6cb";
+$txtColor = $isDanger ? "#721c24" : "#155724";
+if (isset($_SESSION['flash'])): ?>
+  <div class="alert" style="padding: 15px; background-color: <?= $bgColor ?>; color: <?= $txtColor ?>; border: 1px solid <?= $brColor ?>; border-radius: 4px; margin-bottom: 20px;">
+    <?= htmlspecialchars($_SESSION['flash']); ?>
+  </div>
+    <?php 
+        unset($_SESSION['flash']); 
+    ?>
+<?php endif; ?>
+
 <main class="auth-page" id="reset-page">
   <div class="auth-card" id="reset-card">
     <div style="text-align:center;margin-bottom:var(--space-lg);">
@@ -10,7 +25,7 @@
     <h1>Reset Password</h1>
     <p>Enter your new password below</p>
 
-    <form action="<?= $baseUrl ?>/submit" method="POST" data-validate id="reset-form">
+    <form action="<?= $baseUrl ?>/reset/auth" method="POST" data-validate id="reset-form">
       <div class="form-group">
         <label for="reset-email">Email Address</label>
         <input type="email" class="form-control" name="email" placeholder="Enter your email" required id="reset-email">
@@ -35,24 +50,3 @@
     </div>
   </div>
 </main>
-
-<script>
-  // Demo reset flow loop
-  document.getElementById('reset-form').addEventListener('submit', function(e) {
-    e.preventDefault(); // Prevent backend submission
-    
-    var email = document.getElementById('reset-email').value;
-    var pass = document.getElementById('reset-password').value;
-    var conf = document.getElementById('reset-password-confirm').value;
-
-    if (!email || !pass || !conf) return;
-
-    if (pass !== conf) {
-      alert("Error: Passwords do not match!");
-      return;
-    }
-
-    alert("Success! Your password has been reset. You will now be redirected to login.");
-    window.location.href = '<?= $baseUrl ?>/login';
-  });
-</script>
