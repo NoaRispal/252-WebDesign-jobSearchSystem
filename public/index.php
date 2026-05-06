@@ -53,12 +53,17 @@ switch($page) {
             $auth = new AuthController($db,$baseUrl);
             $auth->login();
         } else {
-            // Sinon, on affiche juste la page de login
             $viewFile = 'auth/login.php';
         }
         break;
     case 'register':
-        $viewFile = 'auth/register.php';
+        if (isset($urlParts[1]) && $urlParts[1] === 'auth') {
+            require_once __DIR__ . '/../controllers/authController.php';
+            $auth = new AuthController($db,$baseUrl);
+            $auth->register();
+        } else {
+            $viewFile = 'auth/register.php';
+        }
         break;
     case 'reset':
         $viewFile = 'auth/reset.php';

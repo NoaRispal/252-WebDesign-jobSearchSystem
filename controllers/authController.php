@@ -21,6 +21,7 @@ class AuthController {
 
             if (!$user) {
                 $_SESSION['flash'] = "Invalid email or password. Please try again.";
+                $_SESSION['flash_type'] = "danger";
                 header("Location: ".$this->baseUrl."/login");
                 exit;
             }
@@ -56,7 +57,64 @@ class AuthController {
             } else {
                 // $_SESSION['flash'] = password_hash("admin123",PASSWORD_DEFAULT);
                 $_SESSION['flash'] = "Invalid email or password. Please try again.";
+                $_SESSION['flash_type'] = "danger";
                 header("Location: ".$this->baseUrl."/login");
+                exit;
+            }
+        }
+    }
+
+    public function register() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $firstName = htmlspecialchars(trim($_POST['first_name']));
+            $lastName  = htmlspecialchars(trim($_POST['last_name']));
+            $email     = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+            $password  = $_POST['password'];
+            $roleName    = $_POST['role'];
+    
+            // Email already exists ? 
+            $stmtCheck = $this->db->prepare("SELECT User_ID FROM Users WHERE Email = :email");
+            $stmtCheck->execute(['email' => $email]);
+            
+            if ($stmtCheck->fetch()) {
+                $_SESSION['flash'] = "This email is already registered.";
+                $_SESSION['flash_type'] = "danger";
+                header("Location: " . $this->baseUrl . "/register");
+                exit;
+            }
+    
+            $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+
+            $req = "SELECT Role_ID
+            FROM ROLES 
+            WHERE Role_Name = :r_name;";
+            $stmtRole = $this->db->prepare($req);
+            $stmtRole->execute(['r_name' => strtolower($roleName)]);
+            $role = $stmtRole->fetch(PDO::FETCH_ASSOC);
+            $roleId = strtolower($role['Role_ID']);
+    
+            try {
+                $sql = "INSERT INTO Users (Role_ID, Email, Password_Hash) 
+                        VALUES (:role_id, :email, :hash_pwd)";
+                
+                $stmt = $this->db->prepare($sql);
+                $success = $stmt->execute([
+                    ':email' => $email,
+                    ':hash_pwd'  => $passwordHash,
+                    ':role_id'  => $roleId
+                ]);
+    
+                if ($success) {
+                    $_SESSION['flash'] = "Account created! You can now log in.";
+                    $_SESSION['flash_type'] = "success";
+                    header("Location: " . $this->baseUrl . "/login");
+                    exit;
+                }
+            } catch (PDOException $e) {
+                error_log("Erreur Register : " . $e->getMessage());
+                $_SESSION['flash'] = "An error occurred during registration.".$e->getMessage();
+                $_SESSION['flash_type'] = "danger";
+                header("Location: " . $this->baseUrl . "/register");
                 exit;
             }
         }

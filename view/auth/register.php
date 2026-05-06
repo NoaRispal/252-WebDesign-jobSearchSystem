@@ -1,13 +1,19 @@
-<!-- BACKEND: Rename to register.php -->
-<!-- BACKEND: &lt;?php session_start(); ?&gt; -->
-<!-- BACKEND: If already logged in, redirect: if(isset($_SESSION['user_id'])) { header('Location: index.php'); exit; } -->
-<!-- BACKEND: Display flash errors:
-     &lt;?php if(isset($_SESSION['register_errors'])): ?&gt;
-       &lt;?php foreach($_SESSION['register_errors'] as $error): ?&gt;
-         <div class="alert alert-error">&lt;?= $error ?&gt;</div>
-       &lt;?php endforeach; unset($_SESSION['register_errors']); ?&gt;
-     &lt;?php endif; ?&gt;
--->
+<!-- ====== FLASH ====== -->
+<?php 
+$isDanger = ($_SESSION['flash_type'] === 'danger');
+$bgColor  = $isDanger ? "#f8d7da" : "#d4edda";
+$brColor  = $isDanger ? "#f5c6cb" : "#c3e6cb";
+$txtColor = $isDanger ? "#721c24" : "#155724";
+if (isset($_SESSION['flash'])): ?>
+  <div class="alert" style="padding: 15px; background-color: <?= $bgColor ?>; color: <?= $txtColor ?>; border: 1px solid <?= $brColor ?>; border-radius: 4px; margin-bottom: 20px;">
+    <?= htmlspecialchars($_SESSION['flash']); ?>
+  </div>
+    <?php 
+        unset($_SESSION['flash']); 
+    ?>
+<?php endif; ?>
+
+
 <!-- ====== REGISTER FORM ====== -->
   <main class="auth-page" id="register-page">
     <div class="auth-card" style="max-width:520px;" id="register-card">
@@ -51,7 +57,7 @@
            Pre-fill form fields on validation failure:
            <input value="&lt;?= htmlspecialchars($_SESSION['old']['first_name'] ?? '') ?&gt;">
       -->
-      <form action="<?= $baseUrl ?>/submit" method="POST" data-validate id="register-form">
+      <form action="<?= $baseUrl ?>/register/auth" method="POST" data-validate id="register-form">
         <input type="hidden" name="role" value="job_seeker" id="role-hidden">
 
         <div class="form-row">
