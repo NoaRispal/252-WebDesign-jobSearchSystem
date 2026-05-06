@@ -1,3 +1,13 @@
+<!-- ====== FLASH ====== -->
+<?php if (isset($_SESSION['flash'])): ?>
+    <div class="alert alert-success" style="padding: 15px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 4px; margin-bottom: 20px;">
+        <?= $_SESSION['flash']; ?>
+    </div>
+    <?php 
+        unset($_SESSION['flash']); 
+    ?>
+<?php endif; ?>
+
 <!-- ====== DASHBOARD LAYOUT ====== -->
   <div class="dashboard-layout" id="dashboard-layout">
     <aside class="dashboard-sidebar" id="dashboard-sidebar">
@@ -19,11 +29,11 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4a2 2 0 012-2h8.5L20 7.5V20a2 2 0 01-2 2H6a2 2 0 01-2-2V7z"/><polyline points="14 2 14 8 20 8"/></svg>
           Reference Tables
         </a>
-        <a href="#">
+        <a href="<?= $baseUrl ?>/admin/dashboard">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
           All Job Postings
         </a>
-        <a href="#">
+        <a href="<?= $baseUrl ?>/admin/users">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
           Users
         </a>
@@ -147,7 +157,7 @@
                       <a href="<?= $baseUrl ?>/jobs/detail?id=<?= $job['Vacancy_ID'] ?? '' ?>" title="View">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                       </a>
-                      <form method="POST" action="index.php?c=admin&a=removeJob">
+                      <form method="POST" action="<?= $baseUrl ?>/admin/removeJob">
                         <input type="hidden" name="job_id" value="<?= $job['Vacancy_ID'] ?? '' ?>">
                         <button class="delete" title="Remove">
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>

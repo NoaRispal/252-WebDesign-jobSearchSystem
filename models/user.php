@@ -78,22 +78,34 @@ class User {
 
 
     public function create($data) {
-        $query = "INSERT INTO " . $this->table_name . " 
-                  SET full_name = :full_name, 
-                      email = :email, 
-                      password_hash = :password_hash, 
-                      role = :role";
+        $query = "INSERT INTO Users
+                  SET Email = :email, 
+                      Password_Hash = :password_hash, 
+                      Role_ID = :role_id";
 
         $stmt = $this->db->prepare($query);
 
-        $stmt->bindParam(':full_name', $data['full_name']);
         $stmt->bindParam(':email', $data['email']);
         $stmt->bindParam(':password_hash', $data['password_hash']);
-        $stmt->bindParam(':role', $data['role']);
+        $stmt->bindParam(':role_id', $data['role_id']);
 
         if($stmt->execute()) {
             return true;
         }
         return false;
+    }
+
+    public function delete($id) {
+        $query = "DELETE FROM Users WHERE User_ID = ?";
+        $stmt = $this->db->prepare($query);
+        return $stmt->execute([$id]);
+    }
+
+    public function getAllUser() {
+        $query = "SELECT User_ID, Role_ID, Email
+                FROM Users";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

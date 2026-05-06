@@ -16,25 +16,11 @@ class AdminController {
     private $base_url;
     private $userModel;
 
-    // public function __construct($db,$base_url) {
-    //     $this->db = $db;
-    //     $this->$base_url = $base_url;
-    //     $this->job_model = new JobVacancy($db);
-    //     $this->lookup_model = new lookup_model($db);
-    //     $this->userModel = new User($db);
-        
-    //     // Security : check if admin
-    //     if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') { 
-    //         header("Location:".$this->base_url."/login.php");
-    //         exit;
-    //     }
-    // }
-
     public function __construct($db,$base_url) {
         $this->db = $db;
-        $this->base_url = $base_url; // Fixed syntax: Removed the extra $
+        $this->base_url = $base_url;
         $this->job_model = new JobVacancy($db);
-        $this->lookup_model = new LookupModel($db); // Fixed syntax: Capitalized 'LookupModel'
+        $this->lookup_model = new LookupModel($db); 
         $this->userModel = new User($db);
         
         // Security : check if admin
@@ -58,14 +44,40 @@ class AdminController {
                 include '../view/admin/dashboard.php';
                 break;
 
-            case 'manage_jobs':
+            case 'users':
+                $data = $this->userModel->getAllUser(); 
+                $baseUrl = $this->base_url;
+                include '../view/admin/users.php';
+                break;
+
+            case 'addUser':
+                $data = [
+                    'email' => $_POST["email"],
+                    'password_hash' => password_hash($_POST["password"],PASSWORD_DEFAULT),
+                    'role_id' => $_POST["role_id"]
+                ];
+                $this->userModel->create($data);
+                $_SESSION['flash'] = "Created successfully!";
+                header("Location: " . $this->base_url . "/admin/users");
+                break;
+
+            case 'removeUser':
+                $id = $_POST['user_id'];
+                $this->userModel->delete($id);
+                $_SESSION['flash'] = "Deleted successfully!";
+                header("Location: " . $this->base_url . "/admin/users");
+                break;
+
+            case 'manageJob':
                 $allJobs = $this->job_model->listAll(); 
                 include '../views/admin/all_jobs.php';
                 break;
 
-            case 'delete_job':
-                $this->job_model->delete($_GET['id']);
-                header("Location: ?action=manage_jobs");
+            case 'removeJob':
+                $id = $_POST['job_id'];
+                $this->job_model->delete($id);
+                $_SESSION['flash'] = "Deleted successfully!";
+                header("Location: " . $this->base_url . "/admin/dashboard");
                 break;
 
             case 'addRef':
@@ -104,6 +116,8 @@ class AdminController {
                     'salary'     => $this->lookup_model->getAllFromTable('Salary_Ranges')
                 ];
 
+                $counts = $this->getCount();
+
                 $baseUrl = $this->base_url;
                 include '../view/admin/references.php';
                 break;
@@ -111,30 +125,65 @@ class AdminController {
     }
 
     public function updateLookup($action) {
-        $table = $_POST['table'] ?? '';
-        $name  = trim(htmlspecialchars($_POST['entry_name'] ?? ''));
-        $id    = $_POST['id'] ?? null;
-        $status = (isset($_POST['entry_status']) && $_POST['entry_status'] === 'active') ? 1 : 0;
-    
+        $tableName = $_POST['table'] ?? '';
+        $value = $_POST['entry_name'] ?? '';
+        $id = $_POST['id'] ?? null;
+
         switch ($action) {
             case 'create':
-                $this->lookup_model->addEntry($table, $name, $status);
+                $this->lookup_model->addEntry($tableName,$value);
                 $_SESSION['flash'] = "Created successfully!";
                 break;
     
             case 'update':
-                $this->lookup_model->updateEntry($table, $id, $name, $status);
+                $this->lookup_model->updateEntry($tableName, $id, $value);
                 $_SESSION['flash'] = "Updated successfully!";
                 break;
     
             case 'delete':
-                // Logique de vérification FK avant suppression
-                $this->lookup_model->deleteEntry($table, $id);
+                $this->lookup_model->deleteEntry($tableName, $id);
                 $_SESSION['flash'] = "Deleted successfully!";
                 break;
         }
         header("Location: " . $this->base_url . "/admin/references");
         exit();
+    }
+
+    public function getCount(){
+        $features = [
+            'categories' => ['JOB_CATEGORIES', 'Category_ID', 'Category_Name'],
+            'titles'     => ['JOB_TITLES', 'Title_ID', 'Title_Name'],
+            'industries' => ['INDUSTRIES', 'Industry_ID', 'Industry_Name'],
+            'types'      => ['EMPLOYMENT_TYPES', 'Emp_Type_ID', 'Type_Name'],
+            'levels'     => ['JOB_LEVELS', 'Level_ID', 'Level_Name'],
+        ];
+    
+        $counts = [];
+    
+        foreach ($features as $key => $config) {
+            $data = $this->job_model->countUsedByJobs($config[0], $config[1], $config[2]);
+            
+            /* 
+               We change res so $counts['categories'] is like :
+               [ "Finance" => 4, "Marketing" => 2, ... ]
+            */
+            foreach ($data as $row) {
+                $counts[$key][$row['feature_name']] = $row['used_by_jobs'];
+            }
+        }
+    
+        // For Skills
+        $skillData = $this->job_model->countSkillsUsed();
+        foreach ($skillData as $row) {
+            $counts['skills'][$row['Skill_Name']] = $row['used_by_jobs'];
+        }
+        // For salaries range
+        $salaryData = $this->job_model->countSalariesUsed();
+        foreach ($salaryData as $row) {
+            $counts['salaries'][$row['feature_name']] = $row['used_by_jobs'];
+        }
+
+        return $counts;
     }
 }
 

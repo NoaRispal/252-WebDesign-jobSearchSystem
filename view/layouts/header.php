@@ -41,6 +41,7 @@
           <a href="<?= $baseUrl ?>/about" class="<?= $urlParam === 'about' ? 'active' : '' ?>">About Us</a>
           <a href="<?= $baseUrl ?>/contact" class="<?= $urlParam === 'contact' ? 'active' : '' ?>">Contact Us</a>
         </div>
+        
       <?php endif; ?>
 
       <div class="navbar-actions">
@@ -54,6 +55,10 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             Admin
           </span>
+          <a href="<?= $baseUrl ?>/logout" class="btn btn-outline-danger btn-sm" title="Logout from the Admin Dashboard">
+            Logout
+          </a>
+          
 
         <?php elseif ($isEmployerDashboard): ?>
           <!-- Employer dashboard: minimal badge only — logout handled by sidebar -->
@@ -61,6 +66,9 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             Employer
           </span>
+          <a href="<?= $baseUrl ?>/logout" class="btn btn-outline-danger btn-sm" title="Logout from the Admin Dashboard">
+            Logout
+          </a>
 
         <?php elseif ($isAdminBrowsing): ?>
           <!-- Admin browsing public pages: show "Back to Dashboard" -->
@@ -72,6 +80,10 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             Admin
           </span>
+          <a href="<?= $baseUrl ?>/logout" class="btn btn-outline-danger btn-sm" title="Logout from the Admin Dashboard">
+            Logout
+          </a>
+          
 
         <?php elseif ($isJobSeeker): ?>
           <!-- Logged-in job seeker: profile badge + logout -->
@@ -79,8 +91,9 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             <?= htmlspecialchars($_SESSION['full_name'] ?? 'Job Seeker') ?>
           </span>
-          <!-- BEFORE LOGOUT FIX: <a href="<?= $baseUrl ?>/login" class="btn btn-outline btn-sm" id="logout-btn">Logout</a> -->
-          <a href="<?= $baseUrl ?>/logout" class="btn btn-outline btn-sm" id="logout-btn">Logout</a>
+          <a href="<?= $baseUrl ?>/logout" class="btn btn-outline-danger btn-sm" title="Logout from the Admin Dashboard">
+            Logout
+          </a>
 
         <?php else: ?>
           <!-- Guest: Login + Register -->
@@ -108,8 +121,9 @@
     <?php if ($isAdminBrowsing): ?>
         <a href="<?= $baseUrl ?>/admin/dashboard" class="btn btn-primary">← Back to Dashboard</a>
     <?php elseif ($isJobSeeker): ?>
-        <!-- BEFORE LOGOUT FIX: <a href="<?= $baseUrl ?>/login" class="btn btn-outline">Logout</a> -->
-        <a href="<?= $baseUrl ?>/logout" class="btn btn-outline">Logout</a>
+      <a href="<?= $baseUrl ?>/logout" class="btn btn-outline-danger btn-sm" title="Logout from the Admin Dashboard">
+            Logout
+      </a>
     <?php else: ?>
         <a href="<?= $baseUrl ?>/login" <?= $urlParam === 'login' ? 'class="active"' : '' ?>>Login</a>
         <a href="<?= $baseUrl ?>/register" class="btn btn-primary">Register</a>

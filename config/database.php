@@ -11,7 +11,7 @@ class Database {
     private string $host     = 'localhost';
     private string $db_name  = 'job_search_db';
     private string $username = 'root';
-    private string $password = '';
+    private string $password = 'root';
     private string $charset  = 'utf8mb4';
 
    
@@ -38,8 +38,10 @@ class Database {
         try {
             $this->conn = new PDO($dsn, $this->username, $this->password, $options);
         } catch (PDOException $e) {
+            // In dev use this to debug
+            die("Database connection failed (Make sure to have the right credentials): " . $e->getMessage());
             
-            error_log('Database connection failed: ' . $e->getMessage());
+            // error_log('Database connection failed: ' . $e->getMessage());
             $this->conn = null;
         }
 

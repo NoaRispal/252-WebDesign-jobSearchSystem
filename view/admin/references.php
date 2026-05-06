@@ -1,3 +1,13 @@
+<!-- ====== FLASH ====== -->
+<?php if (isset($_SESSION['flash'])): ?>
+    <div class="alert alert-success" style="padding: 15px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 4px; margin-bottom: 20px;">
+        <?= $_SESSION['flash']; ?>
+    </div>
+    <?php 
+        unset($_SESSION['flash']); 
+    ?>
+<?php endif; ?>
+
 <!-- ====== DASHBOARD LAYOUT ====== -->
   <div class="dashboard-layout" id="dashboard-layout">
     <aside class="dashboard-sidebar" id="dashboard-sidebar">
@@ -13,8 +23,8 @@
       <nav class="dashboard-sidebar-nav" id="sidebar-nav">
         <a href="<?= $baseUrl ?>/admin/dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Dashboard</a>
         <a href="<?= $baseUrl ?>/admin/references" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4a2 2 0 012-2h8.5L20 7.5V20a2 2 0 01-2 2H6a2 2 0 01-2-2V7z"/><polyline points="14 2 14 8 20 8"/></svg> Reference Tables</a>
-        <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg> All Job Postings</a>
-        <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg> Users</a>
+        <a href="<?= $baseUrl ?>/admin/dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg> All Job Postings</a>
+        <a href="<?= $baseUrl ?>/admin/users"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg> Users</a>
         <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg> Settings</a>
         <a href="<?= $baseUrl ?>/logout" style="margin-top:var(--space-xl);color:rgba(255,255,255,0.4);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Logout</a>
       </nav>
@@ -55,13 +65,12 @@
                   <tr>
                     <td><?= $cat['id'] ?></td>
                     <td><?= htmlspecialchars($cat['name']) ?></td>
-                    <!-- FUTURE CHANGELOG: Backend team needs to populate Job Count here (e.g., using a JOIN with job_vacancies) -->
-                    <td>0</td>
+                    <td><?= $counts['categories'][$cat['name']] ?? 0; ?></td>
                     <td><div class="table-actions">
                       <button data-modal="add-modal" data-edit-id="<?= $cat['id'] ?>" 
                               data-edit-name="<?= htmlspecialchars($cat['name']) ?>"
                               data-edit-table="job_categories" class="edit-btn" title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-                      <form method="POST" action="index.php?c=admin&a=deleteRef">
+                      <form method="POST" action="<?= $baseUrl ?>/admin/deleteRef">
                         <input type="hidden" name="table" value="job_categories">
                         <input type="hidden" name="id" value="<?= $cat['id'] ?>">
                         <button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
@@ -87,13 +96,12 @@
                   <tr>
                     <td><?= $t['id'] ?></td>
                     <td><?= htmlspecialchars($t['name']) ?></td>
-                    <!-- FUTURE CHANGELOG: Backend team needs to populate Used By Jobs count here -->
-                    <td>0</td>
+                    <td><?= $counts['titles'][$t['name']] ?? 0; ?></td>
                     <td><div class="table-actions">
                       <button data-modal="add-modal" data-edit-id="<?= $t['id'] ?>" 
                               data-edit-name="<?= htmlspecialchars($t['name']) ?>"
                               data-edit-table="job_titles" class="edit-btn" title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-                      <form method="POST" action="index.php?c=admin&a=deleteRef">
+                      <form method="POST" action="<?= $baseUrl ?>/admin/deleteRef">
                         <input type="hidden" name="table" value="job_titles">
                         <input type="hidden" name="id" value="<?= $t['id'] ?>">
                         <button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
@@ -119,13 +127,12 @@
                   <tr>
                     <td><?= $s['id'] ?></td>
                     <td><?= htmlspecialchars($s['name']) ?></td>
-                    <!-- FUTURE CHANGELOG: Backend team needs to populate Used By Jobs count here -->
-                    <td>0</td>
+                    <td><?= $counts['skills'][$s['name']] ?? 0; ?></td>
                     <td><div class="table-actions">
                       <button data-modal="add-modal" data-edit-id="<?= $s['id'] ?>" 
                               data-edit-name="<?= htmlspecialchars($s['name']) ?>"
                               data-edit-table="skills" class="edit-btn" title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-                      <form method="POST" action="index.php?c=admin&a=deleteRef">
+                      <form method="POST" action="<?= $baseUrl ?>/admin/deleteRef">
                         <input type="hidden" name="table" value="skills">
                         <input type="hidden" name="id" value="<?= $s['id'] ?>">
                         <button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
@@ -150,13 +157,12 @@
                   <tr>
                     <td><?= $s['id'] ?></td>
                     <td><?= htmlspecialchars($s['name']) ?></td>
-                    <!-- FUTURE CHANGELOG: Backend team needs to populate Used By Jobs count here -->
-                    <td>0</td>
+                    <td><?= $counts['industries'][$s['name']] ?? 0; ?></td>
                     <td><div class="table-actions">
                       <button data-modal="add-modal" data-edit-id="<?= $s['id'] ?>" 
                               data-edit-name="<?= htmlspecialchars($s['name']) ?>"
                               data-edit-table="industries" class="edit-btn" title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-                      <form method="POST" action="index.php?c=admin&a=deleteRef">
+                      <form method="POST" action="<?= $baseUrl ?>/admin/deleteRef">
                         <input type="hidden" name="table" value="industries">
                         <input type="hidden" name="id" value="<?= $s['id'] ?>">
                         <button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
@@ -181,13 +187,12 @@
                   <tr>
                     <td><?= $s['id'] ?></td>
                     <td><?= htmlspecialchars($s['name']) ?></td>
-                    <!-- FUTURE CHANGELOG: Backend team needs to populate Used By Jobs count here -->
-                    <td>0</td>
+                    <td><?= $counts['types'][$s['name']] ?? 0; ?></td>
                     <td><div class="table-actions">
                       <button data-modal="add-modal" data-edit-id="<?= $s['id'] ?>" 
                               data-edit-name="<?= htmlspecialchars($s['name']) ?>"
                               data-edit-table="employment_types" class="edit-btn" title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-                      <form method="POST" action="index.php?c=admin&a=deleteRef">
+                      <form method="POST" action="<?= $baseUrl ?>/admin/deleteRef">
                         <input type="hidden" name="table" value="employment_types">
                         <input type="hidden" name="id" value="<?= $s['id'] ?>">
                         <button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
@@ -212,13 +217,12 @@
                   <tr>
                     <td><?= $s['id'] ?></td>
                     <td><?= htmlspecialchars($s['name']) ?></td>
-                    <!-- FUTURE CHANGELOG: Backend team needs to populate Used By Jobs count here -->
-                    <td>0</td>
+                    <td><?= $counts['levels'][$s['name']] ?? 0; ?></td>
                     <td><div class="table-actions">
                       <button data-modal="add-modal" data-edit-id="<?= $s['id'] ?>" 
                               data-edit-name="<?= htmlspecialchars($s['name']) ?>"
                               data-edit-table="job_levels" class="edit-btn" title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-                      <form method="POST" action="index.php?c=admin&a=deleteRef">
+                      <form method="POST" action="<?= $baseUrl ?>/admin/deleteRef">
                         <input type="hidden" name="table" value="job_levels">
                         <input type="hidden" name="id" value="<?= $s['id'] ?>">
                         <button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
@@ -243,13 +247,12 @@
                   <tr>
                     <td><?= $s['id'] ?></td>
                     <td><?= htmlspecialchars($s['name']) ?></td>
-                    <!-- FUTURE CHANGELOG: Backend team needs to populate Used By Jobs count here -->
-                    <td>0</td>
+                    <td><?= $counts['salaries'][$s['name']] ?? 0 ?></td>
                     <td><div class="table-actions">
                       <button data-modal="add-modal" data-edit-id="<?= $s['id'] ?>" 
                               data-edit-name="<?= htmlspecialchars($s['name']) ?>"
                               data-edit-table="salary_ranges" class="edit-btn" title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-                      <form method="POST" action="index.php?c=admin&a=deleteRef">
+                      <form method="POST" action="<?= $baseUrl ?>/admin/deleteRef">
                         <input type="hidden" name="table" value="salary_ranges">
                         <input type="hidden" name="id" value="<?= $s['id'] ?>">
                         <button class="delete" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
@@ -273,7 +276,7 @@
         <h2 id="modal-title">Add New Entry</h2>
         <button class="modal-close" aria-label="Close modal">&times;</button>
       </div>
-      <form action="<?= $baseUrl ?>/index.php?c=admin&a=addRef" method="POST" id="add-entry-form">
+      <form action="<?= $baseUrl ?>/admin/addRef" method="POST" id="add-entry-form">
         <input type="hidden" name="id" id="entry-id">
         <input type="hidden" name="table" id="entry-table" value="job_categories">
         <div class="form-group">
@@ -324,7 +327,7 @@
             var table = this.getAttribute('data-edit-table');
             
             document.getElementById('modal-title').innerText = 'Edit Entry';
-            document.getElementById('add-entry-form').action = "<?= $baseUrl ?>/index.php?c=admin&a=updateRef";
+            document.getElementById('add-entry-form').action = "<?= $baseUrl ?>/admin/updateRef";
             document.getElementById('entry-id').value = id;
             document.getElementById('entry-table').value = table;
             document.getElementById('entry-name').value = name;
@@ -337,7 +340,7 @@
     // Handle Add New Button
     document.getElementById('add-new-btn').addEventListener('click', function() {
         document.getElementById('modal-title').innerText = 'Add New Entry';
-        document.getElementById('add-entry-form').action = "<?= $baseUrl ?>/index.php?c=admin&a=addRef";
+        document.getElementById('add-entry-form').action = "<?= $baseUrl ?>/admin/addRef";
         document.getElementById('entry-id').value = '';
         document.getElementById('entry-name').value = '';
         // The table hidden input is already set by the tab switching logic

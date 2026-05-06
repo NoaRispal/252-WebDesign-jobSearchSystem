@@ -33,7 +33,7 @@ class JobVacancy {
     }
 
     public function delete($id) {
-        $query = "DELETE FROM Job_Vacancies WHERE id = ?";
+        $query = "DELETE FROM Job_Vacancies WHERE Vacancy_ID = ?";
         $stmt = $this->db->prepare($query);
         return $stmt->execute([$id]);
     }
@@ -112,6 +112,44 @@ class JobVacancy {
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return $row['total'];
+    }
+
+    public function countUsedByJobs($tableName, $idColumn, $nameColumn){
+        $query = "SELECT t.$nameColumn AS feature_name, COUNT(jv.Vacancy_ID) AS used_by_jobs
+            FROM $tableName t
+            LEFT JOIN JOB_VACANCIES jv ON t.$idColumn = jv.$idColumn
+            GROUP BY t.$idColumn, t.$nameColumn
+            ORDER BY used_by_jobs DESC";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function countSkillsUsed() {
+        $sql = "SELECT 
+                    s.Skill_Name, 
+                    COUNT(jvs.Vacancy_ID) AS used_by_jobs
+                FROM SKILLS s
+                LEFT JOIN JOB_VACANCY_SKILLS jvs ON s.Skill_ID = jvs.Skill_ID
+                GROUP BY s.Skill_ID, s.Skill_Name
+                ORDER BY used_by_jobs DESC";
+    
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function countSalariesUsed() {
+        $sql = "SELECT 
+                    CONCAT(Min_Salary, '-', Max_Salary) AS feature_name, 
+                    COUNT(jv.Vacancy_ID) AS used_by_jobs
+                FROM SALARY_RANGES t
+                LEFT JOIN JOB_VACANCIES jv ON t.Range_ID = jv.Salary_Range_ID
+                GROUP BY t.Range_ID, t.Min_Salary, t.Max_Salary";
+    
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
     }
 }
 ?>

@@ -17,13 +17,13 @@ class LookupModel {
     // Column mapping: table => [id_column, name_column]
     // The actual DB schema uses table-specific column names (Category_ID, Title_Name, etc.)
     private $columnMap = [
-        'Job_Categories'   => ['Category_ID',  'Category_Name'],
-        'Job_Titles'       => ['Title_ID',     'Title_Name'],
-        'Skills'           => ['Skill_ID',     'Skill_Name'],
-        'Industries'       => ['Industry_ID',  'Industry_Name'],
-        'Employment_Types' => ['Emp_Type_ID',  'Type_Name'],
-        'Job_Levels'       => ['Level_ID',     'Level_Name'],
-        'Salary_Ranges'    => ['Range_ID',     'CONCAT(Min_Salary, "-", Max_Salary)'],
+        'job_categories'   => ['Category_ID',  'Category_Name'],
+        'job_titles'       => ['Title_ID',     'Title_Name'],
+        'skills'           => ['Skill_ID',     'Skill_Name'],
+        'industries'       => ['Industry_ID',  'Industry_Name'],
+        'employment_types' => ['Emp_Type_ID',  'Type_Name'],
+        'job_levels'       => ['Level_ID',     'Level_Name'],
+        'salary_ranges'    => ['Range_ID',     'CONCAT(Min_Salary, "-", Max_Salary)'],
     ];
 
     public function __construct($db) {
@@ -31,6 +31,7 @@ class LookupModel {
     }
 
     public function getAllFromTable($table) {
+        $table = strtolower($table);
         if (!isset($this->columnMap[$table])) return [];
 
         list($idCol, $nameCol) = $this->columnMap[$table];
@@ -40,26 +41,22 @@ class LookupModel {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function addEntry($table, $name, $is_active = 1) {
+    public function addEntry($table,$value) {
+        $table = strtolower($table);
         if (!isset($this->columnMap[$table])) return false;
 
         list($idCol, $nameCol) = $this->columnMap[$table];
         $query = "INSERT INTO $table ($nameCol) VALUES (:name)";
         $stmt = $this->db->prepare($query);
-        $stmt->execute(['name' => $name]);
+        $stmt->execute(['name' => $value]);
         return $stmt;
     }
 
     public function deleteEntry($table, $id) {
+        $table = strtolower($table);
         if (!isset($this->columnMap[$table])) return false;
 
         list($idCol, $nameCol) = $this->columnMap[$table];
-
-        // BEFORE COLUMN FIX:
-        // $map = [ 'job_categories' => 'category_id', 'job_titles' => 'job_title_id', ... ];
-        // if (isset($map[$table])) {
-        //     $column = $map[$table];
-        //     $sql = "SELECT COUNT(*) FROM job_vacancies WHERE $column = :id";
 
         // Check if Foreign Key is referenced in job_vacancies
         $fkMap = [
@@ -83,9 +80,6 @@ class LookupModel {
         }
 
         if ($table === 'skills') {
-            // BEFORE PROPERTY FIX: used $this->conn instead of $this->db
-            // $sql = "SELECT COUNT(*) FROM job_vacancy_skills WHERE skill_id = :id";
-            // $stmt = $this->conn->prepare($sql);
             $sql = "SELECT COUNT(*) FROM Job_Vacancy_Skills WHERE Skill_ID = :id";
             $stmt = $this->db->prepare($sql);
             $stmt->execute(['id' => $id]);
@@ -100,7 +94,8 @@ class LookupModel {
 
     // BEFORE COLUMN FIX: public function updateEntry($table,$id,$is_active) {
     // BEFORE PROPERTY FIX: used $this->conn instead of $this->db
-    public function updateEntry($table, $id, $name, $is_active = 1) {
+    public function updateEntry($table, $id, $name) {
+        $table = strtolower($table);
         if (!isset($this->columnMap[$table])) return false;
 
         list($idCol, $nameCol) = $this->columnMap[$table];
