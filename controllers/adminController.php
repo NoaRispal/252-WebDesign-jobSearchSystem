@@ -99,7 +99,7 @@ class AdminController {
                     if (!empty($_POST['new_name'])) {
                         $new_name = trim(htmlspecialchars($_POST['new_name']));
                         $this->lookup_model->addEntry($target_table, $new_name);
-                        $_SESSION['flash_success'] = "Added successfully!";
+                        $_SESSION['flash'] = "Added successfully!";
                     }
                     
                     header("Location: " . $this->base_url . "/admin/references");

@@ -103,6 +103,20 @@ class AuthController {
                     ':hash_pwd'  => $passwordHash,
                     ':role_id'  => $roleId
                 ]);
+                $user_id = $this->db->lastInsertId();
+
+                if (strtolower($roleName)==='employer' && $user_id){
+                    $sql = "INSERT INTO Employers (User_ID, Company_Name, Company_Description, Website) 
+                            VALUES (:user_id, :name, :description, :website)";
+
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->execute([
+                        ':user_id'     => $user_id, 
+                        ':name'        => "Big Company",
+                        ':description' => "A very big company",
+                        ':website'     => "https://bigcompany.com"
+                    ]);
+                }
     
                 if ($success) {
                     $_SESSION['flash'] = "Account created! You can now log in.";
