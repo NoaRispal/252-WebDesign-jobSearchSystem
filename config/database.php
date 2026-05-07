@@ -11,7 +11,8 @@ class Database {
     private string $host     = 'localhost';
     private string $db_name  = 'job_search_db';
     private string $username = 'root';
-    private string $password = 'root';
+    //private string $password = 'root';
+    private string $password = '';
     private string $charset  = 'utf8mb4';
 
    
