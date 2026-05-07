@@ -208,7 +208,9 @@ function initSkillsManager() {
     }
     
     var skill = skillSelect.value;
+    var skillName = skillSelect.options[skillSelect.selectedIndex].text;
     var proficiency = profSelect ? profSelect.value : 'Intermediate';
+    var profName = profSelect.options[profSelect.selectedIndex].text;
     
     if (!skill) {
       alert('Please select a skill.');
@@ -228,9 +230,9 @@ function initSkillsManager() {
     badge.className = 'skill-badge';
     badge.setAttribute('data-skill', skill);
     badge.innerHTML =
-      '<input type="hidden" name="skills[' + index + '][name]" value="' + skill + '">' +
-      '<input type="hidden" name="skills[' + index + '][proficiency]" value="' + proficiency + '">' +
-      skill + ' (' + proficiency + ') ' +
+      '<input type="hidden" name="skills[' + index + '][id]" value="' + skill + '">' +
+      '<input type="hidden" name="skills[' + index + '][proficiency_id]" value="' + proficiency + '">' +
+      skillName + ' (' + profName + ') ' +
       '<button type="button" onclick="removeSkill(this, \'' + skill + '\')">&times;</button>';
     skillsList.appendChild(badge);
     
@@ -254,10 +256,10 @@ function removeSkill(btn, skill) {
     var inputs = b.querySelectorAll('input[type="hidden"]');
     inputs.forEach(function(input) {
       var name = input.getAttribute('name');
-      if (name.indexOf('[name]') > -1) {
-        input.setAttribute('name', 'skills[' + i + '][name]');
-      } else if (name.indexOf('[proficiency]') > -1) {
-        input.setAttribute('name', 'skills[' + i + '][proficiency]');
+      if (name.includes('[id]')) {
+        input.setAttribute('name', 'skills[' + i + '][id]');
+      } else if (name.includes('[proficiency_id]')) {
+        input.setAttribute('name', 'skills[' + i + '][proficiency_id]');
       }
     });
   });
