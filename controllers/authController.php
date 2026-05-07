@@ -15,7 +15,7 @@ class AuthController {
             $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
             $password = $_POST['password'];
 
-            $stmt = $this->db->prepare("SELECT * FROM Users WHERE Email = :email");
+            $stmt = $this->db->prepare("SELECT * FROM users WHERE email = :email");
             $stmt->execute(['email' => $email]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -26,19 +26,19 @@ class AuthController {
                 exit;
             }
 
-            $req = "SELECT Role_Name 
-            FROM ROLES 
-            WHERE Role_ID = :id;";
+            $req = "SELECT role_name 
+            FROM roles 
+            WHERE role_id = :id;";
             $stmtRole = $this->db->prepare($req);
-            $stmtRole->execute(['id' => $user['Role_ID']]);
+            $stmtRole->execute(['id' => $user['role_id']]);
             $role = $stmtRole->fetch(PDO::FETCH_ASSOC);
-            $roleName = strtolower($role['Role_Name']);
+            $roleName = strtolower($role['role_name']);
 
             // password_verify (PHP built-in) verify hash and salt of a password 
             // (hash and salt are stocked in the password_hash as well as the true password)
 
-            if ($user && password_verify($password, $user['Password_Hash'])) { 
-                $_SESSION['user_id'] = $user['User_ID'];
+            if ($user && password_verify($password, $user['password_hash'])) { 
+                $_SESSION['user_id'] = $user['user_id'];
                 $_SESSION['role'] = $roleName; // admin, employer, or job_seeker
                 // $_SESSION['full_name'] = $user['full_name'];
 
@@ -73,7 +73,7 @@ class AuthController {
             $roleName    = $_POST['role'];
     
             // Email already exists ? 
-            $stmtCheck = $this->db->prepare("SELECT User_ID FROM Users WHERE Email = :email");
+            $stmtCheck = $this->db->prepare("SELECT user_id FROM users WHERE email = :email");
             $stmtCheck->execute(['email' => $email]);
             
             if ($stmtCheck->fetch()) {
@@ -85,16 +85,16 @@ class AuthController {
     
             $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
-            $req = "SELECT Role_ID
-            FROM ROLES 
-            WHERE Role_Name = :r_name;";
+            $req = "SELECT role_id
+            FROM roles 
+            WHERE role_name = :r_name;";
             $stmtRole = $this->db->prepare($req);
             $stmtRole->execute(['r_name' => strtolower($roleName)]);
             $role = $stmtRole->fetch(PDO::FETCH_ASSOC);
-            $roleId = strtolower($role['Role_ID']);
+            $roleId = strtolower($role['role_id']);
     
             try {
-                $sql = "INSERT INTO Users (Role_ID, Email, Password_Hash) 
+                $sql = "INSERT INTO users (role_id, email, password_hash) 
                         VALUES (:role_id, :email, :hash_pwd)";
                 
                 $stmt = $this->db->prepare($sql);
@@ -106,7 +106,7 @@ class AuthController {
                 $user_id = $this->db->lastInsertId();
 
                 if (strtolower($roleName)==='employer' && $user_id){
-                    $sql = "INSERT INTO Employers (User_ID, Company_Name, Company_Description, Website) 
+                    $sql = "INSERT INTO employers (user_id, company_name, company_description, website) 
                             VALUES (:user_id, :name, :description, :website)";
 
                     $stmt = $this->db->prepare($sql);
@@ -148,14 +148,14 @@ class AuthController {
             }
     
             // User exists ?
-            $stmt = $this->db->prepare("SELECT User_ID FROM Users WHERE Email = :email");
+            $stmt = $this->db->prepare("SELECT user_id FROM users WHERE email = :email");
             $stmt->execute(['email' => $email]);
             $user = $stmt->fetch();
     
             if ($user) {
                 $newHash = password_hash($newPassword, PASSWORD_DEFAULT);
     
-                $update = $this->db->prepare("UPDATE Users SET Password_Hash = :hash WHERE Email = :email");
+                $update = $this->db->prepare("UPDATE users SET password_hash = :hash WHERE email = :email");
                 $success = $update->execute([
                     'hash'  => $newHash,
                     'email' => $email

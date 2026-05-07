@@ -1,0 +1,6 @@
+RewriteEngine On
+
+RewriteRule ^$ public/index.php [L,QSA]
+
+RewriteCond %{REQUEST_URI} !^/252-W/public/
+RewriteRule ^(.*)$ public/$1 [L,QSA]

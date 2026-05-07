@@ -75,7 +75,7 @@ class AdminController {
 
             case 'removeJob':
                 $id = $_POST['job_id'];
-                $this->job_model->delete($id);
+                $this->job_model->delete($id,1,true);
                 $_SESSION['flash'] = "Deleted successfully!";
                 header("Location: " . $this->base_url . "/admin/dashboard");
                 break;
@@ -106,14 +106,13 @@ class AdminController {
                     exit();
                 }
                 $data = [
-                    'categories' => $this->lookup_model->getAllFromTable('Job_Categories'),
-                    'titles'     => $this->lookup_model->getAllFromTable('Job_Titles'),
-                    'skills'     => $this->lookup_model->getAllFromTable('Skills'),
-                    'industries' => $this->lookup_model->getAllFromTable('Industries'),
-                    // BEFORE COLUMN FIX: 'locations' was fetched here but the table doesn't exist in the DB
-                    'employment' => $this->lookup_model->getAllFromTable('Employment_Types'),
-                    'levels'     => $this->lookup_model->getAllFromTable('Job_Levels'),
-                    'salary'     => $this->lookup_model->getAllFromTable('Salary_Ranges')
+                    'categories' => $this->lookup_model->getAllFromTable('job_categories'),
+                    'titles'     => $this->lookup_model->getAllFromTable('job_titles'),
+                    'skills'     => $this->lookup_model->getAllFromTable('skills'),
+                    'industries' => $this->lookup_model->getAllFromTable('industries'),
+                    'employment' => $this->lookup_model->getAllFromTable('employment_yypes'),
+                    'levels'     => $this->lookup_model->getAllFromTable('job_levels'),
+                    'salary'     => $this->lookup_model->getAllFromTable('salary_ranges')
                 ];
 
                 $counts = $this->getCount();
@@ -151,11 +150,11 @@ class AdminController {
 
     public function getCount(){
         $features = [
-            'categories' => ['JOB_CATEGORIES', 'Category_ID', 'Category_Name'],
-            'titles'     => ['JOB_TITLES', 'Title_ID', 'Title_Name'],
-            'industries' => ['INDUSTRIES', 'Industry_ID', 'Industry_Name'],
-            'types'      => ['EMPLOYMENT_TYPES', 'Emp_Type_ID', 'Type_Name'],
-            'levels'     => ['JOB_LEVELS', 'Level_ID', 'Level_Name'],
+            'categories' => ['job_categories', 'category_id', 'category_name'],
+            'titles'     => ['job_titles', 'title_id', 'title_name'],
+            'industries' => ['industries', 'industry_id', 'industry_name'],
+            'types'      => ['employment_types', 'emp_type_id', 'type_name'],
+            'levels'     => ['job_levels', 'level_id', 'level_name'],
         ];
     
         $counts = [];
@@ -175,7 +174,7 @@ class AdminController {
         // For Skills
         $skillData = $this->job_model->countSkillsUsed();
         foreach ($skillData as $row) {
-            $counts['skills'][$row['Skill_Name']] = $row['used_by_jobs'];
+            $counts['skills'][$row['skill_name']] = $row['used_by_jobs'];
         }
         // For salaries range
         $salaryData = $this->job_model->countSalariesUsed();

@@ -94,63 +94,22 @@
               </tr>
             </thead>
             <tbody>
-                <!-- OLD VERSION (Commented out for reference)
-                <?php /* foreach($allJobs as $job): ?>;
-                  <tr>
-                    <td><strong><?= htmlspecialchars($job['title']) ?>;</strong></td>
-                    <td><?= htmlspecialchars($job['employer_name']) ?>;</td>
-                    <td><?= htmlspecialchars($job['category_name']) ?>;</td>
-                    <td><?= htmlspecialchars($job['city'] . ', ' . $job['country']) ?>;</td>
-                    <td><span class="status-badge <?= $job['is_active'] ? 'active' : 'inactive' ?>;">
-                      <?= $job['is_active'] ? 'Active' : 'Inactive' ?>;</span></td>
-                    <td><?= date('M d, Y', strtotime($job['created_at'])) ?>;</td>
-                    <td><div class="table-actions">
-                      <a href="<?= $baseUrl ?>;/jobs/detail?id=<?= $job['id'] ?>;" title="View">view icon</a>
-                      <form method="POST" action="index.php?c=admin&a=removeJob">
-                        <input type="hidden" name="job_id" value="<?= $job['id'] ?>;">
-                        <button class="delete" title="Remove">remove icon</button>
-                      </form>
-                    </div></td>
-                  </tr>
-                <?php endforeach; */ ?> 
-                -->
-                <!-- BEFORE RESPONSIVE CARD REFACTOR:
-                <?php /* foreach($allJobs as $job): ?>
-                  <tr>
-                    <td><strong><?= htmlspecialchars($job['Title_Name'] ?? 'Unknown Title') ?></strong></td>
-                    <td><?= htmlspecialchars($job['Company_Name'] ?? 'Unknown Employer') ?></td>
-                    <td><?= htmlspecialchars($job['Category_Name'] ?? 'Unknown Category') ?></td>
-                    <td><?= htmlspecialchars(($job['City_Name'] ?? '') . ', ' . ($job['Country_Name'] ?? '')) ?></td>
-                    <td><span class="status-badge <?= !empty($job['Is_Active']) ? 'active' : 'inactive' ?>">
-                      <?= !empty($job['Is_Active']) ? 'Active' : 'Inactive' ?></span></td>
-                    <td><?= date('M d, Y', strtotime($job['Posting_Date'] ?? 'now')) ?></td>
-                    <td><div class="table-actions">
-                      <a href="<?= $baseUrl ?>/jobs/detail?id=<?= $job['Vacancy_ID'] ?? '' ?>" title="View">view icon</a>
-                      <form method="POST" action="index.php?c=admin&a=removeJob">
-                        <input type="hidden" name="job_id" value="<?= $job['Vacancy_ID'] ?? '' ?>">
-                        <button class="delete" title="Remove">remove icon</button>
-                      </form>
-                    </div></td>
-                  </tr>
-                <?php endforeach; */ ?>
-                END BEFORE RESPONSIVE CARD REFACTOR -->
-
                 <?php foreach($allJobs as $job): ?>
                   <tr>
-                    <td class="card-primary" data-label="Job Title"><strong><?= htmlspecialchars($job['Title_Name'] ?? 'Unknown Title') ?></strong></td>
-                    <td class="card-detail" data-label="Employer"><?= htmlspecialchars($job['Company_Name'] ?? 'Unknown Employer') ?></td>
-                    <td class="card-detail" data-label="Category"><?= htmlspecialchars($job['Category_Name'] ?? 'Unknown Category') ?></td>
-                    <td class="card-detail" data-label="Location"><?= htmlspecialchars(($job['City_Name'] ?? '') . ', ' . ($job['Country_Name'] ?? '')) ?></td>
-                    <td class="card-primary" data-label="Status"><span class="status-badge <?= !empty($job['Is_Active']) ? 'active' : 'inactive' ?>">
-                      <?= !empty($job['Is_Active']) ? 'Active' : 'Inactive' ?></span></td>
-                    <td class="card-detail" data-label="Posted"><?= date('M d, Y', strtotime($job['Posting_Date'] ?? 'now')) ?></td>
+                    <td class="card-primary" data-label="Job Title"><strong><?= htmlspecialchars($job['title_name'] ?? 'Unknown Title') ?></strong></td>
+                    <td class="card-detail" data-label="Employer"><?= htmlspecialchars($job['company_name'] ?? 'Unknown Employer') ?></td>
+                    <td class="card-detail" data-label="Category"><?= htmlspecialchars($job['category_name'] ?? 'Unknown Category') ?></td>
+                    <td class="card-detail" data-label="Location"><?= htmlspecialchars(($job['city_name'] ?? '') . ', ' . ($job['country_name'] ?? '')) ?></td>
+                    <td class="card-primary" data-label="Status"><span class="status-badge <?= !empty($job['is_active']) ? 'active' : 'inactive' ?>">
+                      <?= !empty($job['is_active']) ? 'Active' : 'Inactive' ?></span></td>
+                    <td class="card-detail" data-label="Posted"><?= date('M d, Y', strtotime($job['posting_date'] ?? 'now')) ?></td>
                     <!-- BEFORE ICON FIX: <a ...>view icon</a> / <button ...>remove icon</button> -->
                     <td class="card-detail" data-label="Actions"><div class="table-actions">
-                      <a href="<?= $baseUrl ?>/jobs/detail?id=<?= $job['Vacancy_ID'] ?? '' ?>" title="View">
+                      <a href="<?= $baseUrl ?>/jobs/detail?id=<?= $job['vacancy_id'] ?? '' ?>" title="View">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                       </a>
                       <form method="POST" action="<?= $baseUrl ?>/admin/removeJob">
-                        <input type="hidden" name="job_id" value="<?= $job['Vacancy_ID'] ?? '' ?>">
+                        <input type="hidden" name="job_id" value="<?= $job['vacancy_id'] ?? '' ?>">
                         <button class="delete" title="Remove">
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
                         </button>

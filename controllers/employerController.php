@@ -37,7 +37,7 @@ class EmployerController {
             case 'dashboard':
                 $user = $this->userModel->getUserDataById($user_id);
                 $employer = $this->userModel->getEmployerDataById($user_id);
-                $all_jobs = $this->jobModel->listByEmployer($employer["Employer_ID"]);
+                $all_jobs = $this->jobModel->listByEmployer($employer["employer_id"]);
                 $baseUrl = $this->base_url;
                 include '../view/employer/dashboard.php';
                 break;
@@ -74,7 +74,7 @@ class EmployerController {
                     $jobId = $_POST['job_id'] ?? null;
 
                     $jobData = [
-                        'employer_id'            => $this->userModel->getEmployerDataById($_SESSION['user_id'])['Employer_ID'],
+                        'employer_id'            => $this->userModel->getEmployerDataById($_SESSION['user_id'])['employer_id'],
                         'title_id'               => $_POST['job_title'],
                         'category_id'            => $_POST['job_category'],
                         'district_id'            => $_POST['district'],
@@ -119,7 +119,7 @@ class EmployerController {
                 break;
 
             case 'delete':
-                $employer_id = $this->userModel->getEmployerDataById($_SESSION['user_id'])['Employer_ID'];
+                $employer_id = $this->userModel->getEmployerDataById($_SESSION['user_id'])['employer_id'];
                 $success = $this->jobModel->delete($_POST['job_id'],$employer_id);
                 $_SESSION['flash'] = $success ? "Job deleted successfully!" : "Error : The job has not been deleted.";
                 header("Location: " . $this->base_url . "/employer/dashboard");

@@ -522,7 +522,8 @@ async function submitJobFilter() {
     generateJobListCount(result);
     generateJobListResultContent(result);
     generateJobListPagination(result);
-  } catch (err) { console.error("Error processing form:", err); }
+  } catch (err) {    
+    console.error("Error processing form:", err); }
 }
 
 /* ============================================
@@ -564,7 +565,7 @@ function generateJobListResultContent(result) {
     jobCard.className = 'job-card';
     jobCard.innerHTML = `
       <div class="job-card-header">
-        <span class="job-card-time">Posted on ${(new Date(job.Posting_Date)).toLocaleDateString()}</span>
+        <span class="job-card-time">Posted on ${(new Date(job.posting_date)).toLocaleDateString()}</span>
         <button class="job-card-bookmark" aria-label="Bookmark">
           <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
@@ -572,10 +573,10 @@ function generateJobListResultContent(result) {
         </button>
       </div>
       <div class="job-card-info">
-        ${generateJobListIcon(job.Title_Name, job.Vacancy_ID)}
+        ${generateJobListIcon(job.title_name, job.vacancy_id)}
         <div>
-          <h3 class="job-card-title">${htmlEscape(job.Title_Name)}</h3>
-          <p class="job-card-company">${htmlEscape(job.Company_Name)}</p>
+          <h3 class="job-card-title">${htmlEscape(job.title_name)}</h3>
+          <p class="job-card-company">${htmlEscape(job.company_name)}</p>
         </div>
       </div>
       <div class="job-card-footer">
@@ -584,28 +585,28 @@ function generateJobListResultContent(result) {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
             </svg>
-            ${htmlEscape(job.Category_Name)}
+            ${htmlEscape(job.category_name)}
           </span>
           <span class="job-tag">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
             </svg>
-            ${htmlEscape(job.Type_Name)}
+            ${htmlEscape(job.type_name)}
           </span>
           <span class="job-tag">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/>
             </svg>
-            $${Number(job.Min_Salary).toLocaleString()}-$${Number(job.Max_Salary).toLocaleString()}
+            $${Number(job.min_salary).toLocaleString()}-$${Number(job.max_salary).toLocaleString()}
           </span>
           <span class="job-tag">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
             </svg>
-            ${htmlEscape(job.City_Name)}, ${htmlEscape(job.District_Name)}, ${htmlEscape(job.Country_Name)}
+            ${htmlEscape(job.city_name)}, ${htmlEscape(job.district_name)}, ${htmlEscape(job.country_name)}
           </span>
         </div>
-        <a href="/252-WebDesign-jobSearchSystem/public/jobs/detail?id=${job.Vacancy_ID}" class="btn-job-details">Job Details</a>
+        <a href="/252-WebDesign-jobSearchSystem/public/jobs/detail?id=${job.vacancy_id}" class="btn-job-details">Job Details</a>
       </div>
     `;
     jobsContent.appendChild(jobCard);

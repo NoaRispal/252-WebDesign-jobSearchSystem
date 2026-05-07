@@ -6,7 +6,7 @@ This model supports Role-Based Access Control (RBAC) as required by the system.
  */
 class User {
     private $db;
-    private $table_name = "Users";
+    private $table_name = "users";
 
     // Table columns
     public $id;
@@ -34,8 +34,8 @@ class User {
 
     public function getUserDataById($id) {
         $query = "SELECT * 
-                  FROM Users
-                  WHERE User_ID = :id 
+                  FROM users
+                  WHERE user_id = :id 
                   LIMIT 1";
 
         $stmt = $this->db->prepare($query);
@@ -45,8 +45,8 @@ class User {
 
     public function getEmployerDataById($id) {
         $query = "SELECT * 
-                  FROM Employers
-                  WHERE User_ID = :id 
+                  FROM employers
+                  WHERE user_id = :id 
                   LIMIT 1";
 
         $stmt = $this->db->prepare($query);
@@ -76,8 +76,8 @@ class User {
         // Valid roles according to system specifications: employer, job_seeker, admin 
         $query = "SELECT COUNT(*) as total 
                   FROM " . $this->table_name . " u
-                  JOIN Roles r ON u.Role_ID = r.Role_ID
-                  WHERE r.Role_Name = :role";
+                  JOIN roles r ON u.role_id = r.role_id
+                  WHERE r.role_name = :role";
 
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':role', $role);
@@ -89,10 +89,10 @@ class User {
 
 
     public function create($data) {
-        $query = "INSERT INTO Users
-                  SET Email = :email, 
-                      Password_Hash = :password_hash, 
-                      Role_ID = :role_id";
+        $query = "INSERT INTO users
+                  SET email = :email, 
+                      password_hash = :password_hash, 
+                      role_id = :role_id";
 
         $stmt = $this->db->prepare($query);
 
@@ -107,14 +107,14 @@ class User {
     }
 
     public function delete($id) {
-        $query = "DELETE FROM Users WHERE User_ID = ?";
+        $query = "DELETE FROM users WHERE user_id = ?";
         $stmt = $this->db->prepare($query);
         return $stmt->execute([$id]);
     }
 
     public function getAllUser() {
-        $query = "SELECT User_ID, Role_ID, Email
-                FROM Users";
+        $query = "SELECT user_id, role_id, email
+                FROM users";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

@@ -35,6 +35,8 @@ switch($page) {
         require_once __DIR__ . '/../controllers/jobseekerController.php';
         require_once __DIR__ . '/../models/jobSearch.php';
 
+        
+
         if (!isset($urlParts[1])) $viewFile = 'jobs/list.php';
         elseif ($urlParts[1] === 'detail') {
             $response = JobseekerController::getJobDetail($db);

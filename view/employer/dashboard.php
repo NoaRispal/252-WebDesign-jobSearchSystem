@@ -62,7 +62,7 @@
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
           </div>
           <h3>
-            <?= count(array_filter($all_jobs, function($job) {return $job['Is_Active'] == 1;})); ?>
+            <?= count(array_filter($all_jobs, function($job) {return $job['is_active'] == 1;})); ?>
           </h3>
           <p>Active Jobs</p>
         </div>
@@ -71,7 +71,7 @@
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
           </div>
           <h3>
-            <?= count(array_filter($all_jobs, function($job) {return $job['Is_Active'] == 0;})); ?>
+            <?= count(array_filter($all_jobs, function($job) {return $job['is_active'] == 0;})); ?>
           </h3>
           <p>Inactive Jobs</p>
         </div>
@@ -102,28 +102,28 @@
             <tbody>
             <?php foreach($all_jobs as $job): ?>
                 <tr>
-                  <td class="card-primary" data-label="Job Title"><strong><?= htmlspecialchars($job['Title_Name']) ?></strong></td>
-                  <td class="card-detail" data-label="Category"><?= htmlspecialchars($job['Category_Name']) ?></td>
-                  <td class="card-detail" data-label="Type"><?= htmlspecialchars($job['Employment_Type_Name']) ?></td>
-                  <td class="card-detail" data-label="Location"><?= htmlspecialchars($job['City_Name'] . ', ' . $job['Country_Name']) ?></td>
-                  <td class="card-detail" data-label="Salary"><?= htmlspecialchars($job['Range_Description']) ?></td>
-                  <td class="card-primary" data-label="Status"><span class="status-badge <?= $job['Is_Active'] ? 'active' : 'inactive' ?>">
-                  <?= $job['Is_Active'] ? 'Active' : 'Inactive' ?></span></td>
-                  <td class="card-detail" data-label="Posted"><?= date('M d, Y', strtotime($job['Posting_Date'])) ?></td>
+                  <td class="card-primary" data-label="Job Title"><strong><?= htmlspecialchars($job['title_name']) ?></strong></td>
+                  <td class="card-detail" data-label="Category"><?= htmlspecialchars($job['category_name']) ?></td>
+                  <td class="card-detail" data-label="Type"><?= htmlspecialchars($job['employment_type_name']) ?></td>
+                  <td class="card-detail" data-label="Location"><?= htmlspecialchars($job['city_name'] . ', ' . $job['country_name']) ?></td>
+                  <td class="card-detail" data-label="Salary"><?= htmlspecialchars($job['range_description']) ?></td>
+                  <td class="card-primary" data-label="Status"><span class="status-badge <?= $job['is_active'] ? 'active' : 'inactive' ?>">
+                  <?= $job['is_active'] ? 'Active' : 'Inactive' ?></span></td>
+                  <td class="card-detail" data-label="Posted"><?= date('M d, Y', strtotime($job['posting_date'])) ?></td>
                   <td class="card-detail" data-label="Actions">
                     <div class="table-actions">
-                      <a href="<?= $baseUrl ?>/employer/job-form?job_id_edit=<?= $job['Vacancy_ID'] ?>" title="Edit">
+                      <a href="<?= $baseUrl ?>/employer/job-form?job_id_edit=<?= $job['vacancy_id'] ?>" title="Edit">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                       </a>
                       <form method="POST" action="<?= $baseUrl ?>/employer/toggle" style="display:inline;">
-                        <input type="hidden" name="job_id" value="<?= $job['Vacancy_ID'] ?>">
-                        <input type="hidden" name="status" value="<?= $job['Is_Active'] ?>">
+                        <input type="hidden" name="job_id" value="<?= $job['vacancy_id'] ?>">
+                        <input type="hidden" name="status" value="<?= $job['is_active'] ?>">
                         <button type="submit" title="Toggle Status">
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M23 20v-6h-6"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15"/></svg>
                         </button>
                       </form>
                       <form method="POST" action="<?= $baseUrl ?>/employer/delete" style="display:inline;">
-                        <input type="hidden" name="job_id" value="<?= $job['Vacancy_ID'] ?>">
+                        <input type="hidden" name="job_id" value="<?= $job['vacancy_id'] ?>">
                         <button type="submit" class="delete" title="Delete">
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
                         </button>

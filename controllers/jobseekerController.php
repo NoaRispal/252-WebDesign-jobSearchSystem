@@ -1,40 +1,40 @@
 <?php
 class JobseekerController {
     static public function get_countries($db) {
-        return (new JobSearchQuery($db, "Countries", "Country_ID", "Country_Name"))();
+        return (new JobSearchQuery($db, "countries", "country_id", "country_name"))();
     }
 
     static public function get_categories($db) {
-        return (new JobSearchQuery($db, "Job_Categories", "Category_ID", "Category_Name"))();
+        return (new JobSearchQuery($db, "job_categories", "category_id", "category_name"))();
     }
 
     static public function get_required_skills($db) {
-        return (new JobSearchQuery($db, "Skills", "Skill_ID", "Skill_Name"))();
+        return (new JobSearchQuery($db, "skills", "skill_id", "skill_name"))();
     }
 
     static public function get_job_types($db) {
-        return (new JobSearchQuery($db, "Employment_Types", "Emp_Type_ID", "Type_Name"))();
+        return (new JobSearchQuery($db, "employment_types", "emp_type_id", "type_name"))();
     }
 
     static public function get_job_levels($db) {
-        return (new JobSearchQuery($db, "Job_Levels", "Level_ID", "Level_Name"))();
+        return (new JobSearchQuery($db, "job_levels", "level_id", "level_name"))();
     }
 
     static public function get_work_arrangements($db) {
-        return (new JobSearchQuery($db, "Work_Arrangements", "Arrangement_ID", "Arrangement_Name"))();
+        return (new JobSearchQuery($db, "work_arrangements", "arrangement_id", "arrangement_name"))();
     }
 
     static public function get_cities($db) {
         if (!isset($_GET['country_id'])) return;
-        $query = new JobSearchQuery($db, "Cities", "City_ID", "City_Name");
-        $query->where_col_has_val("Country_ID", $_GET['country_id']);
+        $query = new JobSearchQuery($db, "cities", "city_id", "city_name");
+        $query->where_col_has_val("country_id", $_GET['country_id']);
         return $query();
     }
 
     static public function get_districts($db) {
         if (!isset($_GET['city_id'])) return;
-        $query = new JobSearchQuery($db, "Districts", "District_ID", "District_Name");
-        $query->where_col_has_val("City_ID", $_GET['city_id']);
+        $query = new JobSearchQuery($db, "districts", "district_id", "district_name");
+        $query->where_col_has_val("city_id", $_GET['city_id']);
         return $query();
     }
 

@@ -14,7 +14,7 @@
           <select name="location" id="hero-location-select">
             <option value="">Choose category</option>
             <?php foreach($locations as $city): ?>
-                <option value="<?= $city['City_ID'] ?>"><?= htmlspecialchars($city['City_Name']) ?></option>
+                <option value="<?= $city['id'] ?>"><?= htmlspecialchars($city['name']) ?></option>
             <?php endforeach; ?>
         </select>
         </div>
@@ -23,7 +23,7 @@
           <select name="category" id="hero-category-select">
               <option value="">Choose category</option>
               <?php foreach($categories as $cat): ?>
-                  <option value="<?= $cat['Category_ID'] ?>"><?= htmlspecialchars($cat['Category_Name']) ?></option>
+                  <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['name']) ?></option>
               <?php endforeach; ?>
           </select>
         </div>
@@ -89,20 +89,20 @@
       <?php foreach($recentJobs as $job): ?>
         <div class="job-card reveal">
             <div class="job-card-info">
-                <div class="job-card-icon"><?= substr($job['Title_Name'], 0, 2) ?></div>
+                <div class="job-card-icon"><?= substr($job['title_name'], 0, 2) ?></div>
                 <div>
-                    <h3 class="job-card-title"><?= htmlspecialchars($job['Title_Name']) ?></h3>
-                    <p class="job-card-company"><?= htmlspecialchars($job['Company_Name']) ?></p>
+                    <h3 class="job-card-title"><?= htmlspecialchars($job['title_name']) ?></h3>
+                    <p class="job-card-company"><?= htmlspecialchars($job['company_name']) ?></p>
                 </div>
             </div>
             <div class="job-card-footer">
                 <div class="job-card-tags">
-                    <span class="job-tag"><?= htmlspecialchars($job['Category_Name']) ?></span>
-                    <span class="job-tag"><?= htmlspecialchars($job['Type_Name']) ?></span>
-                    <span class="job-tag"><?= htmlspecialchars($job['Range_Description']) ?></span>
-                    <span class="job-tag"><?= htmlspecialchars($job['City_Name'] . ', ' . $job['Country_Name']) ?></span>
+                    <span class="job-tag"><?= htmlspecialchars($job['category_name']) ?></span>
+                    <span class="job-tag"><?= htmlspecialchars($job['type_name']) ?></span>
+                    <span class="job-tag"><?= htmlspecialchars($job['range_description']) ?></span>
+                    <span class="job-tag"><?= htmlspecialchars($job['city_name'] . ', ' . $job['country_name']) ?></span>
                 </div>
-                <a href="<?= $baseUrl ?>/jobs/detail?id=<?= $job['Vacancy_ID'] ?>" class="btn-job-details">Job Details</a>
+                <a href="<?= $baseUrl ?>/jobs/detail?id=<?= $job['vacancy_id'] ?>" class="btn-job-details">Job Details</a>
             </div>
         </div>
         <?php endforeach; ?>

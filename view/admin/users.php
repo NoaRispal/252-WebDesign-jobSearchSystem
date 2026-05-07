@@ -74,27 +74,27 @@
           <tbody>
             <?php foreach($data as $user): ?>
               <tr>
-                <td class="card-detail" data-label="User ID">#<?= $user['User_ID'] ?></td>
+                <td class="card-detail" data-label="User ID">#<?= $user['user_id'] ?></td>
                 <td class="card-primary" data-label="Full Name">
-                    <strong><?= htmlspecialchars(($user['First_Name'] ?? '') . ' ' . ($user['Last_Name'] ?? '')) ?></strong>
+                    <strong><?= htmlspecialchars(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? '')) ?></strong>
                 </td>
-                <td class="card-detail" data-label="Email"><?= htmlspecialchars($user['Email'] ?? 'No email') ?></td>
+                <td class="card-detail" data-label="Email"><?= htmlspecialchars($user['email'] ?? 'No email') ?></td>
                 <td class="card-detail" data-label="Role">
                     <?php 
                         $roleMap = [
-                            1 => ['label' => 'Admin',    'class' => 'active'],
-                            2 => ['label' => 'Employer', 'class' => 'inactive'],
-                            3 => ['label' => 'Seeker',   'class' => 'inactive']
+                            1 => ['label' => 'admin',    'class' => 'active'],
+                            2 => ['label' => 'employer', 'class' => 'inactive'],
+                            3 => ['label' => 'seeker',   'class' => 'inactive']
                         ];
                         
-                        $roleId = $user['Role_ID'] ?? 0;
-                        $roleInfo = $roleMap[$roleId] ?? ['label' => 'Unknown', 'class' => 'inactive'];
+                        $roleId = $user['role_id'] ?? 0;
+                        $roleInfo = $roleMap[$roleId] ?? ['label' => 'unknown', 'class' => 'inactive'];
                     ?>
                     <span class="status-badge <?= $roleInfo['class'] ?>" style="text-transform: capitalize;">
                         <?= htmlspecialchars($roleInfo['label']) ?>
                     </span>
                 </td>
-                <td class="card-detail" data-label="Joined"><?= date('M d, Y', strtotime($user['Created_At'] ?? 'now')) ?></td>
+                <td class="card-detail" data-label="Joined"><?= date('M d, Y', strtotime($user['created_at'] ?? 'now')) ?></td>
                 <td class="card-detail" data-label="Actions">
                   <div class="table-actions">
                     <!-- View Profile / Edit -->
@@ -104,7 +104,7 @@
                     
                     <!-- Delete User (with confirmation form) -->
                     <form method="POST" action="<?= $baseUrl ?>/admin/removeUser" onsubmit="return confirm('Are you sure you want to delete this user?');">
-                      <input type="hidden" name="user_id" value="<?= $user['User_ID'] ?>">
+                      <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
                       <button class="delete" title="Delete User">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
                       </button>

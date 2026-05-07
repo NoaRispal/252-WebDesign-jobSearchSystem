@@ -15,22 +15,22 @@ class LookupModel {
     END BEFORE COLUMN FIX */
 
     // Column mapping: table => [id_column, name_column]
-    // The actual DB schema uses table-specific column names (Category_ID, Title_Name, etc.)
+    // The actual DB schema uses table-specific column names (Category_ID, Title_name, etc.)
     private $columnMap = [
-        'job_categories'   => ['Category_ID',  'Category_Name'],
-        'job_titles'       => ['Title_ID',     'Title_Name'],
-        'skills'           => ['Skill_ID',     'Skill_Name'],
-        'industries'       => ['Industry_ID',  'Industry_Name'],
-        'employment_types' => ['Emp_Type_ID',  'Type_Name'],
-        'job_levels'       => ['Level_ID',     'Level_Name'],
-        'salary_ranges'    => ['Range_ID',     'CONCAT(Min_Salary, "-", Max_Salary)'],
-        'salary_types'    => ['Type_ID',     'Type_Name'],
-        'cities'    => ['City_ID',     'City_Name'],
-        'countries'    => ['Country_ID',     'Country_Name'],
-        'districts'    => ['District_ID','District_Name'],
-        'work_arrangements'    => ['Arrangement_ID',     'Arrangement_Name'],
-        'proficiency_levels'    => ['Proficiency_ID',     'Proficiency_Name'],
-        'degree_levels'    => ['Degree_ID',     'Degree_Name'],
+        'job_categories'   => ['category_id',  'category_name'],
+        'job_titles'       => ['title_id',     'title_name'],
+        'skills'           => ['skill_id',     'skill_name'],
+        'industries'       => ['industry_id',  'industry_name'],
+        'employment_types' => ['emp_type_id',  'type_name'],
+        'job_levels'       => ['level_id',     'level_name'],
+        'salary_ranges'    => ['range_id',     'CONCAT(min_salary, "-", max_salary)'],
+        'salary_types'    => ['type_id',     'type_name'],
+        'cities'    => ['city_id',     'city_name'],
+        'countries'    => ['country_id',     'country_name'],
+        'districts'    => ['district_id','district_name'],
+        'work_arrangements'    => ['arrangement_id',     'arrangement_name'],
+        'proficiency_levels'    => ['proficiency_id',     'proficiency_name'],
+        'degree_levels'    => ['degree_id',     'degree_name'],
     ];
 
     public function __construct($db) {
@@ -67,17 +67,17 @@ class LookupModel {
 
         // Check if Foreign Key is referenced in job_vacancies
         $fkMap = [
-            'job_categories'   => 'Category_ID',
-            'job_titles'       => 'Title_ID',
-            'industries'       => 'Industry_ID',
-            'employment_types' => 'Employment_Type_ID',
-            'job_levels'       => 'Level_ID',
-            'salary_ranges'    => 'Salary_Range_ID'
+            'job_categories'   => 'category_id',
+            'job_titles'       => 'title_id',
+            'industries'       => 'industry_id',
+            'employment_types' => 'employment_type_id',
+            'job_levels'       => 'level_id',
+            'salary_ranges'    => 'salary_range_id'
         ];
     
         if (isset($fkMap[$table])) {
             $column = $fkMap[$table];
-            $sql = "SELECT COUNT(*) FROM Job_Vacancies WHERE $column = :id";
+            $sql = "SELECT COUNT(*) FROM job_vacancies WHERE $column = :id";
             $stmt = $this->db->prepare($sql); 
             $stmt->execute(['id' => $id]);
             
@@ -87,7 +87,7 @@ class LookupModel {
         }
 
         if ($table === 'skills') {
-            $sql = "SELECT COUNT(*) FROM Job_Vacancy_Skills WHERE Skill_ID = :id";
+            $sql = "SELECT COUNT(*) FROM job_vacancy_skills WHERE skill_id = :id";
             $stmt = $this->db->prepare($sql);
             $stmt->execute(['id' => $id]);
             if ($stmt->fetchColumn() > 0) return false;

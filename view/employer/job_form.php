@@ -43,7 +43,7 @@
 
       <form action="<?= $baseUrl ?>/employer/create" method="POST" data-validate id="job-create-form">
         <?php if ($job): ?>
-            <input type="hidden" name="job_id" value="<?= $job['Vacancy_ID'] ?>">
+            <input type="hidden" name="job_id" value="<?= $job['vacancy_id'] ?>">
         <?php endif; ?>
 
         <!-- Section A: Basic Job Information -->
@@ -55,7 +55,7 @@
               <select class="form-control" name="job_title" required id="job-title">
                 <option value="">Select job title</option>
                 <?php foreach($data['titles'] as $jt): ?>
-                  <option value="<?= $jt['id'] ?>" <?= (isset($job) && $job['Title_ID'] == $jt['id']) ? 'selected' : '' ?>>
+                  <option value="<?= $jt['id'] ?>" <?= (isset($job) && $job['title_id'] == $jt['id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($jt['name']) ?>
                   </option>
                 <?php endforeach; ?>
@@ -67,7 +67,7 @@
               <select class="form-control" name="job_category" required id="job-category">
                 <option value="">Select category</option>
                 <?php foreach($data['categories'] as $cat): ?>
-                  <option value="<?= $cat['id'] ?>" <?= (isset($job) && $job['Category_ID'] == $cat['id']) ? 'selected' : '' ?>>
+                  <option value="<?= $cat['id'] ?>" <?= (isset($job) && $job['category_id'] == $cat['id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($cat['name']) ?>
                   </option>
                 <?php endforeach; ?>
@@ -81,7 +81,7 @@
               <select class="form-control" name="employment_type" required id="employment-type">
                 <option value="">Select type</option>
                 <?php foreach($data['employment'] as $emp): ?>
-                  <option value="<?= $emp['id'] ?>" <?= (isset($job) && $job['Emp_Type_ID'] == $emp['id']) ? 'selected' : '' ?>>
+                  <option value="<?= $emp['id'] ?>" <?= (isset($job) && $job['emp_type_id'] == $emp['id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($emp['name']) ?>
                   </option>
                 <?php endforeach; ?>
@@ -93,7 +93,7 @@
               <select class="form-control" name="industry" required id="industry">
                 <option value="">Select industry</option>
                 <?php foreach($data['industries'] as $i): ?>
-                  <option value="<?= $i['id'] ?>" <?= (isset($job) && $job['Industry_ID'] == $i['id']) ? 'selected' : '' ?>>
+                  <option value="<?= $i['id'] ?>" <?= (isset($job) && $job['industry_id'] == $i['id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($i['name']) ?>
                   </option>
                 <?php endforeach; ?>
@@ -107,7 +107,7 @@
               <select class="form-control" name="job_level" required id="job-level">
                 <option value="">Select level</option>
                 <?php foreach($data['levels'] as $l): ?>
-                  <option value="<?= $l['id'] ?>" <?= (isset($job) && $job['Level_ID'] == $l['id']) ? 'selected' : '' ?>>
+                  <option value="<?= $l['id'] ?>" <?= (isset($job) && $job['level_id'] == $l['id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($l['name']) ?>
                   </option>
                 <?php endforeach; ?>
@@ -116,7 +116,7 @@
             </div>
             <div class="form-group">
               <label for="num-openings">Number of Openings *</label>
-              <input type="number" class="form-control" name="num_openings" placeholder="e.g., 3" min="1" required id="num-openings" value="<?= isset($job) ? htmlspecialchars($job['Number_Of_Openings']) : '1' ?>">
+              <input type="number" class="form-control" name="num_openings" placeholder="e.g., 3" min="1" required id="num-openings" value="<?= isset($job) ? htmlspecialchars($job['number_of_openings']) : '1' ?>">
               <span class="form-error">Number of openings is required</span>
             </div>
           </div>
@@ -131,7 +131,7 @@
               <select class="form-control" name="country" required id="country">
                 <option value="">Select country</option>
                 <?php foreach($data['countries'] as $c): ?>
-                  <option value="<?= $c['id'] ?>" <?= (isset($job) && $job['Country_ID'] == $c['id']) ? 'selected' : '' ?>>
+                  <option value="<?= $c['id'] ?>" <?= (isset($job) && $job['country_id'] == $c['id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($c['name']) ?>
                   </option>
                 <?php endforeach; ?>
@@ -143,7 +143,7 @@
               <select class="form-control" name="city" required id="city">
                 <option value="">Select city</option>
                 <?php foreach($data['cities'] as $c): ?>
-                  <option value="<?= $c['id'] ?>" <?= (isset($job) && $job['City_ID'] == $c['id']) ? 'selected' : '' ?>>
+                  <option value="<?= $c['id'] ?>" <?= (isset($job) && $job['city_id'] == $c['id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($c['name']) ?>
                   </option>
                 <?php endforeach; ?>
@@ -157,7 +157,7 @@
               <select class="form-control" name="district" id="district">
                 <option value="">Select district</option>
                 <?php foreach($data['districts'] as $d): ?>
-                  <option value="<?= $d['id'] ?>" <?= (isset($job) && $job['District_ID'] == $d['id']) ? 'selected' : '' ?>>
+                  <option value="<?= $d['id'] ?>" <?= (isset($job) && $job['district_id'] == $d['id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($d['name']) ?>
                   </option>
                 <?php endforeach; ?>
@@ -168,7 +168,7 @@
               <select class="form-control" name="work_arrangement" required id="work-arrangement">
                 <option value="">Select arrangement</option>
                 <?php foreach($data['arrangement'] as $a): ?>
-                  <option value="<?= $a['id'] ?>" <?= (isset($job) && $job['Arrangement_ID'] == $a['id']) ? 'selected' : '' ?>>
+                  <option value="<?= $a['id'] ?>" <?= (isset($job) && $job['arrangement_id'] == $a['id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($a['name']) ?>
                   </option>
                 <?php endforeach; ?>
@@ -186,7 +186,7 @@
               <label for="salary-range">Salary Range *</label>
               <select class="form-control" name="salary_range" required id="salary-range-select">
               <?php foreach($data['salary'] as $s): ?>
-                  <option value="<?= $s['id'] ?>" <?= (isset($job) && $job['Salary_Range_ID'] == $s['id']) ? 'selected' : '' ?>>
+                  <option value="<?= $s['id'] ?>" <?= (isset($job) && $job['salary_range_id'] == $s['id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($s['name']) ?>
                   </option>
                 <?php endforeach; ?>
@@ -198,7 +198,7 @@
               <select class="form-control" name="salary_type" required id="salary-type">
                 <option value="">Select type</option>
                 <?php foreach($data['salary_types'] as $st): ?>
-                  <option value="<?= $st['id'] ?>" <?= (isset($job) && $job['Salary_Type_ID'] == $st['id']) ? 'selected' : '' ?>>
+                  <option value="<?= $st['id'] ?>" <?= (isset($job) && $job['salary_type_id'] == $st['id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($st['name']) ?>
                   </option>
                 <?php endforeach; ?>
@@ -208,7 +208,7 @@
           </div>
           <div class="form-group">
             <label for="benefits">Benefits</label>
-            <textarea class="form-control" name="benefits" placeholder="e.g., Health insurance, 401k, Remote work options, Gym membership..." rows="3" id="benefits"><?= isset($job) ? htmlspecialchars($job['Benefits']) : '' ?></textarea>
+            <textarea class="form-control" name="benefits" placeholder="e.g., Health insurance, 401k, Remote work options, Gym membership..." rows="3" id="benefits"><?= isset($job) ? htmlspecialchars($job['benefits']) : '' ?></textarea>
           </div>
         </div>
 
@@ -291,7 +291,7 @@
               <select class="form-control" name="min_degree" required id="min-degree">
                 <option value="">Select degree</option>
                 <?php foreach($data['degrees'] as $d): ?>
-                  <option value="<?= $d['id'] ?>" <?= (isset($job) && $job['Min_Degree_ID'] == $d['id']) ? 'selected' : '' ?>>
+                  <option value="<?= $d['id'] ?>" <?= (isset($job) && $job['min_degree_id'] == $d['id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($d['name']) ?>
                   </option>
                 <?php endforeach; ?>
@@ -300,7 +300,7 @@
             </div>
             <div class="form-group">
               <label for="min-experience">Minimum Years of Experience *</label>
-              <input type="number" class="form-control" name="min_experience" placeholder="e.g., 2" min="0" required id="min-experience" value="<?= isset($job) ? htmlspecialchars($job['Min_Years_Experience']) : '' ?>">
+              <input type="number" class="form-control" name="min_experience" placeholder="e.g., 2" min="0" required id="min-experience" value="<?= isset($job) ? htmlspecialchars($job['min_years_experience']) : '' ?>">
               <span class="form-error">Minimum experience is required</span>
             </div>
           </div>

@@ -34,19 +34,19 @@ class JobSearchQuery {
 class JobSearchResults {
     public static function handle($db, $params) {
         $values = [];
-        $cond = "WHERE jv.Is_Active = TRUE";
+        $cond = "WHERE jv.is_active = TRUE";
 
         if (!empty($params['keywords'])) {
             $keywordConditions = [];
             foreach ($params['keywords'] as $keyword) {
-                $keywordConditions[] = "(jt.Title_Name LIKE ? OR jv.Job_Description LIKE ?)";
+                $keywordConditions[] = "(LOWER(jt.title_name) LIKE ? OR LOWER(jv.job_description) LIKE ?)";
                 $values[] = "%$keyword%";
                 $values[] = "%$keyword%";
             }
             $cond .= " AND (" . implode(" OR ", $keywordConditions) . ")";
         }
 
-        foreach (['country' => 'Country_ID', 'city' => 'City_ID', 'district' => 'District_ID'] as $field => $col) {
+        foreach (['country' => 'country_id', 'city' => 'city_id', 'district' => 'district_id'] as $field => $col) {
             if ($params[$field]) {
                 $cond .= " AND jv.$col = ?";
                 $values[] = $params[$field];
@@ -54,15 +54,15 @@ class JobSearchResults {
         }
 
         if ($params['salary_min'] !== null) {
-            $cond .= " AND sr.Max_Salary >= ?";
+            $cond .= " AND sr.max_salary >= ?";
             $values[] = $params['salary_min'];
         }
         if ($params['salary_max'] !== null) {
-            $cond .= " AND sr.Min_Salary <= ?";
+            $cond .= " AND sr.min_salary <= ?";
             $values[] = $params['salary_max'];
         }
 
-        foreach (['category' => 'Category_ID', 'job_type' => 'Emp_Type_ID', 'job_level' => 'Level_ID', 'work_arrangement' => 'Arrangement_ID'] as $field => $col) {
+        foreach (['category' => 'category_id', 'job_type' => 'emp_type_id', 'job_level' => 'level_id', 'work_arrangement' => 'Arrangement_id'] as $field => $col) {
             if (!empty($params[$field])) {
                 $placeholders = implode(',', array_fill(0, count($params[$field]), '?'));
                 $cond .= " AND jv.$col IN ($placeholders)";
@@ -72,50 +72,50 @@ class JobSearchResults {
         
         if (!empty($params['skills'])) {
             $placeholders = implode(',', array_fill(0, count($params['skills']), '?'));
-            $cond .= " AND jv.Vacancy_ID IN (
-                        SELECT Vacancy_ID FROM Job_Vacancy_Skills WHERE Skill_ID IN ($placeholders)
+            $cond .= " AND jv.vacancy_id IN (
+                        SELECT vacancy_id FROM job_vacancy_skills WHERE skill_id IN ($placeholders)
                     )";
             $values = array_merge($values, $params['skills']);
         }
 
-        $countsql = "SELECT COUNT(*) FROM Job_Vacancies jv
-                    JOIN Job_Titles jt ON jv.Title_ID = jt.Title_ID
-                    JOIN Salary_Ranges sr ON jv.Salary_Range_ID = sr.Range_ID
+        $countsql = "SELECT COUNT(*) FROM job_vacancies jv
+                    JOIN job_titles jt ON jv.title_id = jt.title_id
+                    JOIN salary_ranges sr ON jv.salary_range_id = sr.range_id
                     $cond";
         $stmt = $db->prepare($countsql);
         $stmt->execute($values);
         $count = $stmt->fetchColumn();
 
-        $sql = "SELECT jv.Vacancy_ID,
-                       e.Company_Name,
-                       jt.Title_Name,
-                       jc.Category_Name,
-                       et.Type_Name,
-                       c.Country_Name,
-                       ci.City_Name,
-                       d.District_Name,
-                       sr.Min_Salary,
-                       sr.Max_Salary,
-                       jv.Posting_Date
-                FROM Job_Vacancies jv
-                JOIN Job_Titles jt ON jv.Title_ID = jt.Title_ID
-                JOIN Employers e ON jv.Employer_ID = e.Employer_ID
-                JOIN Job_Categories jc ON jv.Category_ID = jc.Category_ID
-                JOIN Employment_Types et ON jv.Emp_Type_ID = et.Emp_Type_ID
-                JOIN Salary_Ranges sr ON jv.Salary_Range_ID = sr.Range_ID
-                JOIN Countries c ON jv.Country_ID = c.Country_ID
-                JOIN Cities ci  ON jv.City_ID = ci.City_ID
-                LEFT JOIN Districts d ON jv.District_ID = d.District_ID
+        $sql = "SELECT jv.vacancy_id,
+                       e.company_name,
+                       jt.title_name,
+                       jc.category_name,
+                       et.type_name,
+                       c.country_name,
+                       ci.city_name,
+                       d.district_name,
+                       sr.min_salary,
+                       sr.max_salary,
+                       jv.posting_date
+                FROM job_vacancies jv
+                JOIN job_titles jt ON jv.title_id = jt.title_id
+                JOIN employers e ON jv.employer_id = e.employer_id
+                JOIN job_categories jc ON jv.category_id = jc.category_id
+                JOIN employment_types et ON jv.emp_type_id = et.emp_type_id
+                JOIN salary_ranges sr ON jv.salary_range_id = sr.range_id
+                JOIN countries c ON jv.country_id = c.country_id
+                JOIN cities ci  ON jv.city_id = ci.city_id
+                LEFT JOIN districts d ON jv.district_id = d.district_id
                 $cond";
 
         $sortMap = [
-            'latest'      => 'jv.Posting_Date DESC',
-            'salary-asc'  => 'sr.Min_Salary ASC',
-            'salary-desc' => 'sr.Max_Salary DESC',
-            'title-asc'   => 'jt.Title_Name ASC',
-            'title-desc'  => 'jt.Title_Name DESC'
+            'latest'      => 'jv.posting_date DESC',
+            'salary-asc'  => 'sr.min_salary ASC',
+            'salary-desc' => 'sr.max_salary DESC',
+            'title-asc'   => 'jt.title_name ASC',
+            'title-desc'  => 'jt.title_name DESC'
         ];
-        $sort = $sortMap[$params['sort-select']] ?? 'jv.Posting_Date DESC';
+        $sort = $sortMap[$params['sort-select']] ?? 'jv.posting_date DESC';
         $sql .= " ORDER BY $sort";
 
         $page = max(1, $params['page']);
@@ -139,42 +139,42 @@ class JobSearchResults {
 
 class JobDetails {
     public static function handle($db, $vacancyId) {
-        $sql = "SELECT jv.Posting_Date,
-                       jt.Title_Name,
-                       e.Company_Name,
-                       jc.Category_Name,
-                       et.Type_Name,
-                       sr.Min_Salary,
-                       sr.Max_Salary,
-                       c.Country_Name,
-                       ci.City_Name,
-                       d.District_Name,
-                       jv.Job_Description,
-                       jv.Benefits,
-                       jv.Min_Years_Experience,
-                       dl.Degree_Name
-                FROM Job_Vacancies jv
-                JOIN Job_Titles jt ON jv.Title_ID = jt.Title_ID
-                JOIN Employers e ON jv.Employer_ID = e.Employer_ID
-                JOIN Job_Categories jc ON jv.Category_ID = jc.Category_ID
-                JOIN Employment_Types et ON jv.Emp_Type_ID = et.Emp_Type_ID
-                JOIN Salary_Ranges sr ON jv.Salary_Range_ID = sr.Range_ID
-                JOIN Countries c ON jv.Country_ID = c.Country_ID
-                JOIN Cities ci  ON jv.City_ID = ci.City_ID
-                JOIN Degree_Levels dl ON jv.Min_Degree_ID = dl.Degree_ID
-                LEFT JOIN Districts d ON jv.District_ID = d.District_ID
-                WHERE jv.Vacancy_ID = ? AND jv.Is_Active = TRUE";
+        $sql = "SELECT jv.posting_date,
+                       jt.title_name,
+                       e.company_name,
+                       jc.category_name,
+                       et.type_name,
+                       sr.min_salary,
+                       sr.max_salary,
+                       c.country_name,
+                       ci.city_name,
+                       d.district_name,
+                       jv.job_description,
+                       jv.benefits,
+                       jv.min_years_experience,
+                       dl.degree_name
+                FROM job_vacancies jv
+                JOIN job_titles jt ON jv.title_id = jt.title_id
+                JOIN employers e ON jv.employer_id = e.employer_id
+                JOIN job_categories jc ON jv.category_id = jc.category_id
+                JOIN employment_types et ON jv.emp_type_id = et.emp_type_id
+                JOIN salary_ranges sr ON jv.salary_range_id = sr.range_id
+                JOIN countries c ON jv.country_id = c.country_id
+                JOIN cities ci  ON jv.city_id = ci.city_id
+                JOIN degree_levels dl ON jv.min_degree_id = dl.degree_id
+                LEFT JOIN districts d ON jv.district_id = d.district_id
+                WHERE jv.vacancy_id = ? AND jv.is_active = TRUE";
         $stmt = $db->prepare($sql);
         $stmt->execute([$vacancyId]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$result) return;
 
-        $skillsSql = "SELECT s.Skill_Name, pl.Proficiency_Name
-                      FROM Job_Vacancy_Skills jvs
-                      JOIN Skills s ON jvs.Skill_ID = s.Skill_ID
-                      JOIN Proficiency_Levels pl ON jvs.Min_Proficiency_ID = pl.Proficiency_ID
-                      WHERE jvs.Vacancy_ID = ?
-                      ORDER BY s.Skill_Name";
+        $skillsSql = "SELECT s.skill_name, pl.proficiency_name
+                      FROM job_vacancy_skills jvs
+                      JOIN skills s ON jvs.skill_id = s.skill_id
+                      JOIN proficiency_levels pl ON jvs.min_proficiency_id = pl.proficiency_id
+                      WHERE jvs.vacancy_id = ?
+                      ORDER BY s.skill_name";
         $stmt = $db->prepare($skillsSql);
         $stmt->execute([$vacancyId]);
         $result['skills'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
