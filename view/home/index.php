@@ -106,6 +106,8 @@
             </div>
         </div>
         <?php endforeach; ?>
+    </div>
+  </section>
 
   <!-- ====== GOOD LIFE SECTION ====== -->
   <section class="section good-life-section" id="good-life">

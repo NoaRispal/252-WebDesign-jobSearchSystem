@@ -88,8 +88,8 @@ class JobVacancy {
         foreach ($skills as $skill) {
             $stmt->execute([
                 ':job_id'      => $jobId,
-                ':skill_id'    => $skill['name'], 
-                ':proficiency' => $skill['proficiency']
+                ':skill_id'    => $skills['name'], 
+                ':proficiency' => $skills['proficiency']
             ]);
         }
     }
