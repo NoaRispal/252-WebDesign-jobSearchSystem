@@ -31,7 +31,7 @@ The system is built on a custom **Model-View-Controller (MVC)** architecture usi
 ### Backend & Security
 **Pattern:** Strict Model-View-Controller (MVC) implementation.
 
-**Database:** Fully normalized MySQL schema using 14 reference tables to eliminate text-based anomalies.
+**Database:** Fully normalized MySQL schema using 14 reference tables to eliminate text-based anomalies. See [ER Diagram](./report/db/erd_diagram.png)
 
 **Security Measures:**
 - **SQL Injection Prevention:** Consistent use of **PDO prepared statements** for all database interactions.
@@ -39,7 +39,7 @@ The system is built on a custom **Model-View-Controller (MVC)** architecture usi
 - **Data Sanitization:** Aggressive validation using `htmlspecialchars()` and explicit integer type-casting.
 
 ### Frontend Implementation
-**Design System:** Developed from a Figma template using a "Design-to-Code" workflow assisted by MCP (Model Context Protocol).
+**Design System:** Developed from a Figma template.
 
 **Styling:** A hybrid approach using a Bootstrap baseline "skinned" with custom CSS to match the professional Figma aesthetic.
 
