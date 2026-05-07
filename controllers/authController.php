@@ -72,6 +72,13 @@ class AuthController {
             $password  = $_POST['password'];
             $roleName    = $_POST['role'];
     
+            if (strlen($password)<8) {
+                $_SESSION['flash'] = "Password length must be greater than 8";
+                $_SESSION['flash_type'] = "danger";
+                header("Location: " . $this->baseUrl . "/register");
+                exit;
+            }
+
             // Email already exists ? 
             $stmtCheck = $this->db->prepare("SELECT user_id FROM users WHERE email = :email");
             $stmtCheck->execute(['email' => $email]);
@@ -139,6 +146,13 @@ class AuthController {
             $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
             $newPassword = $_POST['new_password'];
             $confirmPassword = $_POST['confirm_password'];
+
+
+            if (strlen($newPassword)<8) {
+                $_SESSION['flash'] = "Password length must be greater than 8";
+                $_SESSION['flash_type'] = "danger";
+                header("Location: " . $this->baseUrl . "/reset");
+            }
     
             if ($newPassword !== $confirmPassword) {
                 $_SESSION['flash'] = "The passwords do not match.";
