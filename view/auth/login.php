@@ -1,7 +1,7 @@
 <!-- ====== FLASH ====== -->
 <?php 
 if (isset($_SESSION['flash'])){ 
-
+  
   $flashType = $_SESSION['flash_type'] ?? 'success';
   $isDanger = $flashType === 'danger';
   $bgColor  = $isDanger ? "#f8d7da" : "#d4edda";
@@ -14,6 +14,7 @@ if (isset($_SESSION['flash'])): ?>
   </div>
     <?php 
         unset($_SESSION['flash']); 
+        unset($_SESSION['flash_type']); 
     ?>
 <?php endif; ?>
 
