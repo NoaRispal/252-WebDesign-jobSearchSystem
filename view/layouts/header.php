@@ -11,13 +11,32 @@
 <body>
 
 <?php
-  // Determine which dashboard context we're in
-  $isAdminDashboard = (strpos($urlParam, 'admin') === 0);
-  $isEmployerDashboard = (strpos($urlParam, 'employer') === 0);
-  $isDashboard = $isAdminDashboard || $isEmployerDashboard;
-  $isJobSeeker = (isset($_SESSION['role']) && $_SESSION['role'] === 'job_seeker');
-  // Admin browsing public pages (session is admin but not on admin dashboard)
-  $isAdminBrowsing = (!$isDashboard && isset($_SESSION['role']) && $_SESSION['role'] === 'admin');
+    // Determine which dashboard context we're in
+    $isAdminDashboard = (strpos($urlParam, 'admin') === 0);
+    $isEmployerDashboard = (strpos($urlParam, 'employer') === 0);
+    $isDashboard = $isAdminDashboard || $isEmployerDashboard;
+    $isJobSeeker = (isset($_SESSION['role']) && $_SESSION['role'] === 'job_seeker');
+    // Admin browsing public pages (session is admin but not on admin dashboard)
+    $isAdminBrowsing = (!$isDashboard && isset($_SESSION['role']) && $_SESSION['role'] === 'admin');
+
+    // Mobile menu links for dashboard contexts
+    $dashboardMobileLinks = [];
+    if ($isAdminDashboard) {
+      $dashboardMobileLinks = [
+        ['href' => $baseUrl . '/admin/dashboard',  'label' => 'Dashboard',        'active' => ($urlParam === 'admin' || $urlParam === 'admin/dashboard')],
+        ['href' => $baseUrl . '/admin/references', 'label' => 'Reference Tables', 'active' => ($urlParam === 'admin/references')],
+        ['href' => $baseUrl . '/admin/users',      'label' => 'Users',            'active' => ($urlParam === 'admin/users')],
+        ['href' => $baseUrl . '/home',             'label' => 'Browse Site',      'active' => false],
+      ];
+    } elseif ($isEmployerDashboard) {
+      $dashboardMobileLinks = [
+        ['href' => $baseUrl . '/employer/dashboard', 'label' => 'Dashboard',  'active' => ($urlParam === 'employer' || $urlParam === 'employer/dashboard')],
+        ['href' => $baseUrl . '/employer/job-form',  'label' => 'Create Job', 'active' => ($urlParam === 'employer/job-form')],
+      ];
+    }
+
+    // Show mobile menu for public pages and dashboard pages
+    $showMobileNav = (!$isDashboard) || !empty($dashboardMobileLinks);
 ?>
 
   <!-- ====== NAVBAR ====== -->
@@ -102,7 +121,7 @@
         <?php endif; ?>
       </div>
 
-      <?php if (!$isDashboard): ?>
+      <?php if ($showMobileNav): ?>
         <button class="navbar-hamburger" id="hamburger" aria-label="Toggle navigation">
           <span></span><span></span><span></span>
         </button>
@@ -110,23 +129,28 @@
     </div>
   </nav>
 
-  <?php if (!$isDashboard): ?>
-  <!-- Mobile Menu — only shown on public pages -->
+  <?php if ($showMobileNav): ?>
+  <!-- Mobile Menu -->
   <div class="mobile-menu" id="mobile-menu">
-    <a href="<?= $baseUrl ?>/home" class="<?= ($urlParam === 'home' || $urlParam === '') ? 'active' : '' ?>">Home</a>
-    <a href="<?= $baseUrl ?>/jobs" class="<?= (strpos($urlParam, 'jobs') === 0) ? 'active' : '' ?>">Jobs</a>
-    <a href="<?= $baseUrl ?>/about" class="<?= $urlParam === 'about' ? 'active' : '' ?>">About Us</a>
-    <a href="<?= $baseUrl ?>/contact" class="<?= $urlParam === 'contact' ? 'active' : '' ?>">Contact Us</a>
-    
-    <?php if ($isAdminBrowsing): ?>
-        <a href="<?= $baseUrl ?>/admin/dashboard" class="btn btn-primary">← Back to Dashboard</a>
-    <?php elseif ($isJobSeeker): ?>
-      <a href="<?= $baseUrl ?>/logout" class="btn btn-outline-danger btn-sm" title="Logout from the Admin Dashboard">
-            Logout
-      </a>
+    <?php if ($isDashboard): ?>
+      <?php foreach ($dashboardMobileLinks as $item): ?>
+        <a href="<?= $item['href'] ?>" class="<?= $item['active'] ? 'active' : '' ?>"><?= $item['label'] ?></a>
+      <?php endforeach; ?>
+      <a href="<?= $baseUrl ?>/logout" class="btn btn-outline-danger btn-sm" title="Logout">Logout</a>
     <?php else: ?>
+      <a href="<?= $baseUrl ?>/home" class="<?= ($urlParam === 'home' || $urlParam === '') ? 'active' : '' ?>">Home</a>
+      <a href="<?= $baseUrl ?>/jobs" class="<?= (strpos($urlParam, 'jobs') === 0) ? 'active' : '' ?>">Jobs</a>
+      <a href="<?= $baseUrl ?>/about" class="<?= $urlParam === 'about' ? 'active' : '' ?>">About Us</a>
+      <a href="<?= $baseUrl ?>/contact" class="<?= $urlParam === 'contact' ? 'active' : '' ?>">Contact Us</a>
+      
+      <?php if ($isAdminBrowsing): ?>
+        <a href="<?= $baseUrl ?>/admin/dashboard" class="btn btn-primary">&larr; Back to Dashboard</a>
+      <?php elseif ($isJobSeeker): ?>
+        <a href="<?= $baseUrl ?>/logout" class="btn btn-outline-danger btn-sm" title="Logout from the Admin Dashboard">Logout</a>
+      <?php else: ?>
         <a href="<?= $baseUrl ?>/login" <?= $urlParam === 'login' ? 'class="active"' : '' ?>>Login</a>
         <a href="<?= $baseUrl ?>/register" class="btn btn-primary">Register</a>
+      <?php endif; ?>
     <?php endif; ?>
   </div>
-  <?php endif; ?>
+<?php endif; ?>

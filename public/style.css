@@ -2593,6 +2593,17 @@ select.form-control {
     margin-top: var(--space-md);
   }
 
+  .mobile-menu a.active {
+    color: var(--clr-primary);
+    font-weight: var(--fw-semibold);
+  }
+
+  .mobile-menu .btn-outline-danger {
+    margin-top: var(--space-md);
+    text-align: center;
+    justify-content: center;
+  }
+
   /* Hero */
   .hero {
     padding: var(--space-2xl) 0;
