@@ -242,7 +242,7 @@
             <label for="job-description">Job Description *</label>
             <p style="font-size: 13px; color: var(--clr-text-gray); margin-bottom: 8px;">Please provide a comprehensive description of the role, including responsibilities, qualifications, and any preferred skills or additional notes.</p>
             <!-- BACKEND: Consider integrating a Rich Text Editor like Quill, TinyMCE, or CKEditor here -->
-            <textarea class="form-control" name="job_description" placeholder="Write a detailed job description..." rows="12" required id="job-description"><?= isset($job) ? htmlspecialchars($job['Job_Description']) : '' ?></textarea>
+            <textarea class="form-control" name="job_description" placeholder="Write a detailed job description..." rows="12" required id="job-description"><?= isset($job) ? htmlspecialchars($job['job_description']) : '' ?></textarea>
             <span class="form-error">Job description is required</span>
           </div>
         </div>

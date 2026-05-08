@@ -77,7 +77,7 @@ class EmployerController {
                         'employer_id'            => $this->userModel->getEmployerDataById($_SESSION['user_id'])['employer_id'],
                         'title_id'               => $_POST['job_title'],
                         'category_id'            => $_POST['job_category'],
-                        'district_id'            => $_POST['district'],
+                        'district_id'            => $_POST['district'] ?? 16,
                         'city_id'                => $_POST['city'],
                         'country_id'             => $_POST['country'],
                         'industry_id'            => $_POST['industry'],
@@ -92,6 +92,9 @@ class EmployerController {
                         'min_degree_id'          => $_POST['min_degree'],
                         'min_years_experience'  => $_POST['min_experience'],
                     ];
+                    if (empty($jobData['district_id'])) {
+                        $jobData['district_id'] = '16';
+                    }
                     if ($jobId) {
                         $success = $this->jobModel->update($jobId, $jobData, $_POST['skills'] ?? []);
                         if ($success) $_SESSION['flash'] = "Job edited successfully!";
@@ -99,6 +102,7 @@ class EmployerController {
                         exit();
                     }
                     else {
+
                         $vacancy_id = $this->jobModel->create($jobData); // return the id from the new jobs
                         // Now we link skills to this job
                         if ($vacancy_id) {

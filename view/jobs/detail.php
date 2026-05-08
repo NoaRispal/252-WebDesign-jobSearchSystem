@@ -23,7 +23,16 @@
             </script>
 
             <div class="job-card-info" style="margin-bottom:var(--space-lg);">
-              <script>document.write(generateJobListIcon("<?=htmlspecialchars($response['title_name'])?>", "<?=$response['vacancy_id']?>"));</script>
+              <div id="job-icon-container"></div>
+              <script>
+              document.addEventListener('DOMContentLoaded', function() {
+                  document.getElementById('job-icon-container').innerHTML =
+                      generateJobListIcon(
+                          "<?=htmlspecialchars($response['title_name'])?>",
+                          <?=$response['vacancy_id']?>
+                      );
+              });
+              </script>
               <div>
                 <h2 class="job-card-title" style="font-size:24px;"><?=htmlspecialchars($response['title_name'])?></h2>
                 <p class="job-card-company"><?=htmlspecialchars($response['company_name'])?></p>

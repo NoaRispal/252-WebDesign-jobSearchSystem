@@ -140,6 +140,7 @@ class JobSearchResults {
 class JobDetails {
     public static function handle($db, $vacancyId) {
         $sql = "SELECT jv.posting_date,
+                       jv.vacancy_id,
                        jt.title_name,
                        e.company_name,
                        jc.category_name,
